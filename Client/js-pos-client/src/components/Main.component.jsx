@@ -1,72 +1,100 @@
 
 import React, { Component } from 'react';
 
-import TxnList from './TxnList.component';
+import TxnList from './Txn_components/TxnList.component';
 import Header from './Header.component';
 import LineDetail from './LineDetail.component';
 import MainMenu from './MainMenu.component';
 import Footer from './Footer.component';
+import Transaction from '../DTOs/Transaction'
 
-export default class Main extends Component 
+import { withResizeDetector } from 'react-resize-detector';
+
+
+class MainComponent extends Component 
 {
-    state = {  }
+    mobileWidth = 765;
+    state = { 
+        data : { width : window.innerWidth, height:window.innerHeight, isMobile : window.innerWidth < this.mobileWidth },
+        Txn : new Transaction()
+    }
 
     mainStyle={
         fontSize:20
     };
 
-    txnListStyle={
-        overflowY:"auto",
-        borderRight: "2px solid black",
-        height:"80vh"
-    };
 
-    
-    lineDetailStyle={
-        padding:"0px",
-        overflowY:"auto",
-        height:"40vh", border: "1px solid black"
-    };
+    componentDidUpdate(prevProps) {
+        const { width, height } = this.props;
+
+        if (height !== prevProps.height || width !== prevProps.width) {
+          this.setState({ 
+            data : {width:width, height:height, isMobile : window.innerWidth < this.mobileWidth },
+            Txn : this.state.Txn
+        });
+        }
+      }
 
     render() 
     {
+        let height = this.state.data.height;
+        let TotalPriceStyle = {
+            padding:10,
+            color : "white",
+            width:"50%",
+            backgroundColor:"#a00",
+            position:"absolute",
+            bottom: height-(height - (0.10*height))
+        }
+
+        let txnListStyle={
+            width:"50%",
+            overflowY:"auto",
+            overflowX:"hidden",
+            borderRight: "2px solid black",
+            height:"80vh",padding:10
+        };
+        let RightSideStyle = {width:"50%",padding:"0px"}
+ 
+        if(this.state.data.isMobile) 
+        {
+            RightSideStyle.display = "none";
+            txnListStyle.width = "100%";
+            TotalPriceStyle.width = "100%";
+        }
+
         return ( 
             <div  style={this.mainStyle}  >
-                <div style={{margin:"0px"}}  className="row"  >
-                    <div style={{padding:"0px"}}  className="col-12" >
-                        <Header/> 
-                    </div>
-                </div>
+                <Header/> 
 
                 <div style={{margin:"0px"}} className="row"  >
-                    
-                    <div style={this.txnListStyle}   className="col-sm-6" >
-                        <TxnList/> 
+                    <div style={txnListStyle}   >
+                        <TxnList data={this.state.data} transaction={this.state.Txn} /> 
+                 
                     </div>
-                    
-                    <div className="col-sm-6" style={{padding:"0px"}} >
-                        <div style={{margin:"0px"}}  className="row"  >
-                            <div style={this.lineDetailStyle} className="col-12" >
-                                <LineDetail/> 
-                            </div>
-                        </div>
-                        <div style={{margin:"0px"}}  className="row"  >
-                            <div  style={this.lineDetailStyle}  className="col-12" >
-                                <MainMenu/> 
-                            </div>
-                        </div>
+                    <div style={TotalPriceStyle} >
+                        <span style={{fontSize:"30px",fontWeight:'bold'}} > Final Price :</span> 
+                        <span style={{fontSize:"30px",float:'right'}} > &#x20b9; {this.state.Txn.total.finalPrice} </span> 
+                    </div>
+                    <div style={RightSideStyle} >
+                            <LineDetail/> 
+                            <MainMenu/> 
                     </div>
                 </div>
-                
-                <div style={{margin:"0px"}}  className="row"  >
-                    <div style={{padding:"0px"}}  className="col-12" >
-                        <Footer/> 
-                    </div>
-                </div>
+                <Footer/> 
             </div>
-            );
+        );
 
     }
 
+
 }
- 
+
+const AdaptiveWithDetector = withResizeDetector(MainComponent);
+const Main = () => {
+    return (
+        <AdaptiveWithDetector />
+    );
+};
+  
+export default Main;

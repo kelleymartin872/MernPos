@@ -28,23 +28,32 @@ export default class MainMenu extends Component
 
     btnStyle={ 
         margin:10,
+        fontSize:16,
         height: "60px",
-        width: "60px",
+        width: "140px",
         backgroundColor:"#444",
-        borderRadius:"15%",
         color:"white"
     };
 
 
+    lineDetailStyle={
+        padding:"0px",
+        overflowY:"auto",
+        height:"40vh", border: "1px solid black"
+    };
 
     render() 
     {
         return ( 
                 
-            <div style={this.mainStyle} className="row">
-                { this.state.buttons.map( (button) => (
-                    <button style={this.btnStyle} className="btn col-3"> {button.btnName} </button>
-                ))}
+            <div style={{margin:"0px"}}  className="row"  >
+                <div  style={this.lineDetailStyle}  className="col-12" >
+                    <div style={this.mainStyle} >
+                        { this.state.buttons.map( (button) => (
+                            <button key={button.btnId} style={this.btnStyle} > {button.btnName} </button>
+                        ))}
+                    </div>
+                </div>
             </div>
         );
     }

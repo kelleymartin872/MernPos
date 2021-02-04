@@ -1,7 +1,8 @@
 
-import TotalLine from './TotalLine';
-import HeaderlLine from './HeaderLine';
-import CustomerLine from './CustomerLine';
+import TotalLine from './Txn_Lines/TotalLine';
+import ItemLine from './Txn_Lines/ItemLine'
+import HeaderlLine from './Txn_Lines/HeaderLine';
+import CustomerLine from './Txn_Lines/CustomerLine';
 
 export default class Transaction
 {
@@ -15,7 +16,8 @@ export default class Transaction
         this.customer = new CustomerLine();
 
         this.total = new TotalLine();
-        this.itemList = [];
+        this.itemList = this.fillItems();
+        this.refreshTotal();
     }
 
     refreshTotal()
@@ -29,5 +31,27 @@ export default class Transaction
         });
 
         this.total.finalPrice = this.total.totalPrice + this.total.discount ;
+    }
+
+
+    
+    fillItems()
+    {
+        let items = [
+            new ItemLine("1","Apples",100),
+            new ItemLine("2","Mangos",200),
+            new ItemLine("3","Carrots",35)
+        ];
+
+        let i = 4;
+        while(i < 6)
+        {
+            items.push(
+                new ItemLine(i.toString(),"Apples",100)
+            );
+            i += 1;
+        }
+
+        return items;
     }
 }

@@ -5,9 +5,9 @@ export default class TxnLine
     {
         this.txnNumber = 1;
         this.userID = 1234;
-        this.TxnLineNumber = 0;
-        this.lineTypeID = 0;
+        this.lineNumber = 0;
         this.lineTypeID = 0;
         this.isSelected = false;
     }
+    
 }

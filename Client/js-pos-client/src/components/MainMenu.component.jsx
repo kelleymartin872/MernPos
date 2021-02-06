@@ -22,7 +22,7 @@ export default class MainMenu extends Component
         width: "100%",
         margin:0,
         padding:0,
-        backgroundColor:"#a00",
+        backgroundColor:"#f16b52",
         height:"100%"
     };
 
@@ -31,7 +31,7 @@ export default class MainMenu extends Component
         fontSize:16,
         height: "60px",
         width: "140px",
-        backgroundColor:"#444",
+        backgroundColor:"#303841",
         color:"white"
     };
 
@@ -50,7 +50,7 @@ export default class MainMenu extends Component
                 <div  style={this.lineDetailStyle}  className="col-12" >
                     <div style={this.mainStyle} >
                         { this.state.buttons.map( (button) => (
-                            <button key={button.btnId} style={this.btnStyle} > {button.btnName} </button>
+                            <button key={button.btnId}   style={this.btnStyle}  > {button.btnName} </button>
                         ))}
                     </div>
                 </div>

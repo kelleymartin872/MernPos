@@ -10,7 +10,7 @@ export default class Header extends Component
         margin:0,
         padding:0,
         height:"10vh",
-        backgroundColor:"#a00",
+        backgroundColor:"#f16b52",
         color:"white"
     };
 
@@ -24,7 +24,7 @@ export default class Header extends Component
     
     btnStyle={ 
         margin:"10px px",
-        backgroundColor:"#444",
+        backgroundColor: "#303841",
         color:"white"
     };
 

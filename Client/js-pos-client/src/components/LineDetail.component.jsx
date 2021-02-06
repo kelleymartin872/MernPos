@@ -1,34 +1,41 @@
 
-import React, { Component } from 'react';
+import React from 'react';
+import Constants from '../constants'
 
-export default class LineDetail extends Component 
+
+
+const LineDetail = (props) => 
 {
-    state = {  }
-
-    mainStyle={ 
+    const mainStyle={ 
         width: "100%",
         margin:0,
-        padding:0,
+        padding:10,
         height:"100%"
     };
-
-    lineDetailStyle={
+    
+    const lineDetailStyle={
         padding:"0px",
         overflowY:"auto",
         height:"40vh", border: "1px solid black"
     };
-    render() 
-    {
-        return ( 
-            <div style={{margin:"0px"}}  className="row"  >
-                <div style={this.lineDetailStyle} className="col-12" >
-                        <div style={this.mainStyle}>
-                            
-                        </div>
+
+    let txn = props.transaction;
+
+    
+
+
+
+
+
+    return ( 
+        <div style={{margin:"0px"}}  className="row"  >
+            <div style={lineDetailStyle} className="col-12" >
+                <div style={mainStyle}>
+
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
-
-
+ 
+export default LineDetail;

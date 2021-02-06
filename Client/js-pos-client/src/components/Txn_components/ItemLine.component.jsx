@@ -18,7 +18,7 @@ const ItemLineComponent = (props) => {
       let returnRender = [];
 
     returnRender.push ( 
-        <div key={item.itemId} style={lineStyle} className="row" >
+        <div key={item.lineNumber} style={lineStyle} className="row" >
             <div className="col-5"> {item.itemName} </div>
             <div className="col-1"> {item.itemQty} </div>
             <div className="col-1"> x </div>
@@ -28,9 +28,8 @@ const ItemLineComponent = (props) => {
         </div>
     );
     
-    if(item.discount && item.discount.discID && item.discount.discID != "")
+    if(item.discount && item.discount.discID )
     {
-        
         returnRender.push ( 
             <div key={item.discount.discID} style={discLineStyle} className="row" >
                 <div className="col-8"> {item.discount.discDesc} </div>

@@ -12,6 +12,7 @@ export default class Transaction
         let txnID = "1"
         this.key = txnID;
         this.txnID = txnID;
+        this.userID = 0;
         
         this.txnList = [];
         this.txnList.push(new HeaderlLine());

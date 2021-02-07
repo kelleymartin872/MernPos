@@ -6,7 +6,7 @@ const users = require('./routes/users');
 const home = require('./routes/home');         
 
 
-mongoose.connect('mongodb://localhost/nodeApp', { useNewUrlParser: true , useUnifiedTopology: true } )
+mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useUnifiedTopology: true } )
     .then(() => console.log("Connected to MongoDB..."))
     .catch(err => console.log("Error Connecting to MongoDB :: " , err));
 
@@ -30,7 +30,7 @@ app.use('/', home);                     //direct to a home router
 
 //#region  "Open PORT : 3000"
 
-const port = process.env.PORT || 3000;  // Take port number from Environment variable
+const port = 4000;  // Take port number from Environment variable
 app.listen(port, function()
 {
     console.log(`Listening to port ${port} ...`);

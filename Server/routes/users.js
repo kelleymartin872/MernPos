@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
-const UserDB = require('../dbModels/UserModel').UserDB;
-const validateUser = require('../dbModels/UserModel').validateUser;
+const UserDB = require('../dbModels/UserDB.Model').UserDB;
+const validateUser = require('../dbModels/UserDB.Model').validateUser;
 
 router.use(express.json());
 

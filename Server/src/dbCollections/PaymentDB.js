@@ -44,7 +44,13 @@ class PaymentDBHelper
             elements[i].insertToDB();
         }   
     }
-
+    
+    // READ 
+    static async getAllPayments()            
+    {
+        const dbPayments = await PaymentDBModel.find();
+        return dbPayments;
+    }
 }
 
 module.exports.PaymentDBHelper = PaymentDBHelper;

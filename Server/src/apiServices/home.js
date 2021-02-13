@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', function(req,res)
 {
     //res.send('Hello World !!!');
-    res.render('index', { title: "MyNodeApp" , message : "API Links - (ONLY GET)"} )
+    res.render('index', { title: "MernPOS-Server" , message : "API Links - (ONLY GET)"} )
 });
 
 module.exports = router;

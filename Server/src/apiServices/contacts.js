@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 const uuid = require('uuid');
 
-const ContactDB = require('../dbModels/ContactModel').ContactDB;
-const validateContact = require('../dbModels/ContactModel').validateContact;
+const ContactDB = require('../dbModels/CustomerDB.Model').ContactDB;
+const validateContact = require('../dbModels/CustomerDB.Model').validateContact;
 
 router.use(express.json());
 

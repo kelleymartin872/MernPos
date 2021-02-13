@@ -95,6 +95,14 @@ class TxnRecordDBHelper
             elements[i].insertToDB();
         }   
     }
+
+    // READ 
+    static async getLastTxn()            
+    {
+        const dbLastTxn = await TxnRecordDBModel.find().sort({ txnNumber: -1 }).limit(1);
+        return dbLastTxn;
+    }
+    
 }
 
 module.exports.TxnItemRecordDBHelper = TxnItemRecordDBHelper;

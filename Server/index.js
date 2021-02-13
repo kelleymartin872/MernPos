@@ -1,16 +1,21 @@
 
 const express = require('express');     // Middleware to handle HTTP REST API  
 const mongoose = require('mongoose');   // Connect to Mongo Database
-const contacts = require('./routes/contacts');     
-const users = require('./routes/users');     
-const home = require('./routes/home');         
-
+// const contacts = require('./routes/contacts');     
+// const users = require('./routes/users');       
+const home = require('./src/apiServices/home');         
+const itemService = require('./src/apiServices/itemService');
+const customerService = require('./src/apiServices/customerService');
+const paymentService = require('./src/apiServices/paymentService');
+const transactionService = require('./src/apiServices/transactionService');
 
 mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useUnifiedTopology: true } )
     .then(() => console.log("Connected to MongoDB..."))
     .catch(err => console.log("Error Connecting to MongoDB :: " , err));
 
 var app = express();
+
+process.posData = {};
 
 //#region "Routing"
 
@@ -22,8 +27,11 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use('/api/users', users);           //direct to a users router
-app.use('/api/contacts', contacts);     //direct to a contacts router
+app.use('/api/itemService', itemService);                   //direct to items api service
+app.use('/api/customerService', customerService);           //direct to customers api service
+app.use('/api/paymentService', paymentService);             //direct to payments api service
+app.use('/api/transactionService', transactionService);     //direct to transaction api service
+
 app.use('/', home);                     //direct to a home router
 
 //#endregion

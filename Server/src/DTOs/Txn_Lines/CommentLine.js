@@ -7,8 +7,8 @@ class CommentLine extends TxnLine
     constructor()
     {
         super();
-        this.lineName = "CommentLine";
-        this.lineTypeID = Constants.TxnLineType.CommentLineType;
+        this.lineName = Constants.TxnLineName.CommentLine;
+        this.lineTypeID = Constants.TxnLineType.CommentLine;
     }
 }
 

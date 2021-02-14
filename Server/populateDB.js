@@ -3,16 +3,16 @@ const mongoose = require('mongoose');   // Connect to Mongo Database
 
 // db models
 
-const ItemDBHelper = require('./dbCollections/ItemDBHelper').ItemDBHelper;
-const CustomerDBHelper = require('./dbCollections/CustomerDB').CustomerDBHelper;
-const UserDBHelper = require('./dbCollections/UserDB').UserDBHelper;
-const PaymentDBHelper = require('./dbCollections/PaymentDB').PaymentDBHelper;
+const ItemDBHelper = require('./src/dbCollections/ItemDB').ItemDBHelper;
+const CustomerDBHelper = require('./src/dbCollections/CustomerDB').CustomerDBHelper;
+const UserDBHelper = require('./src/dbCollections/UserDB').UserDBHelper;
+const PaymentDBHelper = require('./src/dbCollections/PaymentDB').PaymentDBHelper;
+const CouponDBHelper = require('./src/dbCollections/CouponDB').CouponDBHelper;
 
 mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useUnifiedTopology: true } )
     .then(() => console.log("Connected to MongoDB..."))
     .catch(err => console.log("Error Connecting to MongoDB :: " , err));
 
-    
     
 //#region "ItemDB" 
 
@@ -75,5 +75,16 @@ var payments = [
 ];
 
 PaymentDBHelper.pushMultiple(payments);
+
+//#endregion
+
+//#region "CouponDB" 
+
+var coupons = [
+    new CouponDBHelper(99910001, -35 ),
+    new CouponDBHelper(99910002, -100 )
+];
+
+CouponDBHelper.pushMultiple(coupons);
 
 //#endregion

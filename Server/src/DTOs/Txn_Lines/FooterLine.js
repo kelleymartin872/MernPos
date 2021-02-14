@@ -7,8 +7,9 @@ class FooterLine extends TxnLine
     constructor()
     {
         super();
-        this.lineName = "FooterLine";
-        this.lineTypeID = Constants.TxnLineType.FooterLineType;
+        this.lineName = Constants.TxnLineName.FooterLine;
+        this.lineTypeID = Constants.TxnLineType.FooterLine;
+        
         this.description = "Txn Footer";
     }
 }

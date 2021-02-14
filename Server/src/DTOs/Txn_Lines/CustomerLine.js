@@ -7,8 +7,8 @@ class CustomerLine extends TxnLine
     constructor(custData)
     {
         super();
-        this.lineName = "CustomerLine";
-        this.lineTypeID = Constants.TxnLineType.CustomerLineType;
+        this.lineName = Constants.TxnLineName.CustomerLine;
+        this.lineTypeID = Constants.TxnLineType.CustomerLine;
         
         this.custID = custData.custID;
         this.custName = custData.custName;

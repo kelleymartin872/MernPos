@@ -1,5 +1,5 @@
 
-const HeaderlLine = require('./Txn_Lines/HeaderLine').HeaderlLine;
+const HeaderLine = require('./Txn_Lines/HeaderLine').HeaderLine;
 const CustomerLine = require('./Txn_Lines/CustomerLine').CustomerLine;
 const ItemLine = require('./Txn_Lines/ItemLine').ItemLine;
 const TotalLine = require('./Txn_Lines/TotalLine').TotalLine;
@@ -7,18 +7,24 @@ const Constants = require('../Constants').Constants;
 
 class Transaction
 {
-    constructor(data, txnNumber)
+    constructor(txnNumber)
     {
-        this.key = txnNumber;
         this.txnNumber = txnNumber;
-        this.userID = data.userID;
+
+        data = process.posData.data;
+
+        this.userEmail = data.userEmail;
+        this.posState = data.posState;
 
         this.totalPrice = 0;
-        this.discount = 0;
-        this.finalPrice = this.totalPrice - this.discount;
+        this.discountAmt = 0;
+        this.finalPrice = 0;
+        
+        this.amountPaid = 0;
+        this.amountOwed = 0;
         
         this.txnList = [];
-        this.txnList.push(new HeaderlLine());
+        this.txnList.push(new HeaderLine());
 
         //this.txnList.push(new CustomerLine());
         //this.txnList.push(...this.fillItems());     // list of ItemLine
@@ -28,28 +34,59 @@ class Transaction
         this.refreshLineNmbrs();
     }
 
-    refreshTotal()
+    refreshTxn()
     {
         let itemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLineType);
+        let couponList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CouponLine);
+        let payList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.PaymentLine);
+        let discList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.DiscountLine);
+
         let totalLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.TotalLineType);
 
         if(!totalLine)
         {
             totalLine = new TotalLine();
-            this.txnList.push(totalLine);
         }
-            
-            
-        totalLine.totalPrice = 0;
-        totalLine.discount = 0;
-        
+        else
+        {
+            if(this.posState !== Constants.PosState.payState)
+                this.RemoveLine(totalLine);
+        }
+
         itemList.forEach(item => {
-            totalLine.totalPrice += item.itemTotalPrice;
-            totalLine.discount += item.discount.discount;    
+            totalLine.totalPrice += item.totalPrice;
+            totalLine.discountAmt += item.discount.discount;    
+        });
+        
+        couponList.forEach(coupon => {
+            if(coupon.couponStatus === Constants.CouponStatus.reserved)
+                totalLine.discountAmt += coupon.discount.discountAmt;
         });
 
-        totalLine.finalPrice = totalLine.totalPrice + totalLine.discount ;
+        discList.forEach(disc => {
+            totalLine.discountAmt += disc.discountAmt;
+        });
+
+        this.amountPaid = 0;
+        payList.forEach(pay => {
+            this.amountPaid = this.amountPaid + (pay.amountPaid * pay.payExchangeRate);
+        });
+
+        totalLine.finalPrice = totalLine.totalPrice + totalLine.discountAmt;
+        
+        this.totalPrice = totalLine.totalPrice;
+        this.discountAmt = totalLine.discountAmt;
         this.finalPrice = totalLine.finalPrice;
+        
+        this.amountOwed = this.finalPrice - this.amountPaid;
+
+        if(this.posState === Constants.PosState.payState)
+        {
+            this.txnList.push(totalLine);
+        }
+
+        this.refreshLineNmbrs();
+        return;
     }
 
     refreshLineNmbrs()
@@ -58,21 +95,6 @@ class Transaction
         this.txnList.forEach(txnLine => {
             i += 1;
             txnLine.lineNumber = i;
-        });
-    }
-    
-    makeSelection(lineNumber)
-    {
-        this.unSelectAll();
-        let obj = this.getObjFromLineNmbr(lineNumber);
-        if(obj)
-            obj.isSelected = true;
-    }
-
-    unSelectAll()
-    {
-        this.txnList.forEach(txnLine => {
-            txnLine.isSelected = false;
         });
     }
 
@@ -96,7 +118,7 @@ class Transaction
         let exisCusts = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CustomerLineType);
         
         exisCusts.forEach(cust => {
-            this.RemoveFromList(cust);
+            this.RemoveLine(cust);
         });
         
         if(this.txnList.length > 1)
@@ -108,7 +130,21 @@ class Transaction
         return;
     }
 
-    RemoveFromList(txnLine)
+    AddLine(txnLine, index=-1)
+    {
+        if(index < 0 || this.txnList.length < index)
+        {
+            this.txnList.push(txnLine);
+            return;
+        }
+
+        this.txnList.splice(index,0, txnLine);
+        this.refreshTxn();
+
+        return;
+    }
+
+    RemoveLine(txnLine)
     {
         const index = this.txnList.indexOf(txnLine);
         if(index < 0)
@@ -116,27 +152,6 @@ class Transaction
         this.txnList.splice(index,1);
     }
 
-    fillItems()
-    {
-        let items = [
-            new ItemLine("1","Apples",80),
-            new ItemLine("2","Mangos",120),
-            new ItemLine("3","Carrots",35),
-            new ItemLine("4","Rice",20),
-            new ItemLine("5","Cheese",65)
-        ];
-
-        let i = 4;
-        while(i < 6)
-        {
-            items.push(
-                new ItemLine(i.toString(),"Apples",100)
-            );
-            i += 1;
-        }
-
-        return items;
-    }
 }
 
 

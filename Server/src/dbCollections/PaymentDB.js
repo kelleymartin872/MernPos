@@ -51,6 +51,12 @@ class PaymentDBHelper
         const dbPayments = await PaymentDBModel.find();
         return dbPayments;
     }
+
+    static async getPaymentById(paymentTypeID)      
+    {
+        const dbPayments = await PaymentDBModel.find();
+        return dbPayments.find(x => x.paymentTypeID === paymentTypeID);
+    }
 }
 
 module.exports.PaymentDBHelper = PaymentDBHelper;

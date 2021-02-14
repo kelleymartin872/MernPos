@@ -4,16 +4,16 @@ const TxnLine = require('./TxnLine').TxnLine;
 
 class PaymentLine extends TxnLine
 {
-    constructor(paymentTypeID, paymentName, amountPaid, payExchangeRate = 1)
+    constructor(paymentData, amountPaid)
     {
         super();
-        this.lineName = "PaymentLine";
-        this.lineTypeID = Constants.TxnLineType.PaymentLineType;
+        this.lineName = Constants.TxnLineName.PaymentLine;
+        this.lineTypeID = Constants.TxnLineType.PaymentLine;
         
-        this.paymentTypeID = paymentTypeID;
-        this.paymentName = paymentName;
+        this.paymentTypeID = paymentData.paymentTypeID;
+        this.paymentName = paymentData.paymentName;
         this.amountPaid = amountPaid;
-        this.payExchangeRate = payExchangeRate;
+        this.payExchangeRate = paymentData.payExchangeRate;
     }
 }
 

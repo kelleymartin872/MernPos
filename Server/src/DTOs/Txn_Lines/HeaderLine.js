@@ -2,16 +2,16 @@
 const Constants = require('../../Constants').Constants;
 const TxnLine = require('./TxnLine').TxnLine;
 
-class HeaderlLine extends TxnLine
+class HeaderLine extends TxnLine
 {
     constructor()
     {
         super();
-        this.lineName = "HeaderlLine";
-        this.lineTypeID = Constants.TxnLineType.headerLineType;
+        this.lineName = Constants.TxnLineName.HeaderLine;
+        this.lineTypeID = Constants.TxnLineType.HeaderLine;
         
         this.description = "Txn Header";
     }
 }
 
-module.exports.HeaderlLine = HeaderlLine;
+module.exports.HeaderLine = HeaderLine;

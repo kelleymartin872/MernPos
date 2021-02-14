@@ -1,13 +1,15 @@
 
 const express = require('express');     // Middleware to handle HTTP REST API  
 const mongoose = require('mongoose');   // Connect to Mongo Database
-// const contacts = require('./routes/contacts');     
-// const users = require('./routes/users');       
+
 const home = require('./src/apiServices/home');         
+const userService = require('./src/apiServices/userService');
 const itemService = require('./src/apiServices/itemService');
 const customerService = require('./src/apiServices/customerService');
 const paymentService = require('./src/apiServices/paymentService');
 const transactionService = require('./src/apiServices/transactionService');
+
+const Data = require('./src/DTOs/Data').Data;
 
 mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useUnifiedTopology: true } )
     .then(() => console.log("Connected to MongoDB..."))
@@ -15,7 +17,10 @@ mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useU
 
 var app = express();
 
-process.posData = {};
+process.posData = {
+    data : new Data() ,
+    txns : [] 
+};
 
 //#region "Routing"
 
@@ -27,6 +32,7 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use('/api/userService', userService);                   //direct to user api service
 app.use('/api/itemService', itemService);                   //direct to items api service
 app.use('/api/customerService', customerService);           //direct to customers api service
 app.use('/api/paymentService', paymentService);             //direct to payments api service

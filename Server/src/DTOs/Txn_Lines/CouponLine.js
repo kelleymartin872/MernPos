@@ -4,11 +4,16 @@ const TxnLine = require('./TxnLine').TxnLine;
 
 class CouponLine extends TxnLine
 {
-    constructor()
+    constructor(couponData,couponStatus)
     {
         super();
-        this.lineName = "CouponLine";
-        this.lineTypeID = Constants.TxnLineType.CouponLineType;
+        this.lineName = Constants.TxnLineName.CouponLine;
+        this.lineTypeID = Constants.TxnLineType.CouponLine;
+
+        this.couponNmbr = couponData.couponNmbr;
+        this.couponStatus = couponStatus;
+        
+        this.discount = new DiscountLine("Coupon discount", couponData.discountAmt);
     }
 }
 

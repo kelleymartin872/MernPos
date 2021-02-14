@@ -1,15 +1,14 @@
 
-
 const mongoose = require('mongoose');   // Connect to Mongo Database
+const Joi = require('joi');             // Request validation
 
 const customerModelSchema = new mongoose.Schema({
     custID: { type: String, required : true, unique: true },
-    custName: String,
+    custName: { type: String, required : true },
     phoneNumber:  { type: Number, required : true, unique: true },
     points: Number,
     lastUpdateDate: { type: Date, default: Date.now }
 });
-
 
 
 const CustomerDBModel = mongoose.model('Customer' , customerModelSchema);
@@ -55,6 +54,15 @@ class CustomerDBHelper
     {
         let dbCustomers = await CustomerDBModel.find();
         return dbCustomers.find(x => x.phoneNumber.toString().toLowerCase() === number.toString().toLowerCase());
+    }
+
+    static validate(cust) 
+    {
+        const schema = Joi.object({
+            custName : Joi.string().min(3).required(),
+            phoneNumber : Joi.string().min(8).required().email()
+        });
+        return schema.validate(cust);
     }
 }
 

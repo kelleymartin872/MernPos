@@ -5,29 +5,32 @@ const DiscountLine = require('./DiscountLine').DiscountLine;
 
 class ItemLine extends TxnLine
 {
-    constructor(itemId,itemName,itemPrice,discountDesc="",discountAmt=0)
+    constructor(itemData, qty=1)
     {
         super();
-        this.lineName = "ItemLine";
-        this.lineTypeID = Constants.TxnLineType.ItemLineType;
+        this.lineName = Constants.TxnLineName.ItemLine;
+        this.lineTypeID = Constants.TxnLineType.ItemLine;
         
-        this.itemId= itemId;
-        this.itemName= itemName;
-        this.itemPrice= itemPrice;
+        this.itemId= itemData.itemId;
+        this.itemName= itemData.itemName;
+        this.itemPrice= itemData.itemPrice;
         
-        this.itemQty = 1;
-        this.itemTotalPrice  = this.itemQty * this.itemPrice;
+        this.itemQty = qty;
+        this.totalPrice  = this.itemQty * this.itemPrice;
         
-        if(discountDesc!="" && discountAmt > 0)
+        if(itemData.discountDesc && itemData.discountDesc != "" && itemData.discountAmt != 0)
         {
-            this.discount = new DiscountLine(discountDesc, discountAmt);
+            this.discount = new DiscountLine(itemData.discountDesc, itemData.discountAmt);
         }
     }
-    addQty()
-    {
-        this.itemQty += 1;
-        this.itemTotalPrice += this.itemPrice;
 
+    setQty(qty)
+    {
+        this.itemQty = qty;
+        this.itemTotalPrice  = this.itemQty * this.itemPrice;
+        if(this.discount.discountAmt > 0)
+        {
+        }
     }
     removeQty()
     {

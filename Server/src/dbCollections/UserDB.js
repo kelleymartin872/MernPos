@@ -21,17 +21,6 @@ const userDBSchema = new mongoose.Schema({
 });
     
 
-function validateUser(contact) 
-{
-    const schema = Joi.object({
-        name : Joi.string().min(3),
-        email : Joi.string().min(6).required().email(),
-        password : Joi.string().min(6).required()
-    });
-    return schema.validate(contact);
-}
-
-
 const UserDBModel = mongoose.model('User' , userDBSchema);
 
 
@@ -49,6 +38,12 @@ class UserDBHelper
         const dBObj = new UserDBModel(this);
         const mongoResult = await dBObj.save();
         return;
+    }
+
+    static async getUsersByEmail(email)
+    {
+        const dbUsers = await UserDBModel.find();
+        return dbUsers.find(x => x.email.toLowerCase() === email.toLowerCase());
     }
 
     static async bryptPassword(password)
@@ -70,8 +65,17 @@ class UserDBHelper
             });
         }   
     }
+
+    static validate(user) 
+    {
+        const schema = Joi.object({
+            name : Joi.string().min(3),
+            email : Joi.string().min(6).required().email(),
+            password : Joi.string().min(6).required()
+        });
+        return schema.validate(user);
+    }
 }
 
 module.exports.UserDBHelper = UserDBHelper;
 module.exports.UserDBModel = UserDBModel;
-module.exports.validateUser = validateUser;

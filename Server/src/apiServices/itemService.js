@@ -2,19 +2,52 @@
 const express = require('express'); 
 const router = express.Router();
 const ItemDBHelper = require('../dbCollections/ItemDB').ItemDBHelper;
+const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
+const Constants = require('../Constants').Constants;
 
 router.use(express.json());
 
 router.get('/getItems', async function(req,res)
 {
-    const err = "Item with given ID was not found!";
-    var items = await ItemDBHelper.getItems(req.body);
-    
-    if(!items || items.length < 1)
-        res.status(404).send(err);
-    else
-    { 
-        res.send(items);
+    try
+    {
+        const err = "Item with given data was not found!";
+        var items = await ItemDBHelper.getItems(req.body);
+        
+        if(!items || items.length < 1)
+            res.status(404).send(err);
+        else
+        {
+            res.send(items);
+        }
+    }
+    catch(ex)
+    {
+        res.status(500).send(ex.message);
+    }
+});
+
+router.post('/addItemTxn', async function(req,res)
+{
+    try
+    {
+        const err = "Item with given data was not found!";
+        var items = await ItemDBHelper.getItems(req.body);
+        
+        if(!items || items.length < 1)
+            res.status(404).send(err);
+        else
+        { 
+            let txn = process.posData.txns[0];
+            let itemLine = new ItemLine(items[0], parseInt(req.body.itemQty));
+            txn.AddLine(itemLine);
+            process.posData.txns[0] = txn;
+            res.send(process.posData);
+        }
+    }
+    catch(ex)
+    {
+        res.status(500).send(ex.message);
     }
 });
 

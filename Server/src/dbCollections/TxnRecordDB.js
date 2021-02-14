@@ -1,34 +1,34 @@
 
 const mongoose = require('mongoose');   // Connect to Mongo Database
-const Joi = require('joi');             // Request validation
+const Constants = require('../Constants').Constants;
 
 
 const txnItemRecordDBSchema = new mongoose.Schema({
     itemId: {type: String, required : true},
     itemQty: {type: Number},
-    itemPrice: {type: Number, required : true},
-    discount: {type: Number}
+    totalPrice: {type: Number, required : true},
+    discountAmt: {type: Number}
 });
 
 const txnCouponRecordDBSchema = new mongoose.Schema({
-    couponNumber: {type: Number, required : true},
-    discount: {type: Number, required : true},
-    status: {type: Number, required : true}
+    couponNmbr: {type: Number, required : true},
+    couponStatus: {type: Number, required : true},
+    discountAmt: {type: Number, required : true}
 });
 
 const txnPaymentRecordDBSchema = new mongoose.Schema({
     paymentTypeID: { type: Number, required : true},
-    paidAmount: { type: Number, required : true}
+    amountPaid: { type: Number, required : true}
 });
 
 const txnRecordDBSchema = new mongoose.Schema({
     txnNumber: { type: Number, required : true, unique: true } ,
-    userID: { type: Number, required : true } ,
+    userEmail: { type: Number, required : true } ,
     customerID:  Number ,
     couponList: [txnCouponRecordDBSchema] ,
     itemList: [txnItemRecordDBSchema] ,
     totalPrice: { type: Number, required : true },
-    discount: Number ,
+    discountAmt: Number ,
     finalPrice: { type: Number, required : true },
     paymentList: [txnPaymentRecordDBSchema],
     Date: { type: Date, default: Date.now }
@@ -40,45 +40,68 @@ const TxnRecordDBModel = mongoose.model('TxnRecord' , txnRecordDBSchema);
 
 class TxnItemRecordDBHelper
 {
-    constructor(itemId,itemPrice,itemQty=1,discount=0)
+    constructor(itemData)
     {
-        this.itemId = itemId;
-        this.itemQty = itemQty;
-        this.itemPrice = itemPrice;
-        this.discount = discount;
+        this.itemId= itemData.itemId;
+        this.itemQty = itemData.itemQty;
+        this.totalPrice  = titemData.totalPrice;
+        this.discountAmt = itemData.discount.discountAmt;
     }
 }
+
 class TxnCouponRecordDBHelper
 {
-    constructor(couponNumber,discount,status=1)
+    constructor(couponData)
     {
-        this.couponNumber = couponNumber;
-        this.discount = discount;
-        this.status = status;
+        this.couponNmbr = couponData.couponNmbr;
+        this.couponStatus = couponData.couponStatus;
+        this.discountAmt = couponData.discount.discountAmt;
     }
 }
+
 class TxnPaymentRecordDBBHelper
 {
-    constructor(paymentTypeID,paidAmount)
+    constructor(paymentData)
     {
-        this.paymentTypeID = paymentTypeID;
-        this.paidAmount = paidAmount;
+        this.paymentTypeID = paymentData.paymentTypeID;
+        this.amountPaid = paymentData.paidAmount;
     }
 }
 
 class TxnRecordDBHelper
 {
-    constructor(txnNumber,userID,customerID,itemList,totalPrice,paymentList,discount=0,couponList=[])
+    constructor(txnData)
     {
-        this.txnNumber = txnNumber;
-        this.userID = userID;
-        this.customerID = customerID;
-        this.couponList = couponList;
-        this.itemList = itemList;
-        this.totalPrice = totalPrice;
-        this.discount = discount;
-        this.finalPrice = totalPrice - discount;
-        this.paymentList = paymentList;
+        this.txnNumber = txnData.txnNumber;
+        this.userEmail = txnData.userEmail;
+        
+        let customer = txnData.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
+        if(customer)
+            this.customerID = customer.custID;
+        
+        let couponList = txnData.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CouponLine);
+        this.couponList = [];
+        couponList.forEach(coupon => {
+            this.couponList.push(new TxnCouponRecordDBHelper(coupon));
+        });
+
+        let itemList = txnData.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLineType);
+        this.itemList = [];
+        itemList.forEach(item => {
+            this.couponList.push(new TxnItemRecordDBHelper(item));
+        });
+        
+        
+        this.totalPrice = txnData.totalPrice;
+        this.discountAmt = txnData.discountAmt;
+        this.finalPrice = txnData.finalPrice;
+        
+        let paymentList = txnData.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.PaymentLine);
+        this.paymentList = [];
+        paymentList.forEach(payment => {
+            this.paymentList.push(new TxnPaymentRecordDBBHelper(payment));
+        });
+        
     }
 
     async insertToDB()

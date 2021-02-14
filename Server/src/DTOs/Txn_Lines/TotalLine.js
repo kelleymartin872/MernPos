@@ -7,12 +7,13 @@ class TotalLine extends TxnLine
     constructor()
     {
         super();
-        this.lineName = "TotalLine";
-        this.lineTypeID = Constants.TxnLineType.TotalLineType;
+        this.lineName = Constants.TxnLineName.TotalLine;
+        this.lineTypeID = Constants.TxnLineType.TotalLine;
         
         this.totalPrice = 0;
-        this.discount = 0;
+        this.discountAmt = 0;
         this.finalPrice = 0;
     }
 }
+
 module.exports.TotalLine = TotalLine;

@@ -23,7 +23,7 @@ router.get('/getCustomers/', async function(req,res)
     }
     catch(ex)
     {
-        res.staus(500).send(ex);
+        res.status(500).send(ex.message);
     }
 });
 
@@ -48,35 +48,8 @@ router.post('/addCustomerTxn/', async function(req,res)
     }
     catch(ex)
     {
-        res.staus(500).send(ex);
+        res.status(500).send(ex.message);
     }
-});
-
-router.post('/delCustomerTxn/', async function(req,res)
-{
-    try
-    {
-        const err = "No Customer in Txn!";
-        var customers = await CustomerDBHelper.getCustomers(req.body);
-        let txn = process.posData.txns[0];
-
-        let exisCusts = txn.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CustomerLineType);
-            
-        if(!exisCusts || exisCusts.length < 1)
-            res.status(404).send(err);
-        else
-        { 
-            exisCusts.forEach(cust => {
-                txn.RemoveFromList(cust);
-            });
-            res.send(process.posData);
-        }
-    }
-    catch(ex)
-    {
-        res.staus(500).send(ex);
-    }
-
 });
 
 
@@ -92,20 +65,17 @@ router.post('/addNewCustomer/', async function(req,res)
             res.status(400).send(err + "Customer with given phone number already exists.");
             return
         }
-        if(!req.body.custName || req.body.custName.length < 3)
-        {
-            res.status(400).send(err + "Customer Name min length 3 required.");
-            return
-        }
         if(!/^\d+$/.test(req.body.phoneNumber))
         {            
             res.status(400).send(err + "Customer Phone number should only contain numbers.");
             return
         }
-        if(!req.body.phoneNumber || req.body.phoneNumber.length < 8)
-        {            
-            res.status(400).send(err + "Customer Phone number min length 8 required.");
-            return
+
+        var validation = CustomerDBHelper.validate(req.body); 
+        if(validation.error)
+        {
+            res.status(400).send(err + validation.error.details[0].message);
+            return;
         }
 
         let newCust = new CustomerDBHelper(req.body.custName , req.body.phoneNumber );
@@ -114,7 +84,7 @@ router.post('/addNewCustomer/', async function(req,res)
     }
     catch(ex)
     {
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     }
 });
 

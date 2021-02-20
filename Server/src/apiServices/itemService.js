@@ -35,15 +35,21 @@ router.post('/addItemTxn', async function(req,res)
         var items = await ItemDBHelper.getItems(req.body);
         
         if(!items || items.length < 1)
+        {
             res.status(404).send(err);
-        else
-        { 
-            let txn = process.posData.txns[0];
-            let itemLine = new ItemLine(items[0], parseInt(req.body.itemQty));
-            txn.AddLine(itemLine);
-            process.posData.txns[0] = txn;
-            res.send(process.posData);
+            return;
         }
+        let transaction = process.posData.txns[0];
+        if(!transaction)
+        {
+            res.status(500).send("Transaction is not defined!");
+            return;
+        }
+
+        let itemLine = new ItemLine(items[0], parseInt(req.body.itemQty));
+        transaction.AddLine(itemLine);
+        process.posData.txns[0] = transaction;
+        res.send(process.posData);
     }
     catch(ex)
     {

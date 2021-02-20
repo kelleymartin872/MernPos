@@ -52,7 +52,7 @@ class Constants
         const CouponStatus = {
             created: 0,
             reserved: 1,
-            used: 1
+            used: 2
         }
         return CouponStatus;
     }

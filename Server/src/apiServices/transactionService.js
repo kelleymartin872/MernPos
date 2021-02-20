@@ -14,20 +14,26 @@ router.post('/newTxn/', async function(req,res)
 {
   try
   {
-      let lastTxn = await TxnRecordDBHelper.getLastTxn();
-      let newTxnNmbr = 1
-      
-      if(!lastTxn)
-        newTxnNmbr =  lastTxn.txnNumber + 1;
-      
-      data = process.posData.data;
-      data.posState = Constants.PosState.signedOn;
+    let data = process.posData.data;
+    if(!data.signedIn)
+    {
+        res.status(401).send("Please signIn!");
+        return;
+    }
 
-      let newTxn = new Transaction(newTxnNmbr);
-      process.posData.data = data;
-      process.posData.txns = [newTxn];
+    let lastTxn = await TxnRecordDBHelper.getLastTxn();
+    let newTxnNmbr = 1
       
-      res.send(process.posData);
+    if(!lastTxn)
+    newTxnNmbr =  lastTxn.txnNumber + 1;
+    
+    data.posState = Constants.PosState.signedOn;
+
+    let newTxn = new Transaction(newTxnNmbr);
+    process.posData.data = data;
+    process.posData.txns = [newTxn];
+    
+    res.send(process.posData);
   }
   catch(ex)
   {
@@ -43,6 +49,11 @@ router.post('/removeLine', async function(req,res)
       let data = process.posData.data;
       let txn = process.posData.txns[0];
 
+      if(!txn)
+      {
+          res.status(500).send("Transaction is not defined!");
+          return;
+      }
       data.selectedLineNmbr = req.body.selectedLineNmbr;
       let txnLine = txn.getObjFromLineNmbr(req.body.selectedLineNmbr);
 
@@ -68,12 +79,27 @@ router.post('/changeState', async function(req,res)
     {
         let data = process.posData.data;
         let txns = process.posData.txns;
+        let targetState = req.body.state;
 
-        if(data.posState !== Constants.PosState.payState)
+        if(!targetState || targetState<0 || targetState>3)
         {
-          data.posState += 1;
-          if(txns.length > 0)
-            txns[0].posState = data.posState;
+            res.status(500).send("State Not Found");
+            return;
+        }
+        
+        if(txns.length > 0)
+        {
+            let transaction = txns[0];
+            if(!transaction)
+            {
+                res.status(500).send("Transaction is not defined!");
+                return;
+            }
+            let changeStateSuccess = transaction.changeState(targetState);
+            if(changeStateSuccess)
+            {
+                data.posState = targetState;
+            }
         }
 
         process.posData.data = data;
@@ -85,6 +111,7 @@ router.post('/changeState', async function(req,res)
     {
         res.status(500).send(ex.message);
     }
+    return;
 });
 
 router.post('/endTxn', async function(req,res)
@@ -94,6 +121,12 @@ router.post('/endTxn', async function(req,res)
         let data = process.posData.data;
         let txns = process.posData.txns;
         let transaction = txns[0];
+
+        if(!transaction)
+        {
+            res.status(500).send("Transaction is not defined!");
+            return;
+        }
 
         transaction.AddLine(new FooterLine());
         let txnDB = new TxnRecordDBHelper(transaction);

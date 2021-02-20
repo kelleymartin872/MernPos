@@ -61,7 +61,7 @@ UserDBHelper.pushMultiple(users);
 //#region "PaymentDB" 
 
 var payments = [
-    new PaymentDBHelper(100,'INR', 0 ),
+    new PaymentDBHelper(100,'INR' ),
     new PaymentDBHelper(201,'USD', 70 ),
     new PaymentDBHelper(202,'EUR', 88 ),
     new PaymentDBHelper(301,'VISA' ),

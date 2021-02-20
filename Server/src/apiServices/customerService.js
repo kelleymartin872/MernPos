@@ -37,14 +37,19 @@ router.post('/addCustomerTxn/', async function(req,res)
         let txn = process.posData.txns[0];
 
         if(!customers || customers.length < 1)
+        {
             res.status(404).send(err);
-        else
-        { 
-            let custLine = new CustomerLine(customers[0]);
-            txn.AddCustomer(custLine);
-            process.posData.txns[0] = txn;
-            res.send(process.posData);
+            return;
         }
+        if(!txn)
+        {
+            res.status(500).send("Transaction is not defined!");
+            return;
+        }
+        let custLine = new CustomerLine(customers[0]);
+        txn.AddLine(custLine);
+        process.posData.txns[0] = txn;
+        res.send(process.posData);
     }
     catch(ex)
     {

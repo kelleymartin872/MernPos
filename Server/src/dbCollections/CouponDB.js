@@ -9,7 +9,6 @@ const CouponModelSchema = new mongoose.Schema({
     lastUpdateDate: { type: Date, default: Date.now }
 });
 
-
 const CouponDBModel = mongoose.model('Coupon' , CouponModelSchema);
 
 class CouponDBHelper
@@ -21,7 +20,6 @@ class CouponDBHelper
         this.discountAmt = discountAmt;
     }
 
-    // INSERT 
     async insertToDB()
     {
         const dBObj = new CouponDBModel(this);
@@ -37,7 +35,6 @@ class CouponDBHelper
         }   
     }
     
-     
     static async getCouponByCouponNmbr(couponNmbr)            
     {
         let dbCoupons = await CouponDBModel.find();

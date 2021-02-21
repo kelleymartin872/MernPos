@@ -20,11 +20,6 @@ const LineDetail = (props) =>
 
     let txn = props.transaction;
 
-    
-
-
-
-
 
     return ( 
         <div style={{margin:"0px"}}  className="row"  >

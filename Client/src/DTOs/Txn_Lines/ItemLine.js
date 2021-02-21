@@ -1,7 +1,7 @@
 
 import TxnLine from './TxnLine'
 import DiscountLine from './DiscountLine'
-import Constants from '../../constants'
+import Constants from '../../Constants'
 
 export default class ItemLine extends TxnLine
 {

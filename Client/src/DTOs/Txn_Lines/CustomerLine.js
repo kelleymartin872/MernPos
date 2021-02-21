@@ -1,5 +1,5 @@
 import TxnLine from './TxnLine'
-import Constants from '../../constants'
+import Constants from '../../Constants'
 
 export default class CustomerLine extends TxnLine
 {

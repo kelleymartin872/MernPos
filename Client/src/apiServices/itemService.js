@@ -1,60 +1,66 @@
 
-const express = require('express'); 
-const router = express.Router();
-const ItemDBHelper = require('../dbCollections/ItemDB').ItemDBHelper;
-const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
-const Constants = require('../Constants').Constants;
+import Constants from '../Constants';
+import axios from 'axios';
 
-router.use(express.json());
-
-router.get('/getItems', async function(req,res)
+export default class ItemService
 {
-    try
+    constructor()
     {
-        const err = "Item with given data was not found!";
-        var items = await ItemDBHelper.getItems(req.body);
+        this.url = Constants.APIUrl.base + Constants.APIUrl.paymentService;
+    }
+
+
+    getItems(reqObj={})
+    {
+        /* Request structure
+        reqObj = {
+             "itemId": "111003",
+             "itemName": ""
+        };
+        */
+
+        const reqUrl = this.url + "getItems";
         
-        if(!items || items.length < 1)
-            res.status(404).send(err);
-        else
+        return Promise( function(resolve,reject)
         {
-            res.send(items);
-        }
+            axios.post(reqUrl, reqObj)
+                .then(res => {
+                    window.posData.items = res.data;
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    window.posData.error = err;
+                    console.log(err);
+                    reject(err);
+                });
+        });
     }
-    catch(ex)
-    {
-        res.status(500).send(ex.message);
-    }
-});
 
-router.post('/addItemTxn', async function(req,res)
-{
-    try
+    addItemTxn(reqObj={})
     {
-        const err = "Item with given data was not found!";
-        var items = await ItemDBHelper.getItems(req.body);
+        /* Request structure
+        reqObj = {
+            "itemId": "111002",
+            "itemName": "",
+            "itemQty": 2
+        };
+        */
+
+        const reqUrl = this.url + "addItemTxn";
         
-        if(!items || items.length < 1)
+        return Promise( function(resolve,reject)
         {
-            res.status(404).send(err);
-            return;
-        }
-        let transaction = process.posData.txns[0];
-        if(!transaction)
-        {
-            res.status(500).send("Transaction is not defined!");
-            return;
-        }
-
-        let itemLine = new ItemLine(items[0], parseInt(req.body.itemQty));
-        transaction.AddLine(itemLine);
-        process.posData.txns[0] = transaction;
-        res.send(process.posData);
+            axios.post(reqUrl, reqObj)
+                .then(res => {
+                    window.posData = res.data;
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    window.posData.error = err;
+                    console.log(err);
+                    reject(err);
+                });
+        });
     }
-    catch(ex)
-    {
-        res.status(500).send(ex.message);
-    }
-});
 
-module.exports = router;
+}

@@ -7,7 +7,7 @@ const Constants = require('../Constants').Constants;
 
 router.use(express.json());
 
-router.get('/addCouponTxn/', async function(req,res)
+router.post('/addCouponTxn/', async function(req,res)
 {
     try
     {

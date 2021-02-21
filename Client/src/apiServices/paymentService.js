@@ -1,68 +1,60 @@
 
-const express = require('express'); 
-const router = express.Router();
-const PaymentDBHelper = require('../dbCollections/PaymentDB').PaymentDBHelper;
-const PaymentLine = require('../DTOs/Txn_Lines/PaymentLine').PaymentLine;
-const Constants = require('../Constants').Constants;
+import Constants from '../Constants';
+import axios from 'axios';
 
-
-router.use(express.json());
-
-router.get('/getAllPayments/', async function(req,res)
+export default class PaymentService
 {
-    try
+    constructor()
     {
-        const err = "No Payment medias defined in DB!";
-        let payments = await PaymentDBHelper.getAllPayments();
+        this.url = Constants.APIUrl.base + Constants.APIUrl.paymentService;
+    }
+
+    getAllPayments(reqObj={})
+    {
+        /* Request structure
+        reqObj = { };
+        */
+        const reqUrl = this.url + "getAllPayments"
         
-        if(!payments || payments.length < 1)
-            res.status(404).send(err);
-        else
-        { 
-            res.send(payments);
-        }
+        return Promise(function(resolve,reject)
+        {
+            axios.post(reqUrl, reqObj)
+                .then(res => {
+                    window.posData.payments = res.data;
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    window.posData.error = err;
+                    console.log(err);
+                    reject(err);
+                });
+        });
     }
-    catch(ex)
-    {
-        res.status(500).send(ex.message);
-    }
-});
 
-
-router.post('/performPayment', async function(req,res)
-{
-    try
+    performPayment(reqObj={})
     {
-        let data = process.posData.data;
-        const err = "Payment with given ID was not found!";
-        let payment = await PaymentDBHelper.getPaymentById(req.body.paymentTypeID); 
+        /* Request structure
+        reqObj = {
+            "paymentTypeID": 100,
+            "amountPaid": 100
+        };
+        */
+
+        const reqUrl = this.url + "performPayment"
         
-        if(!payment)
+        return Promise( function(resolve,reject)
         {
-            res.status(404).send(err);
-            return;
-        }
-        if(data.posState < Constants.PosState.payState)
-        {
-            res.status(500).send("Please change State!");
-            return;
-        }
-        let transaction = process.posData.txns[0];
-        if(!transaction)
-        {
-            res.status(500).send("Transaction is not defined!");
-            return;
-        }
-        let payLine = new PaymentLine(payment , req.body.amountPaid);
-        transaction.AddLine(payLine);
-        process.posData.txns[0] = transaction;
-        res.send(process.posData);
+            axios.post(reqUrl, reqObj)
+                .then(res => {
+                    window.posData = res.data;
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    window.posData.error = err;
+                    console.log(err);
+                    reject(err);
+                });
+        });
     }
-    catch(ex)
-    {
-        res.status(500).send(ex.message);
-    }
-});
 
-
-module.exports = router;
+}

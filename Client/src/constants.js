@@ -1,5 +1,6 @@
 
-class Constants
+
+export default class Constants
 {
     
     static get PosState()
@@ -72,5 +73,3 @@ class Constants
     }
     
 }
-
-module.exports.Constants = Constants;

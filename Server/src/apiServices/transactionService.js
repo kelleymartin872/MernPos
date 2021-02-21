@@ -73,6 +73,7 @@ router.post('/removeLine', async function(req,res)
   }
 });
 
+
 router.post('/changeState', async function(req,res)
 {
     try
@@ -87,20 +88,19 @@ router.post('/changeState', async function(req,res)
             return;
         }
         
-        if(txns.length > 0)
+        if(txns.length < 1)
         {
-            let transaction = txns[0];
-            if(!transaction)
-            {
-                res.status(500).send("Transaction is not defined!");
-                return;
-            }
-            let changeStateSuccess = transaction.changeState(targetState);
-            if(changeStateSuccess)
-            {
-                data.posState = targetState;
-            }
+            res.status(500).send("Transaction is not defined!");
+            return;
         }
+        let transaction = txns[0];
+        if(!transaction)
+        {
+            res.status(500).send("Transaction is not defined!");
+            return;
+        }
+
+        transaction.changeState(targetState);
 
         process.posData.data = data;
         process.posData.txns = txns;
@@ -142,44 +142,6 @@ router.post('/endTxn', async function(req,res)
     {
         res.status(500).send(ex.message);
     }
-});
-
-
-router.post('/changeState', async function(req,res)
-{
-    try
-    {
-        let data = process.posData.data;
-        let txns = process.posData.txns;
-        let targetState = req.body.state;
-
-        if(!targetState || targetState<0 || targetState>3)
-        {
-            res.status(500).send("State Not Found");
-            return;
-        }
-        
-        if(txns.length > 0)
-        {
-            let transaction = txns[0];
-            if(!transaction)
-            {
-                res.status(500).send("Transaction is not defined!");
-                return;
-            }
-            transaction.changeState(targetState);
-        }
-
-        process.posData.data = data;
-        process.posData.txns = txns;
-        
-        res.send(process.posData);
-    }
-    catch(ex)
-    {
-        res.status(500).send(ex.message);
-    }
-    return;
 });
 
 module.exports = router;

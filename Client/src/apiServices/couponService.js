@@ -1,39 +1,36 @@
 
-const express = require('express'); 
-const router = express.Router();
-const CouponDBHelper = require('../dbCollections/CouponDB').CouponDBHelper;
-const CouponLine = require('../DTOs/Txn_Lines/CouponLine').CouponLine;
-const Constants = require('../Constants').Constants;
+import Constants from '../Constants';
+import axios from 'axios';
 
-router.use(express.json());
-
-router.get('/addCouponTxn/', async function(req,res)
+export default class CustomerService
 {
-    try
+    constructor()
     {
-        const err = "Coupon with given Coupon number was not found!";
-        var coupon = await CouponDBHelper.getCouponByCouponNmbr(req.body.couponNmbr);
+        this.url = Constants.APIUrl.base + Constants.APIUrl.couponService;
+    }
+
+    addCouponTxn(reqObj={})
+    {
+        /* Request structure
+        reqObj = {
+            "couponNmbr": "12341234"
+        };
+        */
+
+        const reqUrl = this.url + "addCouponTxn";
         
-        if(!coupon)
+        return Promise( function(resolve,reject)
         {
-            res.status(404).send(err);
-            return;
-        }
-       
-        if(!txn)
-        {
-            res.status(500).send("Ttansaction is not defined!");
-            return;
-        }
-
-        let coupLine = new CustomerLine(coupon);
-        txn.AddLine(coupLine);
-        process.posData.txns[0] = txn;
-        res.send(process.posData);
+            axios.post(reqUrl, reqObj)
+                .then(res => {
+                    window.posData = res.data;
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    window.posData.error = err;
+                    console.log(err);
+                    reject(err);
+                });
+        });
     }
-    catch(ex)
-    {
-        res.status(500).send(ex.message);
-    }
-});
-
+}

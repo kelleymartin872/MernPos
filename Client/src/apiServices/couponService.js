@@ -37,5 +37,3 @@ router.get('/addCouponTxn/', async function(req,res)
     }
 });
 
-
-module.exports = router;

@@ -188,11 +188,12 @@ class Transaction
         this.txnList.splice(index,1);
     }
 
-    changeState(state)
+    changeState(targetState)
     {
-        if(this.posState !== state)
+        if(this.posState !== targetState)
         {
-            this.posState = state;
+            this.posState = targetState;
+            process.posData.data.posState = targetState;
             this.refreshTxn();
             return true;
         }

@@ -6,6 +6,7 @@ const home = require('./src/apiServices/home');
 const userService = require('./src/apiServices/userService');
 const itemService = require('./src/apiServices/itemService');
 const customerService = require('./src/apiServices/customerService');
+const couponService = require('./src/apiServices/couponService');
 const paymentService = require('./src/apiServices/paymentService');
 const transactionService = require('./src/apiServices/transactionService');
 
@@ -34,6 +35,7 @@ app.use(function(req, res, next) {
 
 app.use('/api/userService', userService);                   //direct to user api service
 app.use('/api/itemService', itemService);                   //direct to items api service
+app.use('/api/couponService', couponService);               //direct to coupon api service
 app.use('/api/customerService', customerService);           //direct to customers api service
 app.use('/api/paymentService', paymentService);             //direct to payments api service
 app.use('/api/transactionService', transactionService);     //direct to transaction api service

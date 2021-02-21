@@ -79,7 +79,6 @@ export default class Transaction
         return obj;
     }
 
-
     fillItems()
     {
         let items = [

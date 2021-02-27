@@ -8,6 +8,7 @@ import Constants from '../../Constants';
 const TxnList = (props) => 
 {
     let clientData =  props.clientData;
+    let serverData =  props.serverData;
     let transaction =  props.transaction;
 
     const rightAlign={
@@ -36,7 +37,7 @@ const TxnList = (props) =>
                 renderTxn.push(    
                     <div key={txnLine.lineNumber} style={(txnLine.isSelected ? isSelected: isNotSelected)} 
                             onClick={() => props.onSelectLine(txnLine.lineNumber)}  className="row">
-                        <div className="col-12" style={{textAlign:'center',fontWeight:'bold'}} > {this.state.txn.header.headerDesc} </div>
+                        <div className="col-12" style={{textAlign:'center',fontWeight:'bold'}} > {txnLine.description} </div>
                         <hr className="col-10" style={{margin:"5px"}} />
                     </div>
                 );
@@ -51,7 +52,7 @@ const TxnList = (props) =>
                             onClick={() => props.onSelectLine(txnLine.lineNumber)}  className="row">
                         <div className="col-12"> 
                             <span style={{fontWeight:'bold'}} > Customer : </span>
-                            {this.state.txn.customer.custName} 
+                            {txnLine.custName} 
                         </div>
                         <hr className="col-10" style={{margin:"5px"}} />
                     </div>

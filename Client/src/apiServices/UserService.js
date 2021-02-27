@@ -1,6 +1,6 @@
 
 import Constants from '../Constants';
-import axios from 'axios';
+import ApiService from './ApiService';
 
 export default class UserService
 {
@@ -17,22 +17,9 @@ export default class UserService
             "password":"Tejas2304"
         };
         */
-
-        const reqUrl = this.url + "signIn";
-        
-        return new Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let reqUrl = this.url + "signIn";
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
     signOut(reqObj={})
@@ -40,22 +27,9 @@ export default class UserService
         /* Request structure 
         reqObj = { };
         */
-
-        const reqUrl = this.url + "signOut";
-        
-        return new Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let reqUrl = this.url + "signOut";
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
 

@@ -22,7 +22,7 @@ router.post('/addCouponTxn/', async function(req,res)
        
         if(!txn)
         {
-            res.status(500).send("Ttansaction is not defined!");
+            res.status(500).send("Transaction is not defined!");
             return;
         }
 

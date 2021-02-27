@@ -1,6 +1,7 @@
 import React  from 'react';
 
-const ItemLineComponent = (props) => {
+const ItemLineComponent = (props) => 
+{
     
     let item = props.item;
     const lineStyle={
@@ -15,9 +16,9 @@ const ItemLineComponent = (props) => {
         textAlign: "right"
     };
     
-      let returnRender = [];
+    let render = [];
 
-    returnRender.push ( 
+    render.push ( 
         <div key={item.lineNumber} style={lineStyle} className="row" >
             <div className="col-5"> {item.itemName} </div>
             <div className="col-1"> {item.itemQty} </div>
@@ -30,7 +31,7 @@ const ItemLineComponent = (props) => {
     
     if(item.discount && item.discount.discID )
     {
-        returnRender.push ( 
+        render.push ( 
             <div key={item.discount.discID} style={discLineStyle} className="row" >
                 <div className="col-8"> {item.discount.discDesc} </div>
                 <div className="col-4" style={rightAlign}> {item.discount.discount} </div>
@@ -38,7 +39,7 @@ const ItemLineComponent = (props) => {
         );
     }
 
-    return returnRender;
+    return render;
 }
 
 export default ItemLineComponent;

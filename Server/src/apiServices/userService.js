@@ -51,23 +51,32 @@ router.post('/signIn', async function(req,res)
 {
     try
     {
+        let data = process.posData.data;
+        data.errorMsg = "";
+        data.userEmail = "";
+        data.signedUp = false;
+        data.signedIn = false;
+        data.posState = Constants.PosState.signedOff;
+
         const msg = "Invalid Email or Password!";
-        var user = await UserDBHelper.getUsersByEmail(req.body.email);
+        const user = await UserDBHelper.getUsersByEmail(req.body.email);
         if(!user)
         {    
-            res.status(400).send(msg);
-            return;
-        }
-        const loginSuccess = await bcrypt.compare(req.body.password , user.password);
-        if(!loginSuccess)
-        {    
-            res.status(400).send(msg);
+            data.errorMsg = msg;
+            res.status(400).send(process.posData);
             return;
         }
 
-        data = process.posData.data;
         data.userEmail = user.email;
-        data.signedUp = false;
+
+        const loginSuccess = await bcrypt.compare(req.body.password , user.password);
+        if(!loginSuccess)
+        {    
+            data.errorMsg = msg;
+            res.status(400).send(process.posData);
+            return;
+        }
+
         data.signedIn = true;
         data.posState = Constants.PosState.signedOn;
 
@@ -89,17 +98,13 @@ router.post('/signOut', async function(req,res)
     {
         data = process.posData.data;
 
-        if(data.posState === Constants.PosState.signedOn &&
-            data.signedIn === true)
-        {
-            data.userEmail = "";
-            data.signedUp = false;
-            data.signedIn = false;
-            data.posState = Constants.PosState.signedOff;
-            
-            process.posData.data = data;
-            process.posData.txns = [];
-        }
+        data.userEmail = "";
+        data.signedUp = false;
+        data.signedIn = false;
+        data.posState = Constants.PosState.signedOff;
+        
+        process.posData.data = data;
+        process.posData.txns = [];
         
         res.send(process.posData);
 

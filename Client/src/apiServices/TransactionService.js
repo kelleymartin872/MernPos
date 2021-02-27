@@ -1,6 +1,6 @@
 
 import Constants from '../Constants';
-import axios from 'axios';
+import ApiService from './ApiService';
 
 export default class UserService
 {
@@ -15,20 +15,8 @@ export default class UserService
         reqObj = { };
         */
         const reqUrl = this.url + "newTxn";
-        
-        return new Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
     removeLine(reqObj={})
@@ -40,20 +28,8 @@ export default class UserService
         */
        
         const reqUrl = this.url + "removeLine";
-        
-        return new Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
     changeState(reqObj={})
@@ -65,20 +41,8 @@ export default class UserService
         */
 
         const reqUrl = this.url + "changeState";
-        
-        return new Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
     endTxn(reqObj={})
@@ -88,20 +52,8 @@ export default class UserService
         */
 
         const reqUrl = this.url + "endTxn";
-        
-        return new Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
     
 }

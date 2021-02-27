@@ -27,7 +27,7 @@ export default class CustomerService
                     resolve(res.data);
                 })
                 .catch(err => {
-                    window.posData.error = err;
+                    window.posData.error = err.response.data;
                     console.log(err);
                     reject(err);
                 });

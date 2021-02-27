@@ -4,19 +4,21 @@ import React, { Component } from 'react';
 import TxnList from './Txn_components/TxnList.component';
 import Header from './Header.component';
 import LineDetail from './LineDetail.component';
+import SignInForm from './Form_omponents/SignInForm.component';
 import MainMenu from './MainMenu.component';
 import Footer from './Footer.component';
 import Transaction from '../DTOs/Transaction'
-
+import Constants from '../Constants' 
 import { withResizeDetector } from 'react-resize-detector';
 
+import TransactionService from '../apiServices/TransactionService';
 
 class MainComponent extends Component 
 {
     mobileWidth = 765;
     state = { 
         clientData : {width : window.innerWidth, height:window.innerHeight, isMobile : window.innerWidth < this.mobileWidth },
-        serverData : window.posData
+        serverData : window.serverData.data
     };
 
     makeSelection = lineNumber => 
@@ -63,6 +65,15 @@ class MainComponent extends Component
         this.setState({txn:this.txn});
     }
 
+    deleteItem = (item) => {
+        let items = this.state.txn.itemList;
+        items.splice(items.indexOf(item), 1);
+
+        this.txn.itemList = items;
+        this.txn.refreshTotal();
+        this.setState({txn:this.txn});
+    }
+
 
     componentDidUpdate(prevProps) 
     {
@@ -76,10 +87,23 @@ class MainComponent extends Component
         }
     }
 
+    signInSuccess = async() => 
+    {
+        console.log("signOnSuccess");
+        
+        let txnService = new TransactionService();
+        await txnService.newTxn();
+        this.setState({
+            serverData : window.serverData.data,
+            transaction : window.serverData.txns[0]
+        });
+
+    };
 
     render() 
-    {
-        let height = this.state.data.height;
+    { 
+        
+        let height = this.state.clientData.height;
         let mainStyle={
             fontSize:20
         };
@@ -103,13 +127,30 @@ class MainComponent extends Component
         };
 
         let RightSideStyle = {width:"50%",padding:"0px"}
- 
-        if(this.state.data.isMobile) 
+
+        let signInStyle = {
+            backgroundColor:"#303841",
+            height:"100vh"
+        }
+        
+        
+        if(this.state.clientData.isMobile) 
         {
             RightSideStyle.display = "none";
             txnListStyle.width = "100%";
             TotalPriceStyle.width = "100%";
             txnListStyle.marginBottom = "10vh";
+        }
+
+        if(this.state.serverData.posState === Constants.PosState.signedOff) 
+        {
+            return (
+                <div style={signInStyle}  >
+                    <SignInForm
+                        signInSuccess = {this.signInSuccess} 
+                    />
+                </div> 
+            );
         }
 
         return ( 
@@ -121,21 +162,24 @@ class MainComponent extends Component
                         <TxnList onSelectLine={this.makeSelection} 
                             clientData={this.state.clientData} 
                             serverData={this.state.serverData} 
-                            transaction={this.state.serverData.txns[0]} /> 
+                            transaction={this.state.transaction} /> 
                  
                     </div>
 
                     <div style={TotalPriceStyle} >
                         <span style={{fontSize:"30px",fontWeight:'bold'}} > Final Price :</span> 
-                        <span style={{fontSize:"30px",float:'right'}} > &#x20b9; {this.state.Txn.finalPrice} </span> 
+                        <span style={{fontSize:"30px",float:'right'}} > &#x20b9; {this.state.transaction.finalPrice} </span> 
                     </div>
 
                     <div style={RightSideStyle} >
                         <LineDetail onSelectLine={this.makeSelection} 
                             clientData={this.state.clientData} 
                             serverData={this.state.serverData} 
-                            transaction={this.state.serverData.txns[0]} /> 
-                        <MainMenu /> 
+                            transaction={this.state.transaction}  /> 
+                        <MainMenu  
+                            clientData={this.state.clientData} 
+                            serverData={this.state.serverData} 
+                            transaction={this.state.transaction}  /> 
                     </div>
                 </div>
 
@@ -144,7 +188,6 @@ class MainComponent extends Component
         );
 
     }
-
 
 }
 

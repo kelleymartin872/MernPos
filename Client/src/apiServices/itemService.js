@@ -23,15 +23,14 @@ export default class ItemService
         
         return Promise( function(resolve,reject)
         {
-            axios.post(reqUrl, reqObj)
+            axios.get(reqUrl, reqObj)
                 .then(res => {
                     window.posData.items = res.data;
                     resolve(res.data);
                 })
                 .catch(err => {
-                    window.posData.error = err;
-                    console.log(err);
-                    reject(err);
+                    window.posData.error = err.response.data;
+                    resolve(err.response.data);
                 });
         });
     }
@@ -56,7 +55,7 @@ export default class ItemService
                     resolve(res.data);
                 })
                 .catch(err => {
-                    window.posData.error = err;
+                    window.posData.error = err.response.data;
                     console.log(err);
                     reject(err);
                 });

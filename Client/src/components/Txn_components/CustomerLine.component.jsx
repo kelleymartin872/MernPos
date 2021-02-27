@@ -1,6 +1,7 @@
 import React  from 'react';
 
-const CustomerLineComponent = (props) => {
+const CustomerLineComponent = (props) => 
+{
     
     let customer = props.customer;
 

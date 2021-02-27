@@ -1,11 +1,10 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class Header extends Component 
+const Header = (props) => 
 {
-    state = {  }
-
-    mainStyle={ 
+    
+    const mainStyle={ 
         width: "100%",
         margin:0,
         padding:0,
@@ -14,7 +13,7 @@ export default class Header extends Component
         color:"white"
     };
 
-    headingStyle={ 
+    const headingStyle={ 
         fontWeight:500,
         display: "flex",
         justifyContent: "center",
@@ -22,28 +21,31 @@ export default class Header extends Component
         fontSize:"30px",
     };
     
-    btnStyle={ 
+    const btnStyle={ 
         margin:"10px px",
         backgroundColor: "#303841",
         color:"white"
     };
 
-    render() 
-    {
-        return ( 
-            <div style={{margin:"0px"}}  className="row"  >
-                <div style={{padding:"0px"}}  className="col-12" >
-                    <div className="row" style={this.mainStyle}>
-                        <button  className="col-2 btn"  style={this.btnStyle}>Menu</button>
-                        <div className="col-8" style={this.headingStyle} >
-                            MERNPOS
-                        </div>
-                        <button className="col-2 btn" style={this.btnStyle}  >Sign Out</button>
+    return ( 
+        <div style={{margin:"0px"}}  className="row"  >
+            <div style={{padding:"0px"}}  className="col-12" >
+                <div className="row" style={mainStyle}>
+                    <button  className="col-2 btn"  style={btnStyle}>
+                        Menu
+                    </button>
+                    <div className="col-8" style={headingStyle} >
+                        MERNPOS
                     </div>
-                    </div>
+                    <button className="col-2 btn" style={btnStyle} >
+                        Sign Out
+                    </button>
                 </div>
-        );
-    }
+            </div>
+        </div>
+    );
 }
 
 
+
+export default Header;

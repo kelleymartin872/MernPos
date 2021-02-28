@@ -58,6 +58,11 @@ class CustomerDBHelper
 
     static validate(cust) 
     {
+        if(!/^\d+$/.test(cust.phoneNumber))
+        {
+            return {error : "Customer Phone number should only contain numbers."};
+        }
+
         const schema = Joi.object({
             custName : Joi.string().min(3).required(),
             phoneNumber : Joi.string().min(8).required().email()

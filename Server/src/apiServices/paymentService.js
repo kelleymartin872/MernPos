@@ -12,20 +12,28 @@ router.get('/getAllPayments/', async function(req,res)
 {
     try
     {
-        const err = "No Payment medias defined in DB!";
+        process.posData.data.flowSuccess = false;
         let payments = await PaymentDBHelper.getAllPayments();
         
         if(!payments || payments.length < 1)
-            res.status(404).send(err);
-        else
-        { 
-            res.send(payments);
+        {
+            process.posData.data.errorMsg = "No Payment medias defined in DB!";
+            res.status(404).send(process.posData);
+            return;
         }
+            
+        process.posData.data.payments = payments;
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+        res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 
@@ -33,35 +41,44 @@ router.post('/performPayment', async function(req,res)
 {
     try
     {
-        let data = process.posData.data;
-        const err = "Payment with given ID was not found!";
+        process.posData.data.flowSuccess = false;
         let payment = await PaymentDBHelper.getPaymentById(req.body.paymentTypeID); 
         
         if(!payment)
         {
-            res.status(404).send(err);
+            process.posData.data.errorMsg = "Payment with given ID was not found!";
+            res.status(404).send(process.posData);
             return;
         }
         if(data.posState < Constants.PosState.payState)
         {
-            res.status(500).send("Please change State!");
+            process.posData.data.errorMsg = "Please change State!";
+            res.status(500).send(process.posData);
             return;
         }
         let transaction = process.posData.txns[0];
         if(!transaction)
         {
-            res.status(500).send("Transaction is not defined!");
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            res.status(500).send(process.posData);
             return;
         }
+
         let payLine = new PaymentLine(payment , req.body.amountPaid);
         transaction.AddLine(payLine);
         process.posData.txns[0] = transaction;
+
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
         res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 

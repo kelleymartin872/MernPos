@@ -14,6 +14,11 @@ router.post('/signUp', async function(req,res)
 { 
     try
     {
+        let data = process.posData.data;
+
+        data.flowSuccess = false;
+        data.posState = Constants.PosState.signedOff;
+
         var user = await UserDBHelper.getUsersByEmail(req.body.email);
         if(user)
         {    
@@ -29,11 +34,8 @@ router.post('/signUp', async function(req,res)
         let newUser = UserDBHelper(req.body.email, req.body.password ,req.body.name);
         await UserDBHelper.pushMultiple([newUser]);
         
-        data = process.posData.data;
         data.userEmail = newUser.email;
-        data.signedUp = true;
-        data.signedIn = false;
-        data.posState = Constants.PosState.signedOn;
+        data.flowSuccess = true;
 
         process.posData.data = data;
         process.posData.txns = [];
@@ -42,8 +44,11 @@ router.post('/signUp', async function(req,res)
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 
@@ -52,10 +57,10 @@ router.post('/signIn', async function(req,res)
     try
     {
         let data = process.posData.data;
+        
         data.errorMsg = "";
         data.userEmail = "";
-        data.signedUp = false;
-        data.signedIn = false;
+        data.flowSuccess = false;
         data.posState = Constants.PosState.signedOff;
 
         const msg = "Invalid Email or Password!";
@@ -77,7 +82,7 @@ router.post('/signIn', async function(req,res)
             return;
         }
 
-        data.signedIn = true;
+        data.flowSuccess = true;
         data.posState = Constants.PosState.signedOn;
 
         process.posData.data = data;
@@ -87,20 +92,22 @@ router.post('/signIn', async function(req,res)
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
-
+    return;
 });
 
 router.post('/signOut', async function(req,res)
 {
     try
     {
-        data = process.posData.data;
+        let data = process.posData.data;
 
         data.userEmail = "";
-        data.signedUp = false;
-        data.signedIn = false;
+        data.flowSuccess = true;
+        data.errorMsg = "";
         data.posState = Constants.PosState.signedOff;
         
         process.posData.data = data;
@@ -111,8 +118,11 @@ router.post('/signOut', async function(req,res)
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 module.exports = router;

@@ -11,30 +11,41 @@ router.post('/addCouponTxn/', async function(req,res)
 {
     try
     {
-        const err = "Coupon with given Coupon number was not found!";
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = false;
+
         var coupon = await CouponDBHelper.getCouponByCouponNmbr(req.body.couponNmbr);
         
         if(!coupon)
         {
-            res.status(404).send(err);
+            process.posData.data.errorMsg = "Coupon with given Coupon number was not found!";
+            res.status(404).send(process.posData);
             return;
         }
        
         if(!txn)
         {
-            res.status(500).send("Transaction is not defined!");
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            res.status(500).send(process.posData);
             return;
         }
 
         let coupLine = new CustomerLine(coupon);
         txn.AddLine(coupLine);
         process.posData.txns[0] = txn;
+
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+
         res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 

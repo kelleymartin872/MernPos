@@ -11,20 +11,29 @@ router.get('/getCustomers/', async function(req,res)
 {
     try
     {
-        const err = "Customer with given Data was not found!";
+        process.posData.data.flowSuccess = false;
+
         var customers = await CustomerDBHelper.getCustomers(req.body);
         
         if(!customers || customers.length < 1)
-            res.status(404).send(err);
-        else
-        { 
-            res.send(customers);
+        {
+            process.posData.data.errorMsg = "Customer with given Data was not found!";
+            res.status(404).send(process.posData);
+            return;
         }
+
+        process.posData.data.customers = customers;
+        process.posData.data.flowSuccess = true;
+        process.posData.data.errorMsg = "";
+        res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 
@@ -32,29 +41,40 @@ router.post('/addCustomerTxn/', async function(req,res)
 {
     try
     {
-        const err = "Customer with given Data was not found!";
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = false;
+
         let customers = await CustomerDBHelper.getCustomers(req.body);
         let txn = process.posData.txns[0];
 
         if(!customers || customers.length < 1)
         {
-            res.status(404).send(err);
+            process.posData.data.errorMsg = "Customer with given Data was not found!";
+            res.status(404).send(process.posData);
             return;
         }
         if(!txn)
         {
-            res.status(500).send("Transaction is not defined!");
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            res.status(500).send(process.posData);
             return;
         }
+        
         let custLine = new CustomerLine(customers[0]);
         txn.AddLine(custLine);
         process.posData.txns[0] = txn;
+
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
         res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 
@@ -62,18 +82,16 @@ router.post('/addNewCustomer/', async function(req,res)
 {
     try
     {
-        const err = "Error! ";
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = false;
+        
         let customer = await CustomerDBHelper.getCustomerByPhoneNumber(req.body.phoneNumber);
         
         if(customer)
-        {            
-            res.status(400).send(err + "Customer with given phone number already exists.");
-            return
-        }
-        if(!/^\d+$/.test(req.body.phoneNumber))
-        {            
-            res.status(400).send(err + "Customer Phone number should only contain numbers.");
-            return
+        {
+            process.posData.data.errorMsg = "Customer with given phone number already exists.";
+            res.status(400).send(process.posData);
+            return;
         }
 
         var validation = CustomerDBHelper.validate(req.body); 
@@ -84,13 +102,19 @@ router.post('/addNewCustomer/', async function(req,res)
         }
 
         let newCust = new CustomerDBHelper(req.body.custName , req.body.phoneNumber );
-        newCust.insertToDB()
-        res.send("New Customer has been added to DB");
+        newCust.insertToDB();
+
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+        res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 module.exports = router;

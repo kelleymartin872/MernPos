@@ -1,23 +1,28 @@
 
 import React, { Component } from 'react';
+import { withResizeDetector } from 'react-resize-detector';
 
+import Transaction from '../DTOs/Transaction'
+import Constants from '../Constants' 
+
+import SignInForm from './Popup_Components/SignInForm.component';
+import Offline from './Popup_Components/Offline.component';
 import TxnList from './Txn_components/TxnList.component';
 import Header from './Header.component';
 import LineDetail from './LineDetail.component';
-import SignInForm from './Form_omponents/SignInForm.component';
 import MainMenu from './MainMenu.component';
 import Footer from './Footer.component';
-import Transaction from '../DTOs/Transaction'
-import Constants from '../Constants' 
-import { withResizeDetector } from 'react-resize-detector';
 
 import TransactionService from '../apiServices/TransactionService';
+import UserService from '../apiServices/UserService';
+import loadingGif from '../images/loading.gif'; 
 
 class MainComponent extends Component 
 {
     mobileWidth = 765;
+
     state = { 
-        clientData : {width : window.innerWidth, height:window.innerHeight, isMobile : window.innerWidth < this.mobileWidth },
+        clientData : {width:window.innerWidth, height:window.innerHeight, isMobile:window.innerWidth < this.mobileWidth , isLoading:false},
         serverData : window.serverData.data
     };
 
@@ -25,12 +30,12 @@ class MainComponent extends Component
     {
         let clientData = this.state.clientData;
         let serverData = this.state.serverData;
-        let txn = serverData.txns[0];
+        let transaction = serverData.txns[0];
 
-        Transaction.selectLine(txn, lineNumber);
+        Transaction.selectLine(transaction, lineNumber);
 
         clientData.selectedLineNmbr = lineNumber;
-        serverData.txns[0] = txn;
+        serverData.txns[0] = transaction;
 
         this.setState({ 
             clientData : clientData,
@@ -74,7 +79,6 @@ class MainComponent extends Component
         this.setState({txn:this.txn});
     }
 
-
     componentDidUpdate(prevProps) 
     {
         const { width, height } = this.props;
@@ -87,22 +91,41 @@ class MainComponent extends Component
         }
     }
 
-    signInSuccess = async() => 
+    refreshUI(clientData = this.state.clientData)
     {
-        console.log("signOnSuccess");
-        
-        let txnService = new TransactionService();
-        await txnService.newTxn();
-        this.setState({
-            serverData : window.serverData.data,
-            transaction : window.serverData.txns[0]
-        });
+        let serverData = {};
+        if(window.serverData.data)
+            serverData = window.serverData.data
 
+        this.setState({
+            clientData : clientData,
+            serverData : serverData
+        });
+    }
+
+    getNewTransaction = async() => 
+    {
+        let service = new TransactionService();
+        await service.newTxn();
+
+        
+        this.refreshUI();
+    };
+
+    signOff = async() => 
+    {
+        this.state.clientData.isLoading = true;
+        this.refreshUI(this.state.clientData);
+
+        let service = new UserService();
+        await service.signOut();
+        
+        this.state.clientData.isLoading = false;
+        this.refreshUI(this.state.clientData);
     };
 
     render() 
     { 
-        
         let height = this.state.clientData.height;
         let mainStyle={
             fontSize:20
@@ -128,7 +151,7 @@ class MainComponent extends Component
 
         let RightSideStyle = {width:"50%",padding:"0px"}
 
-        let signInStyle = {
+        let modalStyle = {
             backgroundColor:"#303841",
             height:"100vh"
         }
@@ -142,13 +165,21 @@ class MainComponent extends Component
             txnListStyle.marginBottom = "10vh";
         }
 
+        if(this.state.serverData.isOffline) 
+        {
+            return (
+
+                <div style={modalStyle}  >
+                    <Offline onRefresh = {this.signOff} isLoading={this.state.clientData.isLoading} />
+                </div> 
+            );
+        }
+
         if(this.state.serverData.posState === Constants.PosState.signedOff) 
         {
             return (
-                <div style={signInStyle}  >
-                    <SignInForm
-                        signInSuccess = {this.signInSuccess} 
-                    />
+                <div style={modalStyle}  >
+                    <SignInForm signInSuccess = {this.getNewTransaction} />
                 </div> 
             );
         }
@@ -185,6 +216,7 @@ class MainComponent extends Component
 
                 <Footer/> 
             </div>
+
         );
 
     }

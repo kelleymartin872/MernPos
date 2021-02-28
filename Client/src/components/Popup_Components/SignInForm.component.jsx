@@ -52,7 +52,7 @@ class SignInForm extends Form
         let render = [];
         render.push(
             <div key="modal-header" className="modal-header">
-                <h3 className="modal-title">Sign In</h3>
+                <h3 className="modal-title" style={{margin:"auto"}}>Sign In</h3>
             </div>
         );
 

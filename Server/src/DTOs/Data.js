@@ -5,8 +5,7 @@ class Data
 {
     constructor()
     {
-        this.signedUp = false;
-        this.signedIn = false;
+        this.flowSuccess = false;
         this.userEmail = "";
         this.selectedLineNmbr= -1;
         this.posState= Constants.PosState.signedOff;

@@ -25,14 +25,26 @@ export default class ApiService
                     axios.get(reqUrl, reqObj)
                         .then(res => {
                             window.serverData = res.data;
-                            resolve(res.data);
+                            resolve(window.serverData);
                         })
                         .catch(err => {
-                            window.serverData = err.response.data;
-                            resolve(err.response.data);
-                        });
+                            if(err.response && err.response.data)
+                                window.serverData = err.response.data;
+                            else
+                            {
+                                window.serverData = {
+                                    data:
+                                    {
+                                        isOffline:true,
+                                        errorMsg:"Server is Unreachable!"
+                                    }
+                                };
+                            }
+                            resolve(window.serverData);
+                    });
                 });
             }
+
             case "POST":
             { 
                 return new Promise( function(resolve,reject)
@@ -40,41 +52,22 @@ export default class ApiService
                     axios.post(reqUrl, reqObj)
                         .then(res => {
                             window.serverData = res.data;
-                            resolve(res.data);
+                            resolve(window.serverData);
                         })
                         .catch(err => {
-                            window.serverData = err.response.data;
-                            resolve(err.response.data);
-                        });
-                });
-            }
-            case "PUT":
-            { 
-                return new Promise( function(resolve,reject)
-                {
-                    axios.put(reqUrl, reqObj)
-                        .then(res => {
-                            window.serverData = res.data;
-                            resolve(res.data);
-                        })
-                        .catch(err => {
-                            window.serverData = err.response.data;
-                            resolve(err.response.data);
-                        });
-                });
-            }
-            case "DELETE":
-            { 
-                return new Promise( function(resolve,reject)
-                {
-                    axios.delete(reqUrl, reqObj)
-                        .then(res => {
-                            window.serverData = res.data;
-                            resolve(res.data);
-                        })
-                        .catch(err => {
-                            window.serverData = err.response.data;
-                            resolve(err.response.data);
+                            if(err.response && err.response.data)
+                                window.serverData = err.response.data;
+                            else
+                            {
+                                window.serverData = {
+                                    data:
+                                    {
+                                        isOffline:true,
+                                        errorMsg:"Server is Unreachable!"
+                                    }
+                                };
+                            }
+                            resolve(window.serverData);
                         });
                 });
             }

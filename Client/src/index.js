@@ -11,5 +11,5 @@ window.serverData = {};
 let userService = new UserService();
 userService.signOut().then(res =>
 {
-    ReactDOM.render( <Main/>, document.getElementById("root"));
+    ReactDOM.render( <Main />, document.getElementById("root"));
 });

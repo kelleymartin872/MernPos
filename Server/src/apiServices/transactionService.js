@@ -12,65 +12,83 @@ router.use(express.json());
 
 router.post('/newTxn/', async function(req,res)
 {
-  try
-  {
-    let data = process.posData.data;
-    if(!data.signedIn)
+    try
     {
-        res.status(401).send("Please signIn!");
-        return;
+        process.posData.data.flowSuccess = false;
+
+        if(process.posData.data.posState == Constants.PosState.signedOff)
+        {
+            process.posData.data.errorMsg = "Please signIn!";
+            res.status(401).send(process.posData);
+            return;
+        }
+
+        let lastTxn = await TxnRecordDBHelper.getLastTxn();
+        let newTxnNmbr = 1
+        
+        if(!lastTxn)
+            newTxnNmbr =  lastTxn.txnNumber + 1;
+        
+        process.posData.data.posState = Constants.PosState.signedOn;
+
+        let newTxn = new Transaction(newTxnNmbr);
+        process.posData.data = data;
+        process.posData.txns = [newTxn];
+        
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+        res.send(process.posData);
     }
-
-    let lastTxn = await TxnRecordDBHelper.getLastTxn();
-    let newTxnNmbr = 1
-      
-    if(!lastTxn)
-    newTxnNmbr =  lastTxn.txnNumber + 1;
-    
-    data.posState = Constants.PosState.signedOn;
-
-    let newTxn = new Transaction(newTxnNmbr);
-    process.posData.data = data;
-    process.posData.txns = [newTxn];
-    
-    res.send(process.posData);
-  }
-  catch(ex)
-  {
-      res.status(500).send(ex.message);
-  }
-
+    catch(ex)
+    {
+        process.posData.data.errorMsg = ex.message;
+        process.posData.data.flowSuccess = false;
+        res.status(500).send(process.posData);
+    }
+    return;
 });
 
 router.post('/removeLine', async function(req,res)
 {
   try
   {
-      let data = process.posData.data;
-      let txn = process.posData.txns[0];
+        let data = process.posData.data;
+        let txn = process.posData.txns[0];
+        process.posData.data.flowSuccess = false;
 
-      if(!txn)
-      {
-          res.status(500).send("Transaction is not defined!");
-          return;
-      }
-      data.selectedLineNmbr = req.body.selectedLineNmbr;
-      let txnLine = txn.getObjFromLineNmbr(req.body.selectedLineNmbr);
+        if(!txn)
+        {
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            res.status(500).send(process.posData);
+            return;
+        }
+        data.selectedLineNmbr = req.body.selectedLineNmbr;
+        let txnLine = txn.getObjFromLineNmbr(req.body.selectedLineNmbr);
+        if(!txnLine)
+        {
+            process.posData.data.errorMsg = "Line with given lineNumber was not found!";
+            res.status(404).send(process.posData);
+            return;
+        }
 
-      if( txnLine.lineTypeID === Constants.TxnLineType.ItemLine ||
-          txnLine.lineTypeID === Constants.TxnLineType.CustomerLine ||
-          txnLine.lineTypeID === Constants.TxnLineType.CouponLine  )
-          txn.RemoveLine(txnLine);
+        if( txnLine.lineTypeID === Constants.TxnLineType.ItemLine ||
+            txnLine.lineTypeID === Constants.TxnLineType.CustomerLine ||
+            txnLine.lineTypeID === Constants.TxnLineType.CouponLine  )
+        {
+            txn.RemoveLine(txnLine);
+        }
       
-      process.posData.data = data;
-      process.posData.txns[0] = txn;
-      
-      res.send(process.posData);
-  }
-  catch(ex)
-  {
-      res.status(500).send(ex.message);
-  }
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+        res.send(process.posData);
+    }
+    catch(ex)
+    {
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
+    }
+    return;
 });
 
 
@@ -78,41 +96,44 @@ router.post('/changeState', async function(req,res)
 {
     try
     {
-        let data = process.posData.data;
-        let txns = process.posData.txns;
+        process.posData.data.flowSuccess = false;
         let targetState = req.body.state;
 
         if(!targetState || targetState<0 || targetState>3)
         {
-            res.status(500).send("State Not Found");
+            process.posData.data.errorMsg = "State Not Found";
+            res.status(500).send(process.posData);
             return;
         }
-        
         if(txns.length < 1)
         {
-            res.status(500).send("Transaction is not defined!");
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            res.status(500).send(process.posData);
             return;
         }
         let transaction = txns[0];
         if(!transaction)
         {
-            res.status(500).send("Transaction is not defined!");
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            res.status(500).send(process.posData);
             return;
         }
 
         transaction.changeState(targetState);
 
-        process.posData.data = data;
-        process.posData.txns = txns;
-        
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
         res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.errorMsg = ex.message;
+        process.posData.data.flowSuccess = false;
+        res.status(500).send(process.posData);
     }
     return;
 });
+
 
 router.post('/endTxn', async function(req,res)
 {
@@ -135,13 +156,18 @@ router.post('/endTxn', async function(req,res)
         
         process.posData.data = data;
         process.posData.txns[0] = transaction;
-        
+
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
         res.send(process.posData);
     }
     catch(ex)
     {
-        res.status(500).send(ex.message);
+        process.posData.data.errorMsg = ex.message;
+        process.posData.data.flowSuccess = false;
+        res.status(500).send(process.posData);
     }
+    return;
 });
 
 module.exports = router;

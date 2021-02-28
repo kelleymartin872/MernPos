@@ -13,7 +13,7 @@ const Offline = (props) =>
     return ( 
     
 
-        <div style={modalStyle} id="logIn_Modal">
+        <div style={modalStyle} >
      
             <div className="modal-dialog " role="document">
                 <div className="modal-content">

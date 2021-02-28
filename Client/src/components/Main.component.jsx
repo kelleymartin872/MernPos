@@ -22,7 +22,10 @@ class MainComponent extends Component
     mobileWidth = 765;
 
     state = { 
-        clientData : {width:window.innerWidth, height:window.innerHeight, isMobile:window.innerWidth < this.mobileWidth , isLoading:false},
+        clientData : {  width:window.innerWidth, height:window.innerHeight, 
+                        isMobile: window.innerWidth < this.mobileWidth , 
+                        isLoading:false
+                    },
         serverData : window.serverData.data
     };
 
@@ -179,7 +182,7 @@ class MainComponent extends Component
         {
             return (
                 <div style={modalStyle}  >
-                    <SignInForm signInSuccess = {this.getNewTransaction} />
+                    <SignInForm signInSuccess = {this.getNewTransaction} isLoading={this.state.clientData.isLoading} />
                 </div> 
             );
         }

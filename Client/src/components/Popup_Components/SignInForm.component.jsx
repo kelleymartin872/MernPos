@@ -4,6 +4,7 @@ import Form from './Form.component';
 import Input from './Input.component';
 import Joi from 'joi-browser';
 import UserService from '../../apiServices/UserService';
+import Loading from './Loading.component';
 
 class SignInForm extends Form 
 {
@@ -86,12 +87,13 @@ class SignInForm extends Form
 
         return ( 
         
-            <div style={{paddingTop: "100px"}} id="logIn_Modal">
+            <div style={{paddingTop: "100px"}}>
                 <div className="modal-dialog " role="document">
                     <div className="modal-content">
                         {render}
                     </div>
                 </div>
+                { this.props.isLoading &&  <Loading/> }
             </div>
          );
     }

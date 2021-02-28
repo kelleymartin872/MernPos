@@ -4,7 +4,6 @@ import loadingGif from '../../images/loading.gif';
 
 const Loading = () => 
 {
-
     let overlayStyle = {
         position: "fixed",
         top:"0",
@@ -12,8 +11,8 @@ const Loading = () =>
         height:"100%",
         width:"100%",
         paddingTop: "100px",
-        background: "black",
-        opacity: .5
+        backgroundColor: "#303841",
+        opacity: .65
     };
     let loadingStyle = {
         position: "fixed",

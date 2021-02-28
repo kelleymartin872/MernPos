@@ -11,7 +11,7 @@ class Transaction
     {
         this.txnNumber = txnNumber;
 
-        data = process.posData.data;
+        let data = process.posData.data;
 
         this.userEmail = data.userEmail;
         this.posState = data.posState;

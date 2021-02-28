@@ -32,7 +32,6 @@ router.post('/newTxn/', async function(req,res)
         process.posData.data.posState = Constants.PosState.signedOn;
 
         let newTxn = new Transaction(newTxnNmbr);
-        process.posData.data = data;
         process.posData.txns = [newTxn];
         
         process.posData.data.errorMsg = "";

@@ -9,6 +9,7 @@ import Loading from './Loading.component';
 class SignInForm extends Form 
 {
     state = { 
+        isLoading:false,
         formData: {
             Email : "",
             Password : ""
@@ -19,13 +20,13 @@ class SignInForm extends Form
     schema = {
         Email : Joi.string().required().email(),
         Password : Joi.string().required().min(6)
-    }
+    };
 
+    
+    
     submitForm = () =>
-    {
-        console.log("EMAIL : " + this.state.formData.Email);
-        console.log("PSWRD : " + this.state.formData.Password);
-        console.log("Submitted");
+    {   
+        this.setState({ isLoading:true });
         
         let userService = new UserService();
         let reqObj = {
@@ -35,13 +36,13 @@ class SignInForm extends Form
 
         userService.signIn(reqObj).then(res =>
         {
-            if(res.data.signedIn === true)
+            if(res.data.flowSuccess === true)
             {
-                this.props.signInSuccess();
+                this.props.getNewTxn();
             }
             else
             {
-                this.setState({ formError : res.data.errorMsg })
+                this.setState({ formError : res.data.errorMsg , isLoading:false})
             }
         });
     }
@@ -93,7 +94,7 @@ class SignInForm extends Form
                         {render}
                     </div>
                 </div>
-                { this.props.isLoading &&  <Loading/> }
+                { this.state.isLoading &&  <Loading/> }
             </div>
          );
     }

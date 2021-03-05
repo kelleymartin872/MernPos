@@ -41,6 +41,7 @@ const Error = (props) =>
                     </div>
                 </div>
             </div>
+            
             { props.isLoading &&  <Loading/> }
         </div>
     );

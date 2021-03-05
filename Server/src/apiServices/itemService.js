@@ -7,7 +7,7 @@ const Constants = require('../Constants').Constants;
 
 router.use(express.json());
 
-router.get('/getItems', async function(req,res)
+router.post('/getItems', async function(req,res)
 {
     try
     {
@@ -18,6 +18,7 @@ router.get('/getItems', async function(req,res)
         
         if(!items || items.length < 1)
         {
+            process.posData.data.items = [];
             process.posData.data.errorMsg = "Item with given data was not found!";
             res.status(404).send(process.posData);
             return;

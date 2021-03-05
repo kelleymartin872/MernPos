@@ -1,6 +1,6 @@
 
 import Constants from '../Constants';
-import axios from 'axios';
+import ApiService from './ApiService';
 
 export default class PaymentService
 {
@@ -15,20 +15,8 @@ export default class PaymentService
         reqObj = { };
         */
         const reqUrl = this.url + "getAllPayments"
-        
-        return Promise(function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData.payments = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err.response.data;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("GET", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
     performPayment(reqObj={})
@@ -41,20 +29,8 @@ export default class PaymentService
         */
 
         const reqUrl = this.url + "performPayment"
-        
-        return Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err.response.data;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
 }

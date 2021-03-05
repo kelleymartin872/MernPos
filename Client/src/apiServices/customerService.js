@@ -1,6 +1,6 @@
 
 import Constants from '../Constants';
-import axios from 'axios';
+import ApiService from './ApiService';
 
 export default class CustomerService
 {
@@ -19,20 +19,8 @@ export default class CustomerService
         */
 
         const reqUrl = this.url + "getCustomers";
-        
-        return Promise(function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData.customers = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err.response.data;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("GET", reqUrl , reqObj);
+        return apiService.getResponse();
     }
 
     addCustomerTxn(reqObj={})
@@ -45,20 +33,8 @@ export default class CustomerService
         */
 
         const reqUrl = this.url + "addCustomerTxn";
-        
-        return Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err.response.data;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj);
+        return apiService.getResponse();
     }
 
     addNewCustomer(reqObj={})
@@ -71,21 +47,8 @@ export default class CustomerService
         */
 
         const reqUrl = this.url + "addNewCustomer";
-        
-        return Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData.msg = res.data;
-                    console.log(res.data);
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err.response.data;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj);
+        return apiService.getResponse();
     }
 
 }

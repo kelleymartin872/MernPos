@@ -37,7 +37,8 @@ const Header = (props) =>
                     <div className="col-8" style={headingStyle} >
                         MERNPOS
                     </div>
-                    <button className="col-2 btn" style={btnStyle} >
+                    <button className="col-2 btn" style={btnStyle} 
+                        onClick={() => props.onSignOff()} >
                         Sign Out
                     </button>
                 </div>

@@ -22,7 +22,7 @@ const ItemLineComponent = (props) =>
         <div key={item.lineNumber} style={lineStyle} className="row" >
             <div className="col-5"> {item.itemName} </div>
             <div className="col-1"> {item.itemQty} </div>
-            <div className="col-1"> x </div>
+            <div className="col-1"> &times; </div>
             <div className="col-2"  style={rightAlign}> {item.itemPrice} </div>
             <div  className="col-3" style={rightAlign}> {item.itemTotalPrice} </div>
             

@@ -8,6 +8,7 @@ import Constants from '../Constants'
 import SignInForm from './Popup_Components/SignInForm.component';
 import Offline from './Popup_Components/Offline.component';
 import Error from './Popup_Components/Error.component';
+import ModalPopup from './Popup_Components/ModalPopup.component';
 import TxnList from './Txn_components/TxnList.component';
 import Header from './Header.component';
 import LineDetail from './LineDetail.component';
@@ -16,7 +17,6 @@ import Footer from './Footer.component';
 
 import TransactionService from '../apiServices/TransactionService';
 import UserService from '../apiServices/UserService';
-import loadingGif from '../images/loading.gif'; 
 
 class MainComponent extends Component 
 {
@@ -24,13 +24,14 @@ class MainComponent extends Component
 
     state = { 
         clientData : {  width:window.innerWidth, height:window.innerHeight, 
-                        isMobile: window.innerWidth < this.mobileWidth , selectedLineNmbr : -1,
-                        isLoading:false , internalError: false
+                        isMobile: window.innerWidth < this.mobileWidth , 
+                        selectedLineNmbr : -1 ,
+                        isLoading:false , internalError: false,
+                        modalPopupId : -1
                     },
         serverData : window.serverData.data,
         transactions : window.serverData.txns
     };
-
     makeSelection = lineNumber => 
     {
         try
@@ -46,6 +47,7 @@ class MainComponent extends Component
         }
         catch(ex)
         {
+            console.error(ex);
             this.state.clientData.internalError = true;
             this.setState({ 
                 clientData : this.state.clientData
@@ -53,42 +55,6 @@ class MainComponent extends Component
         }
     }
     
-    changeQty = (item,add) => {
-        let items = this.state.txn.itemList;
-
-        if(add)
-            item.addQty();
-        else
-        {
-            if(item.itemQty === 1)
-                items.splice(items.indexOf(item), 1);
-            else
-                item.removeQty();
-        }
-        
-        this.txn.itemList = items;
-        this.txn.refreshTotal();
-        this.setState({txn: this.txn});
-    }
-
-    deleteItem = (item) => {
-        let items = this.state.txn.itemList;
-        items.splice(items.indexOf(item), 1);
-
-        this.txn.itemList = items;
-        this.txn.refreshTotal();
-        this.setState({txn:this.txn});
-    }
-
-    deleteItem = (item) => {
-        let items = this.state.txn.itemList;
-        items.splice(items.indexOf(item), 1);
-
-        this.txn.itemList = items;
-        this.txn.refreshTotal();
-        this.setState({txn:this.txn});
-    }
-
     componentDidUpdate(prevProps) 
     {
         const { width, height } = this.props;
@@ -122,6 +88,7 @@ class MainComponent extends Component
         }
         catch(ex)
         {
+            console.error(ex);
             this.state.clientData.internalError = true;
             this.setState({ 
                 clientData : this.state.clientData
@@ -141,6 +108,7 @@ class MainComponent extends Component
         }
         catch(ex)
         {
+            console.error(ex);
             this.state.clientData.internalError = true;
             this.setState({ 
                 clientData : this.state.clientData
@@ -164,6 +132,40 @@ class MainComponent extends Component
         }
         catch(ex)
         {
+            console.error(ex);
+            this.state.clientData.internalError = true;
+            this.setState({ 
+                clientData : this.state.clientData
+            });
+        }
+    };
+
+    showModal = (functionId) => 
+    {
+        try
+        {
+            this.state.clientData.modalPopupId = functionId;
+            this.refreshUI(this.state.clientData);
+        }
+        catch(ex)
+        {
+            console.error(ex);
+            this.state.clientData.internalError = true;
+            this.setState({ 
+                clientData : this.state.clientData
+            });
+        }
+    };
+    closeModal= (functionId) => 
+    {
+        try
+        {
+            this.state.clientData.modalPopupId = -1;
+            this.refreshUI(this.state.clientData);
+        }
+        catch(ex)
+        {
+            console.error(ex);
             this.state.clientData.internalError = true;
             this.setState({ 
                 clientData : this.state.clientData
@@ -236,14 +238,14 @@ class MainComponent extends Component
             if(this.state.clientData.internalError) 
             {
                 return ( 
-                    <Error onRefresh = {this.signOff} />
+                    <Error onRefresh = {this.signOff} isLoading={this.state.clientData.isLoading} />
                 );
             }
             
             let transaction = this.state.transactions[0];
             return ( 
                 <div  style={mainStyle}  >
-                    <Header/> 
+                    <Header onRefresh = {this.signOff} /> 
 
                     <div style={{margin:"0px"}} className="row"  >
                         <div style={txnListStyle}   >
@@ -267,11 +269,17 @@ class MainComponent extends Component
                             <MainMenu  
                                 clientData={this.state.clientData} 
                                 serverData={this.state.serverData} 
-                                transaction={transaction}  /> 
+                                transaction={transaction} 
+                                onModalShow={this.showModal} /> 
                         </div>
                     </div>
 
                     <Footer/> 
+                    
+                    { this.state.clientData.modalPopupId > 0 && 
+                        <ModalPopup modalId={this.state.clientData.modalPopupId} onModalClose={this.closeModal} /> 
+                    }
+
                 </div>
 
             );
@@ -279,6 +287,7 @@ class MainComponent extends Component
         }
         catch(ex)
         {
+            console.error(ex);
             return ( 
                 <Error onRefresh = {this.signOff} />
             );

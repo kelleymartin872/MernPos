@@ -1,12 +1,12 @@
 
 import Constants from '../Constants';
-import axios from 'axios';
+import ApiService from './ApiService';
 
 export default class ItemService
 {
     constructor()
     {
-        this.url = Constants.APIUrl.base + Constants.APIUrl.paymentService;
+        this.url = Constants.APIUrl.base + Constants.APIUrl.itemService;
     }
 
 
@@ -20,19 +20,8 @@ export default class ItemService
         */
 
         const reqUrl = this.url + "getItems";
-        
-        return Promise( function(resolve,reject)
-        {
-            axios.get(reqUrl, reqObj)
-                .then(res => {
-                    window.posData.items = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err.response.data;
-                    resolve(err.response.data);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj);
+        return apiService.getResponse();
     }
 
     addItemTxn(reqObj={})
@@ -46,20 +35,8 @@ export default class ItemService
         */
 
         const reqUrl = this.url + "addItemTxn";
-        
-        return Promise( function(resolve,reject)
-        {
-            axios.post(reqUrl, reqObj)
-                .then(res => {
-                    window.posData = res.data;
-                    resolve(res.data);
-                })
-                .catch(err => {
-                    window.posData.error = err.response.data;
-                    console.log(err);
-                    reject(err);
-                });
-        });
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
     }
 
 }

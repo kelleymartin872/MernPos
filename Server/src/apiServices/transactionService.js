@@ -104,13 +104,13 @@ router.post('/changeState', async function(req,res)
             res.status(500).send(process.posData);
             return;
         }
-        if(txns.length < 1)
+        if(process.posData.txns.length < 1)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
             res.status(500).send(process.posData);
             return;
         }
-        let transaction = txns[0];
+        let transaction = process.posData.txns[0];
         if(!transaction)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";

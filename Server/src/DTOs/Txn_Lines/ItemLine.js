@@ -7,6 +7,9 @@ class ItemLine extends TxnLine
 {
     constructor(itemData, qty=1)
     {
+        if(!qty || qty==null)
+            qty=1
+            
         super();
         this.lineName = Constants.TxnLineName.ItemLine;
         this.lineTypeID = Constants.TxnLineType.ItemLine;

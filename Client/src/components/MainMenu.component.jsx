@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 
 import MenuButton from '../DTOs/MenuButton'
-import Loading from './Popup_Components/Loading.component';
 
 export default class MainMenu extends Component 
 {
@@ -48,6 +47,11 @@ export default class MainMenu extends Component
         switch(parseInt(btnId))
         {
             case 1 :
+            {
+                this.props.onModalShow(btnId);
+                break;
+            }
+            default:
             {
                 this.props.onModalShow(btnId);
                 break;

@@ -1,5 +1,5 @@
 
-import Constants from '../Constants';
+import Constants from '../DTOs/Constants';
 import ApiService from './ApiService';
 
 export default class CustomerService

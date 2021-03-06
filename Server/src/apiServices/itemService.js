@@ -61,7 +61,11 @@ router.post('/addItemTxn', async function(req,res)
             return;
         }
 
-        let itemLine = new ItemLine(items[0], parseInt(req.body.itemQty));
+        let qty = 1;
+        if(req.body.itemQty && req.body.itemQty != "")
+            qty = parseInt(req.body.itemQty);
+        let itemLine = new ItemLine(items[0], qty);
+        
         transaction.AddLine(itemLine);
         process.posData.txns[0] = transaction;
 

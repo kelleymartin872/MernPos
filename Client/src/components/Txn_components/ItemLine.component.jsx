@@ -2,7 +2,6 @@ import React  from 'react';
 
 const ItemLineComponent = (props) => 
 {
-    
     let item = props.item;
     const lineStyle={
         cursor: "pointer"
@@ -24,17 +23,17 @@ const ItemLineComponent = (props) =>
             <div className="col-1"> {item.itemQty} </div>
             <div className="col-1"> &times; </div>
             <div className="col-2"  style={rightAlign}> {item.itemPrice} </div>
-            <div  className="col-3" style={rightAlign}> {item.itemTotalPrice} </div>
+            <div  className="col-3" style={rightAlign}> {item.totalPrice} </div>
             
         </div>
     );
     
-    if(item.discount && item.discount.discID )
+    if(item.discount && item.discount.discountDesc )
     {
         render.push ( 
-            <div key={item.discount.discID} style={discLineStyle} className="row" >
-                <div className="col-8"> {item.discount.discDesc} </div>
-                <div className="col-4" style={rightAlign}> {item.discount.discount} </div>
+            <div key={item.discount.discountDesc} style={discLineStyle} className="row" >
+                <div className="col-8"> {item.discount.discountDesc} </div>
+                <div className="col-4" style={rightAlign}> {item.discount.discountAmt} </div>
             </div> 
         );
     }
@@ -44,18 +43,3 @@ const ItemLineComponent = (props) =>
 
 export default ItemLineComponent;
 
-/*
-
-<div className="col-1 btn btn-success"
-                onClick={()=>self.changeQty(item,true)} > 
-                +
-            </div>
-            <div className="col-1 btn btn-info"
-                onClick={()=>self.changeQty(item,false)} > 
-                - 
-            </div>
-            <div onClick={()=>self.deleteItem(item)} 
-                className="col-1 btn btn-danger"> 
-                x
-            </div>
-*/

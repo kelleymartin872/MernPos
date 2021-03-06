@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import Form from './Form.component';
 import Input from './Input.component';
 import Joi from 'joi-browser';
@@ -78,7 +78,7 @@ class SignInForm extends Form
             </div>
         );
 
-        if(formError && formError != "")
+        if(formError && formError !== "")
         {
             render.push(
                 <div key="modal-error" className="list-group-item list-group-item-danger" > { formError } </div>

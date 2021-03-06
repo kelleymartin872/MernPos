@@ -1,12 +1,11 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import Form from './Form.component';
-import Input from './Input.component';
 import Joi from 'joi-browser';
 import ItemService from '../../apiServices/ItemService';
 import Loading from './Loading.component';
 
-class SignInForm extends Form 
+class AddItem extends Form 
 {
     state = { 
         isLoading:false,
@@ -54,15 +53,13 @@ class SignInForm extends Form
         let service = new ItemService();
         let reqObj = {
             itemId: itemId ,
-            itemName: ""
+            itemName: "",
+            itemQty: 1
         };
 
         service.addItemTxn(reqObj).then(res =>
         {
-            if(res.data.flowSuccess === true)
-            {
-                this.props.onCancel();
-            }
+            this.props.onCancel();
         });
     }
 
@@ -72,15 +69,15 @@ class SignInForm extends Form
 
         return ( 
         
-            <div style={{ marginLeft:"5%", width:"90%",opacity:1}} >
+            <div style={{ marginLeft:"5%", width:"90%"}} >
                             
-                <div className="modal-lg" style={{width:"100%" , marginTop:"-30px"  ,fontSize:"18px"}}  >
+                <div className="modal-lg" style={{width:"100%" , marginTop:"-30px" ,fontSize:"18px"}}  >
           
                     <div className="modal-content" style={{width:"100%"}}>     
                         <div key="modal-header" className="modal-header">
                             <h4 className="modal-title" style={{margin:"auto"}}> Search for item </h4> 
                             <button type="button" style={{fontSize:"25px" , marginLeft:"0px" }} 
-                                onClick={() => this.props.onCancel()}  class="close" >
+                                onClick={() => this.props.onCancel()}  className="close" >
                                  &times;
                             </button>
                         </div>
@@ -137,13 +134,12 @@ class SignInForm extends Form
 
                         </div>
                         
-                        { this.state.formError != "" &&
+                        { this.state.formError !== "" &&
                             <div key="modal-error" className="list-group-item list-group-item-danger" > { this.state.formError } </div> 
                         }
 
                     </div>
                 </div>
-                
                 
                 { this.state.isLoading &&  <Loading/> }
             </div>
@@ -152,4 +148,4 @@ class SignInForm extends Form
 
 }
  
-export default SignInForm;
+export default AddItem;

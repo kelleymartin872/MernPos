@@ -1,5 +1,5 @@
 
-import Constants from '../Constants';
+import Constants from '../DTOs/Constants';
 import axios from 'axios';
 
 export default class ApiService

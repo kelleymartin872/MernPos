@@ -2,8 +2,7 @@
 import React, { Component } from 'react';
 import { withResizeDetector } from 'react-resize-detector';
 
-import Transaction from '../DTOs/Transaction'
-import Constants from '../Constants' 
+import Constants from '../DTOs/Constants' 
 
 import SignInForm from './Popup_Components/SignInForm.component';
 import Offline from './Popup_Components/Offline.component';
@@ -32,14 +31,13 @@ class MainComponent extends Component
         serverData : window.serverData.data,
         transactions : window.serverData.txns
     };
+
     makeSelection = lineNumber => 
     {
         try
         {
             let clientData = this.state.clientData;
-            //Transaction.selectLine(transaction, lineNumber);
-
-            clientData.selectedLineNmbr[0] = lineNumber[0];
+            clientData.selectedLineNmbr = lineNumber;
 
             this.setState({ 
                 clientData : clientData
@@ -156,7 +154,8 @@ class MainComponent extends Component
             });
         }
     };
-    closeModal= (functionId) => 
+    
+    closeModal= () => 
     {
         try
         {
@@ -245,7 +244,7 @@ class MainComponent extends Component
             let transaction = this.state.transactions[0];
             return ( 
                 <div  style={mainStyle}  >
-                    <Header onRefresh = {this.signOff} /> 
+                    <Header onSignOff = {this.signOff} /> 
 
                     <div style={{margin:"0px"}} className="row"  >
                         <div style={txnListStyle}   >
@@ -274,7 +273,11 @@ class MainComponent extends Component
                         </div>
                     </div>
 
-                    <Footer/> 
+                    <Footer
+                        clientData={this.state.clientData} 
+                        serverData={this.state.serverData} 
+                        transaction={transaction} 
+                        onChangeState={() => this.refreshUI()} /> 
                     
                     { this.state.clientData.modalPopupId > 0 && 
                         <ModalPopup modalId={this.state.clientData.modalPopupId} onModalClose={this.closeModal} /> 

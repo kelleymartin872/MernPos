@@ -1,7 +1,5 @@
 
 import React from 'react';
-import loadingGif from '../../images/loading.gif'; 
-import Loading from './Loading.component';
 import AddItem from '../Popup_Components/AddItem.component';
 
 const ModalPopup = (props) => 
@@ -26,7 +24,7 @@ const ModalPopup = (props) =>
         paddingTop: "100px"
     };
 
-    let returnModal =   <div style={overlayStyle} >
+    let returnModal =   <div>
                             <div className="modal-dialog " role="document">
                                 <div className="modal-content">
                                     <div key="modal-header" className="modal-header">
@@ -36,16 +34,16 @@ const ModalPopup = (props) =>
                                         <button
                                             type="button" className="btn btn-danger" 
                                             id="signIn_FormSubmit" style={{width: "99%",backgroundColor:"#f16b52"}} 
-                                            onClick={() => props.onRefresh()} > 
-                                            Cancel
+                                            onClick={() => props.onModalClose()}  > 
+                                            OK
                                         </button>
                                     </div>
                                 </div>
                             </div> 
                         </div> ;
     
-    if(props.modalId == 1)
-        returnModal = <AddItem style={innerlayStyle} onCancel={() => props.onModalClose()} />
+    if(props.modalId === 1)
+        returnModal = <AddItem  onCancel={() => props.onModalClose()} />
 
     return ( 
         <div  style={innerlayStyle} >

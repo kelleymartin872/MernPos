@@ -19,7 +19,7 @@ export default class CustomerService
         */
 
         const reqUrl = this.url + "getCustomers";
-        let apiService = new ApiService("GET", reqUrl , reqObj);
+        let apiService = new ApiService("POST", reqUrl , reqObj);
         return apiService.getResponse();
     }
 

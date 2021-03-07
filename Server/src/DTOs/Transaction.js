@@ -39,10 +39,10 @@ class Transaction
 
         var tempTxn = [];
         tempTxn.push(this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.HeaderLine));
-        let customerLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
-        if(customerLine)
+        let customerList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
+        if(customerList && customerList.length>0)
         {
-            tempTxn.push(customerLine);
+            tempTxn.push(customerList[customerList.length - 1]);
         }
 
         
@@ -107,7 +107,8 @@ class Transaction
 
         itemList.forEach(item => {
             totalLine.totalPrice += item.totalPrice;
-            totalLine.discountAmt += item.discount.discountAmt;    
+            if(item.discount && item.discount.discountAmt)
+                totalLine.discountAmt += item.discount.discountAmt;
         });
         
         couponList.forEach(coupon => {

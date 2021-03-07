@@ -155,7 +155,7 @@ class MainComponent extends Component
         }
     };
     
-    closeModal= () => 
+    closeModal = () => 
     {
         try
         {

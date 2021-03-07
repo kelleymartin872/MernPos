@@ -1,6 +1,7 @@
 
 import React from 'react';
 import AddItem from '../Popup_Components/AddItem.component';
+import AddCustomer from '../Popup_Components/AddCustomer.component';
 
 const ModalPopup = (props) => 
 {
@@ -44,6 +45,8 @@ const ModalPopup = (props) =>
     
     if(props.modalId === 1)
         returnModal = <AddItem  onCancel={() => props.onModalClose()} />
+    if(props.modalId === 7)
+        returnModal = <AddCustomer  onCancel={() => props.onModalClose()} />
 
     return ( 
         <div  style={innerlayStyle} >

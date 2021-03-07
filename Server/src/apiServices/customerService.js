@@ -7,10 +7,11 @@ const Constants = require('../Constants').Constants;
 
 router.use(express.json());
 
-router.get('/getCustomers/', async function(req,res)
+router.post('/getCustomers/', async function(req,res)
 {
     try
     {
+        process.posData.data.customers = [];
         process.posData.data.flowSuccess = false;
 
         var customers = await CustomerDBHelper.getCustomers(req.body);

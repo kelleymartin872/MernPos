@@ -4,10 +4,10 @@ const Constants = require('../Constants').Constants;
 
 
 const txnItemRecordDBSchema = new mongoose.Schema({
-    itemId: {type: String, required : true},
-    itemQty: {type: Number},
+    itemId: {type: Number, required : true},
+    itemQty: {type: Number, required : true},
     totalPrice: {type: Number, required : true},
-    discountAmt: {type: Number}
+    discountAmt: {type: Number, required : true}
 });
 
 const txnCouponRecordDBSchema = new mongoose.Schema({
@@ -42,7 +42,7 @@ class TxnItemRecordDBHelper
 {
     constructor(itemData)
     {
-        this.itemId= itemData.itemId;
+        this.itemId = itemData.itemId;
         this.itemQty = itemData.itemQty;
         this.totalPrice  = itemData.totalPrice;
         this.discountAmt = 0;
@@ -87,7 +87,7 @@ class TxnRecordDBHelper
             this.couponList.push(new TxnCouponRecordDBHelper(coupon));
         });
 
-        let itemList = txnData.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLineType);
+        let itemList = txnData.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine);
         this.itemList = [];
         itemList.forEach(item => {
             this.itemList.push(new TxnItemRecordDBHelper(item));

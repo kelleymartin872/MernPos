@@ -1,4 +1,6 @@
 
+const fs = require('fs');
+
 const HeaderLine = require('./Txn_Lines/HeaderLine').HeaderLine;
 const CustomerLine = require('./Txn_Lines/CustomerLine').CustomerLine;
 const ItemLine = require('./Txn_Lines/ItemLine').ItemLine;
@@ -24,19 +26,13 @@ class Transaction
         this.amountOwed = 0;
         
         this.txnList = [];
-        this.txnList.push(new HeaderLine());
-
-        //this.txnList.push(new CustomerLine());
-        //this.txnList.push(...this.fillItems());     // list of ItemLine
-        
-        //this.txnList.push(new TotalLine());
+        this.txnList.push(new HeaderLine(this.txnNumber, this.userEmail));
         
         this.refreshLineNmbrs();
     }
 
     reOrderTxnList()
     {
-
         var tempTxn = [];
         tempTxn.push(this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.HeaderLine));
         let customerList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
@@ -45,7 +41,6 @@ class Transaction
             tempTxn.push(customerList[customerList.length - 1]);
         }
 
-        
         let itemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine);
         itemList.forEach(item => {
             tempTxn.push(item);
@@ -80,31 +75,32 @@ class Transaction
         return tempTxn;
     }
 
-    refreshTxn()
+    addRefreshTotalLine()
     {
-        this.txnList = this.reOrderTxnList();
-
         let itemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine);
         let couponList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CouponLine);
         let payList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.PaymentLine);
         let discList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.DiscountLine);
 
-        let totalLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.TotalLine);
-        
-        if(!totalLine)
+        let totalLine = this.txnList.find(x => x.lineTypeID == Constants.TxnLineType.TotalLine)
+        if(totalLine)
         {
-            totalLine = new TotalLine();
-            if(this.posState > Constants.PosState.itemState)
-            {
-                this.txnList.push(totalLine);
-            }
+            this.RemoveLine(totalLine);
         }
         else
         {
-            if(this.posState !== Constants.PosState.payState)
-                this.RemoveLine(totalLine);
+            totalLine = new TotalLine();
         }
 
+        if(this.posState > Constants.PosState.itemState)
+        {
+            this.txnList.push(totalLine);
+        }
+
+        totalLine.totalPrice = 0;
+        totalLine.discountAmt = 0;
+        totalLine.finalPrice = 0;
+        
         itemList.forEach(item => {
             totalLine.totalPrice += item.totalPrice;
             if(item.discount && item.discount.discountAmt)
@@ -120,19 +116,31 @@ class Transaction
             totalLine.discountAmt += disc.discountAmt;
         });
 
+        totalLine.totalPrice = parseFloat(totalLine.totalPrice.toFixed(2));
+        totalLine.discountAmt = parseFloat(totalLine.discountAmt.toFixed(2));
+
         this.amountPaid = 0;
         payList.forEach(pay => {
             this.amountPaid = this.amountPaid + (pay.amountPaid * pay.payExchangeRate);
         });
 
+        this.amountPaid = parseFloat(this.amountPaid.toFixed(2));
         totalLine.finalPrice = totalLine.totalPrice + totalLine.discountAmt;
-        
+
+        return totalLine;
+    }
+
+    refreshTxn()
+    {
+        let totalLine = this.addRefreshTotalLine();
+        this.txnList = this.reOrderTxnList();
+
         this.totalPrice = totalLine.totalPrice;
         this.discountAmt = totalLine.discountAmt;
         this.finalPrice = totalLine.finalPrice;
         
         this.amountOwed = this.finalPrice - this.amountPaid;
-
+        this.amountOwed = parseFloat(this.amountOwed.toFixed(2));
 
         this.refreshLineNmbrs();
         return;
@@ -199,6 +207,25 @@ class Transaction
             return true;
         }
         return false;
+    }
+
+    saveToFile()
+    {
+        const fileName = "txn_" + String(this.txnNumber);
+        const path = "./TxnFiles/" + fileName +".json";
+        const data = {  };
+        data[fileName] = this.txnList;
+
+        try 
+        {
+            fs.writeFile(path, JSON.stringify(data, null, 4), (err) => 
+            { 
+                if (err) throw err;  
+            }); 
+        }
+        catch (err) {
+            console.error(err)
+        }
     }
 }
 

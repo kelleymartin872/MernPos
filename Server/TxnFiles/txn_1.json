@@ -1,0 +1,107 @@
+{
+    "txn_1": [
+        {
+            "lineName": "HeaderlLine",
+            "lineTypeID": 1,
+            "lineNumber": 1,
+            "description": "Txn Header",
+            "txnNumber": 1,
+            "userEmail": "tjadhav95@gmail.com"
+        },
+        {
+            "lineName": "CustomerLine",
+            "lineTypeID": 2,
+            "lineNumber": 2,
+            "custID": "9988776655",
+            "custName": "Bruce Wayne",
+            "phoneNumber": 9988776655,
+            "points": 0
+        },
+        {
+            "lineName": "ItemLine",
+            "lineTypeID": 3,
+            "lineNumber": 3,
+            "itemId": "111007",
+            "itemName": "Beer crate",
+            "itemPrice": 650,
+            "itemQty": 1,
+            "totalPrice": 650,
+            "discount": {
+                "lineName": "DiscountLine",
+                "lineTypeID": 4,
+                "lineNumber": 0,
+                "discountDesc": "Sale",
+                "discountAmt": -40
+            }
+        },
+        {
+            "lineName": "ItemLine",
+            "lineTypeID": 3,
+            "lineNumber": 4,
+            "itemId": "111005",
+            "itemName": "Chicken",
+            "itemPrice": 400,
+            "itemQty": 1,
+            "totalPrice": 400,
+            "discount": {
+                "lineName": "DiscountLine",
+                "lineTypeID": 4,
+                "lineNumber": 0,
+                "discountDesc": "100thAnniv",
+                "discountAmt": -25
+            }
+        },
+        {
+            "lineName": "ItemLine",
+            "lineTypeID": 3,
+            "lineNumber": 5,
+            "itemId": "111001",
+            "itemName": "Banana",
+            "itemPrice": 35,
+            "itemQty": 1,
+            "totalPrice": 35
+        },
+        {
+            "lineName": "ItemLine",
+            "lineTypeID": 3,
+            "lineNumber": 6,
+            "itemId": "111001",
+            "itemName": "Banana",
+            "itemPrice": 35,
+            "itemQty": 1,
+            "totalPrice": 35
+        },
+        {
+            "lineName": "TotalLine",
+            "lineTypeID": 7,
+            "lineNumber": 7,
+            "totalPrice": 1120,
+            "discountAmt": -65,
+            "finalPrice": 1055
+        },
+        {
+            "lineName": "PaymentLine",
+            "lineTypeID": 8,
+            "lineNumber": 8,
+            "paymentTypeID": 403,
+            "paymentName": "PayTM",
+            "amountPaid": "1200",
+            "payExchangeRate": 1
+        },
+        {
+            "lineName": "PaymentLine",
+            "lineTypeID": 8,
+            "lineNumber": 9,
+            "paymentTypeID": 100,
+            "paymentName": "INR",
+            "amountPaid": "-145.00",
+            "payExchangeRate": 1
+        },
+        {
+            "lineName": "FooterLine",
+            "lineTypeID": 9,
+            "lineNumber": 10,
+            "description": "Txn Footer"
+        }
+    ]
+}

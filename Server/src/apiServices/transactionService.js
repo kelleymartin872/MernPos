@@ -26,7 +26,7 @@ router.post('/newTxn/', async function(req,res)
         let lastTxn = await TxnRecordDBHelper.getLastTxn();
         let newTxnNmbr = 1
         
-        if(!lastTxn)
+        if(lastTxn)
             newTxnNmbr =  lastTxn.txnNumber + 1;
         
         process.posData.data.posState = Constants.PosState.signedOn;
@@ -158,6 +158,9 @@ router.post('/endTxn', async function(req,res)
 
         process.posData.data.errorMsg = "";
         process.posData.data.flowSuccess = true;
+
+        transaction.saveToFile();
+
         res.send(process.posData);
     }
     catch(ex)

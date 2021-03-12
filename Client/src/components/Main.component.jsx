@@ -256,8 +256,8 @@ class MainComponent extends Component
                         </div>
 
                         <div style={TotalPriceStyle} >
-                            <span style={{fontSize:"30px",fontWeight:'bold'}} > Final Price :</span> 
-                            <span style={{fontSize:"30px",float:'right'}} > &#x20b9; {transaction.finalPrice} </span> 
+                            <span style={{fontSize:"30px",fontWeight:'bold'}} > Amount Owed :</span> 
+                            <span style={{fontSize:"30px",float:'right'}} > &#x20b9; {transaction.amountOwed} </span> 
                         </div>
 
                         <div style={RightSideStyle} >
@@ -280,7 +280,10 @@ class MainComponent extends Component
                         onChangeState={() => this.refreshUI()} /> 
                     
                     { this.state.clientData.modalPopupId > 0 && 
-                        <ModalPopup modalId={this.state.clientData.modalPopupId} onModalClose={this.closeModal} /> 
+                        <ModalPopup modalId={this.state.clientData.modalPopupId} onModalClose={this.closeModal} 
+                            clientData={this.state.clientData} 
+                            serverData={this.state.serverData} 
+                            transaction={transaction}  /> 
                     }
 
                 </div>

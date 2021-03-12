@@ -2,6 +2,7 @@
 import React from 'react';
 import AddItem from '../Popup_Components/AddItem.component';
 import AddCustomer from '../Popup_Components/AddCustomer.component';
+import Payment from './Payment.component';
 
 const ModalPopup = (props) => 
 {
@@ -47,7 +48,14 @@ const ModalPopup = (props) =>
         returnModal = <AddItem  onCancel={() => props.onModalClose()} />
     if(props.modalId === 7)
         returnModal = <AddCustomer  onCancel={() => props.onModalClose()} />
-
+    if(props.modalId >= 100)
+    {   
+        returnModal = <Payment  onCancel={() => props.onModalClose()} 
+                paymentTypeID = {props.modalId}
+                serverData = {props.serverData} 
+                transaction = {props.transaction}  /> 
+    }
+     
     return ( 
         <div  style={innerlayStyle} >
             <div style={overlayStyle} >

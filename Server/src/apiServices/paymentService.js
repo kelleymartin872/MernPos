@@ -50,7 +50,7 @@ router.post('/performPayment', async function(req,res)
             res.status(404).send(process.posData);
             return;
         }
-        if(data.posState < Constants.PosState.payState)
+        if(process.posData.data.posState < Constants.PosState.payState)
         {
             process.posData.data.errorMsg = "Please change State!";
             res.status(500).send(process.posData);

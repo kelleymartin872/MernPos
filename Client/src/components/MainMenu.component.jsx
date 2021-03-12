@@ -2,20 +2,13 @@
 import React, { Component } from 'react';
 
 import MenuButton from '../DTOs/MenuButton'
+import Constants from '../DTOs/Constants'
+import PaymentService from '../apiServices/PaymentService'
+import Loading from './Popup_Components/Loading.component';
 
 export default class MainMenu extends Component 
 {
-    buttons = [
-        new MenuButton(1,"Add Item", "add-item"),
-        new MenuButton(2,"Return Item", "return-item"),
-        new MenuButton(3,"Change Qty", "change-qty"),
-        new MenuButton(4,"Line Disc", "line-disc"),
-        new MenuButton(5,"Total Disc", "total-disc"),
-        new MenuButton(7,"Add Customer", "add-customer"),
-        new MenuButton(8,"Total Disc", "total-disc"),
-    ];
-
-    state = { buttons : this.buttons  }
+    state = { buttonDict: [] , isLoading: false}
 
     mainStyle={ 
         overflowY:"auto",
@@ -35,50 +28,88 @@ export default class MainMenu extends Component
         color:"white"
     };
 
-
     lineDetailStyle={
         padding:"0px",
         overflowY:"auto",
         height:"40vh", border: "1px solid black"
     };
-  
-    btnClicked(btnId)
-    {
-        switch(parseInt(btnId))
-        {
-            case 1 :
-            {
-                this.props.onModalShow(btnId);
-                break;
-            }
-            default:
-            {
-                this.props.onModalShow(btnId);
-                break;
-            }
-        }
 
- 
+    componentDidUpdate(prevProps)
+    {
+        if(!this.props.transaction)
+            return;
+        if(this.props.transaction.posState === prevProps.transaction.posState)
+            return;
+
+        this.setState();
     }
+
+    preparePaymentButtons(payList)
+    {
+        let payBtns = [];
+
+        payList.forEach(pay => {
+            payBtns.push(new MenuButton(pay.paymentTypeID, pay.paymentName, pay.paymentName));
+        });
+        return payBtns;
+    }
+
+
+    componentDidMount()
+    {
+        let buttons = [
+            new MenuButton(1,"Add Item", "add-item"),
+            new MenuButton(2,"Return Item", "return-item"),
+            new MenuButton(3,"Change Qty", "change-qty"),
+            new MenuButton(4,"Line Disc", "line-disc"),
+            new MenuButton(5,"Total Disc", "total-disc"),
+            new MenuButton(7,"Add Customer", "add-customer"),
+            new MenuButton(8,"Remove Line", "remove-line"),
+        ]; 
+
+        let buttonDict = [[],[],[],[],[],[]];
+
+        buttonDict[Constants.PosState.signedOff] = [];
+        buttonDict[Constants.PosState.signedOn] = buttons;
+        buttonDict[Constants.PosState.itemState] = buttons;
+        buttonDict[Constants.PosState.payState] = buttons;
+
+        let service = new PaymentService();
+        service.getAllPayments().then(res =>
+        {
+            buttonDict[Constants.PosState.payState] = this.preparePaymentButtons(res.data.payments);
+            this.setState({buttonDict:buttonDict , isLoading: false});
+        });
+    }
+
   
     render() 
     {
+        const buttons = this.state.buttonDict[this.props.transaction.posState];
+
+        let returnRender =  <Loading/>;
+        
+        if( !this.state.isLoading && buttons)
+        {
+            returnRender = 
+            <div style={this.mainStyle} >
+                { buttons.map( (button) => (
+                    <button key={button.btnId} style={this.btnStyle} 
+                            onClick={() => this.props.onModalShow(button.btnId) } >
+                        {button.btnName}
+                    </button>
+                ))}
+            </div>;
+        }
+
         return ( 
-                
             <div style={{margin:"0px"}}  className="row"  >
                 <div  style={this.lineDetailStyle}  className="col-12" >
-                    <div style={this.mainStyle} >
-                        { this.state.buttons.map( (button) => (
-                            <button key={button.btnId} style={this.btnStyle} 
-                                    onClick={() => this.btnClicked(button.btnId) } >
-                                {button.btnName}
-                            </button>
-                        ))}
-                    </div>
-            
+                    {returnRender}
                 </div>
             </div>
         );
+       
     }
 }
 

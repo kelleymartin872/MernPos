@@ -111,6 +111,24 @@ const TxnList = (props) =>
                 break;
             }
 
+            case(Constants.TxnLineType.PaymentLine):
+            {
+                renderTxn.push(    
+                    <div key={txnLine.lineNumber} 
+                        style={(isSelected ? selectedStyle: notSelectedStyle)} 
+                        onClick={() => props.onSelectLine(txnLine.lineNumber)}
+                        className="row" >
+                            
+                        <div className="col-12"> 
+                            <span> {txnLine.paymentName} </span> 
+                            <span style={{float:'right'}} > &#x20b9; {txnLine.amountPaid*txnLine.payExchangeRate} </span> 
+                        </div>
+                        <hr className="col-11" style={{margin:"5px"}} />
+                    </div>
+                );
+                break;
+            }
+
             default:
             { 
                 renderTxn.push(   

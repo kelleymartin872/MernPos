@@ -23,7 +23,7 @@ const txnPaymentRecordDBSchema = new mongoose.Schema({
 
 const txnRecordDBSchema = new mongoose.Schema({
     txnNumber: { type: Number, required : true, unique: true } ,
-    userEmail: { type: Number, required : true } ,
+    userEmail: { type: String, required : true } ,
     customerID:  Number ,
     couponList: [txnCouponRecordDBSchema] ,
     itemList: [txnItemRecordDBSchema] ,
@@ -44,8 +44,10 @@ class TxnItemRecordDBHelper
     {
         this.itemId= itemData.itemId;
         this.itemQty = itemData.itemQty;
-        this.totalPrice  = titemData.totalPrice;
-        this.discountAmt = itemData.discount.discountAmt;
+        this.totalPrice  = itemData.totalPrice;
+        this.discountAmt = 0;
+        if(itemData.discount)
+            this.discountAmt = itemData.discount.discountAmt;
     }
 }
 
@@ -64,7 +66,7 @@ class TxnPaymentRecordDBBHelper
     constructor(paymentData)
     {
         this.paymentTypeID = paymentData.paymentTypeID;
-        this.amountPaid = paymentData.paidAmount;
+        this.amountPaid = parseFloat(paymentData.amountPaid * paymentData.payExchangeRate);
     }
 }
 
@@ -88,9 +90,8 @@ class TxnRecordDBHelper
         let itemList = txnData.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLineType);
         this.itemList = [];
         itemList.forEach(item => {
-            this.couponList.push(new TxnItemRecordDBHelper(item));
+            this.itemList.push(new TxnItemRecordDBHelper(item));
         });
-        
         
         this.totalPrice = txnData.totalPrice;
         this.discountAmt = txnData.discountAmt;
@@ -106,7 +107,7 @@ class TxnRecordDBHelper
 
     async insertToDB()
     {
-        const dBObj = new UserDBModel(this);
+        const dBObj = new TxnRecordDBModel(this);
         const mongoResult = await dBObj.save();
         return;
     }
@@ -116,14 +117,14 @@ class TxnRecordDBHelper
         for(var i = 0 ; i < elements.length ; i++)
         {
             elements[i].insertToDB();
-        }   
+        }
     }
 
     // READ 
     static async getLastTxn()            
     {
         const dbLastTxn = await TxnRecordDBModel.find().sort({ txnNumber: -1 }).limit(1);
-        return dbLastTxn;
+        return dbLastTxn[0];
     }
     
 }

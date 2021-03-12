@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const Constants = require('../Constants').Constants;
 const UserDBHelper = require('../dbCollections/UserDB').UserDBHelper;
 const UserDBModel = require('../dbCollections/UserDB').UserDBModel;
+const Data = require('../DTOs/Data').Data;
 
 router.use(express.json());
 
@@ -103,13 +104,14 @@ router.post('/signOut', async function(req,res)
 {
     try
     {
-        let data = process.posData.data;
+        process.posData = {
+            data : new Data() ,
+            txns : [] 
+        };
 
-        data.userEmail = "";
+        let data = process.posData.data;
         data.flowSuccess = true;
         data.errorMsg = "";
-        data.posState = Constants.PosState.signedOff;
-        
         process.posData.data = data;
         process.posData.txns = [];
         

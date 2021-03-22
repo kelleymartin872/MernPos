@@ -20,10 +20,10 @@ const ItemLineComponent = (props) =>
     render.push ( 
         <div key={item.lineNumber} style={lineStyle} className="row" >
             <div className="col-5"> {item.itemName} </div>
-            <div className="col-1"> {item.itemQty} </div>
+            <div className="col-1" style={rightAlign}> {item.itemQty} </div>
             <div className="col-1"> &times; </div>
-            <div className="col-2"  style={rightAlign}> {item.itemPrice} </div>
-            <div  className="col-3" style={rightAlign}> {item.totalPrice} </div>
+            <div className="col-2" style={rightAlign}> {item.itemPrice} </div>
+            <div className="col-3" style={rightAlign}> {item.totalPrice} </div>
         </div>
     );
     

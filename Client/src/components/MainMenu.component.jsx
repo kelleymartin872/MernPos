@@ -58,13 +58,13 @@ export default class MainMenu extends Component
     componentDidMount()
     {
         let buttons = [
-            new MenuButton(1,"Add Item", "add-item"),
-            new MenuButton(2,"Return Item", "return-item"),
-            new MenuButton(3,"Change Qty", "change-qty"),
-            new MenuButton(4,"Line Disc", "line-disc"),
-            new MenuButton(5,"Total Disc", "total-disc"),
-            new MenuButton(7,"Add Customer", "add-customer"),
-            new MenuButton(8,"Remove Line", "remove-line"),
+            new MenuButton(Constants.MenuButtonID.AddItem,"Add Item", "add-item"),
+            new MenuButton(Constants.MenuButtonID.ReturnItem,"Return Item", "return-item"),
+            new MenuButton(Constants.MenuButtonID.ChangeQty,"Change Qty", "change-qty"),
+            new MenuButton(Constants.MenuButtonID.LineDisc,"Line Disc", "line-disc"),
+            new MenuButton(Constants.MenuButtonID.TotalDisc,"Total Disc", "total-disc"),
+            new MenuButton(Constants.MenuButtonID.AddCustomer,"Add Customer", "add-customer"),
+            new MenuButton(Constants.MenuButtonID.RemoveLine,"Remove Line", "remove-line"),
         ]; 
 
         let buttonDict = [[],[],[],[],[],[]];

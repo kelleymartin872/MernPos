@@ -21,9 +21,9 @@ class ItemLine extends TxnLine
         this.itemQty = qty;
         this.totalPrice  = this.itemQty * this.itemPrice;
         
-        if(itemData.discountDesc && itemData.discountDesc != "" && itemData.discountAmt != 0)
+        if(qty > 0 && itemData.discountDesc && itemData.discountDesc != "" && itemData.discountAmt != 0)
         {
-            this.discount = new DiscountLine(itemData.discountDesc, itemData.discountAmt);
+            this.discount = new DiscountLine(itemData.discountDesc,  itemData.discountAmt, qty);
         }
     }
 
@@ -31,10 +31,13 @@ class ItemLine extends TxnLine
     {
         this.itemQty = qty;
         this.itemTotalPrice  = this.itemQty * this.itemPrice;
-        if(this.discount.discountAmt > 0)
+        if(this.discount && this.discount.discountAmt != 0)
         {
+            this.discount.discountAmt = this.discount.discountUnitAmt * qty
         }
+        return;
     }
+
     removeQty()
     {
         if(this.itemQty < 1) 

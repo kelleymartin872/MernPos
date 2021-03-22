@@ -82,4 +82,51 @@ router.post('/addItemTxn', async function(req,res)
     return;
 });
 
+
+router.post('/setItemQty', async function(req,res)
+{
+    try
+    {
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = false;
+        
+        let transaction = process.posData.txns[0];
+        if(!transaction)
+        {
+            res.status(500).send("Transaction is not defined!");
+            return;
+        }
+
+        let itemObj = transaction.getObjFromLineNmbr(req.body.lineNumber)
+        if(itemObj.lineTypeID != Constants.TxnLineType.ItemLine)
+        {
+            res.status(400).send("Selected Line is not an Item!");
+            return;
+        }
+        
+        if(req.body.itemQty && req.body.itemQty != "")
+            qty = parseInt(req.body.itemQty);
+        else    
+        {
+            res.status(400).send("Item Qty not set");
+            return;
+        }
+        
+        itemObj.setQty(qty);
+        transaction.refreshTxn();
+        
+        process.posData.txns[0] = transaction;
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+        res.send(process.posData);
+    }
+    catch(ex)
+    {
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
+    }
+    return;
+});
+
 module.exports = router;

@@ -70,7 +70,7 @@ class AddCustomer extends Form
         
             <div style={{ marginLeft:"5%", width:"90%"}} >
                             
-                <div className="modal-lg" style={{width:"100%" , marginTop:"-30px" ,fontSize:"18px"}}  >
+                <div className="modal-lg" style={{width:"100%" , margin:"auto" ,fontSize:"18px"}}  >
           
                     <div className="modal-content" style={{width:"100%"}}>     
                         <div key="modal-header" className="modal-header">

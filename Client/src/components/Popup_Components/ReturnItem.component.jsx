@@ -5,7 +5,7 @@ import Joi from 'joi-browser';
 import ItemService from '../../apiServices/ItemService';
 import Loading from './Loading.component';
 
-class AddItem extends Form 
+class ReturnItem extends Form 
 {
     state = { 
         isLoading:false,
@@ -54,7 +54,7 @@ class AddItem extends Form
         let reqObj = {
             itemId: itemId ,
             itemName: "",
-            itemQty: 1
+            itemQty: -1
         };
 
         service.addItemTxn(reqObj).then(res =>
@@ -148,4 +148,4 @@ class AddItem extends Form
 
 }
  
-export default AddItem;
+export default ReturnItem;

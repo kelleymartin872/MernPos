@@ -4,14 +4,15 @@ const TxnLine = require('./TxnLine').TxnLine;
 
 class DiscountLine extends TxnLine
 {
-    constructor(discountDesc, discountAmt)
+    constructor(discountDesc, discountAmt, qty)
     {
         super();
         this.lineName = Constants.TxnLineName.DiscountLine;
         this.lineTypeID = Constants.TxnLineType.DiscountLine;
 
         this.discountDesc = discountDesc;
-        this.discountAmt = discountAmt;
+        this.discountUnitAmt = discountAmt;    
+        this.discountAmt = qty * discountAmt;
     }
 }
 

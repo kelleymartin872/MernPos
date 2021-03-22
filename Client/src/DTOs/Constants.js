@@ -71,5 +71,19 @@ export default class Constants
         }
         return APIUrl;
     }
+
+    static get MenuButtonID()
+    {
+        const MenuButtonID = {
+            AddItem : 1,
+            ReturnItem : 2,
+            ChangeQty : 3,
+            LineDisc : 4,
+            TotalDisc : 5,
+            AddCustomer : 7,
+            RemoveLine : 8
+        }
+        return MenuButtonID;
+    }
     
 }

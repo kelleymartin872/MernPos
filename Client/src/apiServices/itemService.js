@@ -39,4 +39,18 @@ export default class ItemService
         return apiService.getResponse();
     }
 
+    setItemQty(reqObj={})
+    {
+        /* Request structure
+        reqObj = {
+            "lineNumber": "3",
+            "itemQty": 2
+        };
+        */
+
+        const reqUrl = this.url + "setItemQty";
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
+    }
+
 }

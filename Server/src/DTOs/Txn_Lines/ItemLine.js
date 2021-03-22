@@ -30,20 +30,12 @@ class ItemLine extends TxnLine
     setQty(qty)
     {
         this.itemQty = qty;
-        this.itemTotalPrice  = this.itemQty * this.itemPrice;
+        this.totalPrice  = this.itemQty * this.itemPrice;
         if(this.discount && this.discount.discountAmt != 0)
         {
             this.discount.discountAmt = this.discount.discountUnitAmt * qty
         }
         return;
-    }
-
-    removeQty()
-    {
-        if(this.itemQty < 1) 
-            return;
-        this.itemQty -= 1;
-        this.itemTotalPrice = this.itemQty * this.itemPrice;
     }
 
     addDiscount()

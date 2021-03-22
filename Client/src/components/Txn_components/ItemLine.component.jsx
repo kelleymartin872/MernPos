@@ -24,7 +24,6 @@ const ItemLineComponent = (props) =>
             <div className="col-1"> &times; </div>
             <div className="col-2"  style={rightAlign}> {item.itemPrice} </div>
             <div  className="col-3" style={rightAlign}> {item.totalPrice} </div>
-            
         </div>
     );
     

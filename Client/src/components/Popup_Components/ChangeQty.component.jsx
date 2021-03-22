@@ -46,7 +46,7 @@ class ChangeQty extends Form
                 this.setState({formError : "Quantity must be negative"});
                 return;
             }
-            if((currQty < 0 && inputQty < 0))
+            if((currQty < 0 && inputQty > 0))
             {
                 this.setState({formError : "Quantity must be positive"});
                 return;

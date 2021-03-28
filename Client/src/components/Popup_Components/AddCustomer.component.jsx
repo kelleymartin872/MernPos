@@ -58,7 +58,7 @@ class AddCustomer extends Form
 
         service.addCustomerTxn(reqObj).then(res =>
         {
-            this.props.onCancel();
+            this.props.doClose();
         });
     }
 
@@ -76,7 +76,7 @@ class AddCustomer extends Form
                         <div key="modal-header" className="modal-header">
                             <h4 className="modal-title" style={{margin:"auto"}}> Search for Customer </h4> 
                             <button type="button" style={{fontSize:"25px" , marginLeft:"0px" }} 
-                                onClick={() => this.props.onCancel()}  className="close" >
+                                onClick={() => this.props.doClose()}  className="close" >
                                  &times;
                             </button>
                         </div>

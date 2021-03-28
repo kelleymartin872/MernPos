@@ -10,7 +10,7 @@ class FooterLine extends TxnLine
         this.lineName = Constants.TxnLineName.FooterLine;
         this.lineTypeID = Constants.TxnLineType.FooterLine;
         
-        this.description = "Txn Footer";
+        this.description = "Thank you for shopping with us!";
         this.txnNumber = txnNumber;
         this.userEmail = userEmail;
     }

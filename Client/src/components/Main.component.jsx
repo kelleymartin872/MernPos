@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { withResizeDetector } from 'react-resize-detector';
+import Swal from 'sweetalert2'
 
 import Constants from '../DTOs/Constants' 
 
@@ -103,6 +104,40 @@ class MainComponent extends Component
             
             this.state.clientData.isLoading = false;
             this.refreshUI(this.state.clientData);
+        }
+        catch(ex)
+        {
+            console.error(ex);
+            this.state.clientData.internalError = true;
+            this.setState({ 
+                clientData : this.state.clientData
+            });
+        }
+    };
+
+    endTxn = async() => 
+    {
+        try
+        {
+            let txnService = new TransactionService();
+            txnService.endTxn().then(res =>
+            {
+                if(res.data.flowSuccess === true)
+                {
+                    Swal.fire(
+                        'Transaction complete!','',
+                        'success'
+                    );
+                    
+                    txnService.newTxn().then(res =>
+                    {
+                        this.state.clientData.isLoading = false;
+                        this.state.clientData.modalPopupId = -1;
+                        this.refreshUI(this.state.clientData);
+                    });
+                }
+            });
+
         }
         catch(ex)
         {
@@ -280,10 +315,12 @@ class MainComponent extends Component
                         onChangeState={() => this.refreshUI()} /> 
                     
                     { this.state.clientData.modalPopupId > 0 && 
-                        <ModalPopup modalId={this.state.clientData.modalPopupId} onModalClose={this.closeModal} 
+                        <ModalPopup modalId={this.state.clientData.modalPopupId} 
+                            onModalClose={this.closeModal} endTxn={this.endTxn}  
                             clientData={this.state.clientData} 
                             serverData={this.state.serverData} 
-                            transaction={transaction}  /> 
+                            transaction={transaction} 
+                            /> 
                     }
 
                 </div>

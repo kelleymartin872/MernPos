@@ -37,7 +37,7 @@ class ChangeQty extends Form
             let currQty = parseInt(this.props.itemObj.itemQty);
             if(inputQty === currQty)
             {
-                this.props.onCancel();
+                this.props.doClose();
                 return;
             }
 
@@ -62,7 +62,7 @@ class ChangeQty extends Form
             
             service.setItemQty(reqObj).then(res =>
             {
-                this.props.onCancel();
+                this.props.doClose();
             });
             this.setState({ isLoading:false });
         }
@@ -98,7 +98,7 @@ class ChangeQty extends Form
                 <button
                     type="button" className="btn btn-danger" 
                     id="signIn_FormSubmit" style={{width: "48%"}} 
-                    onClick={() => this.props.onCancel()}  > 
+                    onClick={() => this.props.doClose()}  > 
                     Cancel
                 </button>
                 <button

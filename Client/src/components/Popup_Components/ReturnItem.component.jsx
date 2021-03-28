@@ -59,7 +59,7 @@ class ReturnItem extends Form
 
         service.addItemTxn(reqObj).then(res =>
         {
-            this.props.onCancel();
+            this.props.doClose();
         });
     }
 
@@ -77,7 +77,7 @@ class ReturnItem extends Form
                         <div key="modal-header" className="modal-header">
                             <h4 className="modal-title" style={{margin:"auto"}}> Search for item </h4> 
                             <button type="button" style={{fontSize:"25px" , marginLeft:"0px" }} 
-                                onClick={() => this.props.onCancel()}  className="close" >
+                                onClick={() => this.props.doClose()}  className="close" >
                                  &times;
                             </button>
                         </div>

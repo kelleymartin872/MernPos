@@ -48,21 +48,12 @@ class Payment extends Form
         {
             if(res.txns[0].amountOwed === 0)
             {
-                let txnService = new TransactionService();
-                txnService.endTxn().then(res =>
-                {
-                    if(res.data.flowSuccess === true)
-                    {
-                        txnService.newTxn().then(res =>
-                        {
-                            this.props.onCancel();
-                        });
-                    }
-                });
+                this.props.endTxn();
+                this.setState({ isLoading:false });
             }
             else
             {
-                this.props.onCancel();
+                this.props.doClose();
             }
         });
     }
@@ -92,7 +83,7 @@ class Payment extends Form
                 <button
                     type="button" className="btn btn-danger" 
                     id="signIn_FormSubmit" style={{width: "48%"}} 
-                    onClick={() => this.props.onCancel()}  > 
+                    onClick={() => this.props.doClose()}  > 
                     Cancel
                 </button>
                 <button

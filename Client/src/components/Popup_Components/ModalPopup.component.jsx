@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import AddItem from '../Popup_Components/AddItem.component';
 import ReturnItem from '../Popup_Components/ReturnItem.component';
 import AddCustomer from '../Popup_Components/AddCustomer.component';
+import ReturnReceipt from '../Popup_Components/ReturnReceipt.component';
 import Payment from './Payment.component';
 import ChangeQty from './ChangeQty.component';
 import Constants from '../../DTOs/Constants'
@@ -128,6 +129,10 @@ class ModalPopup extends Component {
                     transaction = {this.props.transaction} /> 
         }
         
+        if(this.props.modalId === Constants.MenuButtonID.ReturnReceipt)
+            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} />
+            
+
         return ( 
             <div  style={innerlayStyle} >
                 <div style={overlayStyle} >

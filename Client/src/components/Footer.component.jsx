@@ -45,11 +45,32 @@ export default class Footer extends Component
         });
     }
 
+    checkReturnReceipt()
+    {
+        let backDisabled = false;
+        try
+        {
+            let headerLine = this.props.transaction.txnList.find(x => x.lineTypeID === Constants.TxnLineType.HeaderLine);
+            if(headerLine && headerLine.orgTxnNumber)
+            {
+                backDisabled = true;
+            }
+        }
+        catch(ex)
+        {
+            backDisabled = false;
+            console.error(ex);
+        }
+        return backDisabled;
+    }
+
     render() 
     { 
         let currentState = this.props.serverData.posState;
         let nextDisabled = currentState !== Constants.PosState.itemState;
         let backDisabled = currentState !== Constants.PosState.payState;
+        
+        backDisabled = this.checkReturnReceipt();
 
         const mainStyle={ 
             width: "100%",

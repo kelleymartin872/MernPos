@@ -27,7 +27,7 @@ const ItemLineComponent = (props) =>
         </div>
     );
     
-    if(item.discount && item.discount.discountDesc )
+    if(item.discount && item.discount.discountAmt && item.discount.discountAmt !== 0 )
     {
         render.push ( 
             <div key={item.discount.discountDesc} style={discLineStyle} className="row" >

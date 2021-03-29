@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const HeaderLine = require('./Txn_Lines/HeaderLine').HeaderLine;
 const CustomerLine = require('./Txn_Lines/CustomerLine').CustomerLine;
+const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper;
 const ItemLine = require('./Txn_Lines/ItemLine').ItemLine;
 const TotalLine = require('./Txn_Lines/TotalLine').TotalLine;
 const Constants = require('../Constants').Constants;
@@ -224,8 +225,51 @@ class Transaction
             }); 
         }
         catch (err) {
+            console.error(err);
+        }
+    }
+
+    async performReturnReceipt(orgTxn)
+    {
+        let success = false;
+        try
+        {
+            let headerLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.HeaderLine);
+            headerLine.orgTxnNumber = orgTxn.txnNumber;
+
+            orgTxn.itemList.forEach(item => {
+                
+                let itemData = {
+                    itemId : item.itemId,
+                    itemName : item.itemName,
+                    itemPrice : item.totalPrice / item.itemQty,
+                    discountDesc : item.discountDesc,  
+                    discountAmt : item.discountAmt
+                };
+
+                let itemLine = new ItemLine(itemData, item.itemQty);
+                itemLine.setAsReturnItem(itemData.discountDesc,itemData.discountAmt);
+                this.AddLine(itemLine);
+            });
+
+            if(orgTxn.customerID && orgTxn.customerID != "")
+            {
+                var customers = await CustomerDBHelper.getCustomerByID(orgTxn.customerID);
+                if(customers.length > 0)
+                {
+                    let custLine = new CustomerLine(customers[0]);
+                    this.AddLine(custLine);
+                }
+            }
+
+            this.refreshTxn();
+            success = true;
+        }
+        catch(err) {
+            success = false;
             console.error(err)
         }
+        return success;
     }
 }
 

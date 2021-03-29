@@ -42,6 +42,23 @@ class ItemLine extends TxnLine
     {
         this.discount -= 10;
     }
+
+    setAsReturnItem(discountDesc,discountAmt)
+    {
+        if(this.itemQty < 0) 
+            return;
+
+        this.itemQty = -1 * this.itemQty;
+        this.totalPrice  = this.itemQty * this.itemPrice;
+
+        
+        if(discountDesc != "" && discountAmt != 0)
+        {
+            this.discount = new DiscountLine(discountDesc,  discountAmt, this.itemQty);
+        }
+
+        return;
+    }
 }
 
 module.exports.ItemLine = ItemLine;

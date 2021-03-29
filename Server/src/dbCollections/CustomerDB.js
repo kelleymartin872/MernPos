@@ -47,13 +47,18 @@ class CustomerDBHelper
         return dbCustomers.filter(x =>  x.custName.toString().toLowerCase().includes(body.custName.toString().toLowerCase()) 
                                     &&  x.phoneNumber.toString().toLowerCase().includes(body.phoneNumber.toString().toLowerCase()));
         
-        
     }
      
     static async getCustomerByPhoneNumber(number)            
     {
         let dbCustomers = await CustomerDBModel.find();
         return dbCustomers.find(x => x.phoneNumber.toString().toLowerCase() === number.toString().toLowerCase());
+    }
+    
+    static async getCustomerByID(custID)            
+    {
+        let dbCustomers = await CustomerDBModel.find();
+        return dbCustomers.find(x => x.custID.toString().toLowerCase() === custID.toString().toLowerCase());
     }
 
     static validate(cust) 

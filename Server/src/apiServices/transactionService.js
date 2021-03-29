@@ -172,4 +172,89 @@ router.post('/endTxn', async function(req,res)
     return;
 });
 
+router.post('/getReceipt', async function(req,res)
+{
+    try
+    {
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = false;
+
+        var returnTxn = await TxnRecordDBHelper.getTxnByNmbr(parseInt(req.body.TxnNmbr));
+        
+        if(!returnTxn)
+        {
+            process.posData.data.flowSuccess = false;
+            process.posData.data.errorMsg = "Txn was not found!";
+            res.status(404).send(process.posData);
+            return;
+        }
+
+        if(process.posData.txns.length == 0)
+            process.posData.txns.push({});
+        if(process.posData.txns.length == 1)
+            process.posData.txns.push(returnTxn);
+        if(process.posData.txns.length == 2)
+            process.posData.txns[1] = returnTxn;
+        
+        process.posData.data.flowSuccess = true;
+        process.posData.data.errorMsg = "";
+        res.send(process.posData);
+    }
+    catch(ex)
+    {
+        process.posData.data.errorMsg = ex.message;
+        process.posData.data.flowSuccess = false;
+        res.status(500).send(process.posData);
+    }
+    return;
+});
+
+
+router.post('/returnReceipt', async function(req,res)
+{
+    try
+    {
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = false;
+        let txns = process.posData.txns;
+        let transaction = txns[0];
+
+        var returnTxn = await TxnRecordDBHelper.getTxnByNmbr(parseInt(req.body.TxnNmbr));
+        
+        if(!returnTxn)
+        {
+            process.posData.data.flowSuccess = false;
+            process.posData.data.errorMsg = "Txn was not found!";
+            res.status(404).send(process.posData);
+            return;
+        }
+
+        if(process.posData.txns.length == 0)
+            process.posData.txns.push({});
+        if(process.posData.txns.length == 1)
+            process.posData.txns.push(returnTxn);
+        if(process.posData.txns.length == 2)
+            process.posData.txns[1] = returnTxn;
+            
+        let success = await transaction.performReturnReceipt(returnTxn);
+        if(!success)
+        {
+            res.send(process.posData);
+            return;
+        }
+        
+        process.posData.data.flowSuccess = true;
+        process.posData.data.errorMsg = "";
+        res.send(process.posData);
+    }
+    catch(ex)
+    {
+        process.posData.data.errorMsg = ex.message;
+        process.posData.data.flowSuccess = false;
+        res.status(500).send(process.posData);
+    }
+    return;
+});
+
+
 module.exports = router;

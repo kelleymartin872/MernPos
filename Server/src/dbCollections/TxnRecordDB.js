@@ -5,6 +5,7 @@ const Constants = require('../Constants').Constants;
 
 const txnItemRecordDBSchema = new mongoose.Schema({
     itemId: {type: Number, required : true},
+    itemName: String,
     itemQty: {type: Number, required : true},
     totalPrice: {type: Number, required : true},
     discountAmt: {type: Number, required : true}
@@ -43,11 +44,17 @@ class TxnItemRecordDBHelper
     constructor(itemData)
     {
         this.itemId = itemData.itemId;
+        this.itemName = itemData.itemName;
         this.itemQty = itemData.itemQty;
         this.totalPrice  = itemData.totalPrice;
+
         this.discountAmt = 0;
+        this.discountDesc = "";
         if(itemData.discount)
+        {
             this.discountAmt = itemData.discount.discountAmt;
+            this.discountDesc = itemData.discount.discountDesc;
+        }
     }
 }
 
@@ -76,6 +83,10 @@ class TxnRecordDBHelper
     {
         this.txnNumber = txnData.txnNumber;
         this.userEmail = txnData.userEmail;
+        
+        let headerLine = txnData.txnList.find(x => x.lineTypeID === Constants.TxnLineType.HeaderLine);
+        if(headerLine && headerLine.orgTxnNumber)
+            this.orgTxnNumber = headerLine.orgTxnNumber;
         
         let customer = txnData.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
         if(customer)
@@ -121,12 +132,17 @@ class TxnRecordDBHelper
     }
 
     // READ 
-    static async getLastTxn()            
+    static async getLastTxn()
     {
         const dbLastTxn = await TxnRecordDBModel.find().sort({ txnNumber: -1 }).limit(1);
         return dbLastTxn[0];
     }
     
+    static async getTxnByNmbr(TxnNmbr)
+    {
+        const dbTxns = await TxnRecordDBModel.find();
+        return dbTxns.find(x => x.txnNumber === TxnNmbr);
+    }
 }
 
 module.exports.TxnItemRecordDBHelper = TxnItemRecordDBHelper;

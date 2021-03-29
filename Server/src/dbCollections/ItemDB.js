@@ -42,7 +42,7 @@ class ItemDBHelper
     static async getItems(body)
     {
         const dbItems = await ItemDBModel.find();
-        return dbItems.filter(x => x.itemId.toLowerCase().includes(body.itemId.toLowerCase()) 
+        return dbItems.filter(x => x.itemId.toLowerCase().includes(body.itemId) 
                                 && x.itemName.toLowerCase().includes(body.itemName.toLowerCase()));
     }
 }

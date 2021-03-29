@@ -271,9 +271,10 @@ class MainComponent extends Component
 
             if(this.state.clientData.internalError) 
             {
-                return ( 
-                    <Error onRefresh = {this.signOff} isLoading={this.state.clientData.isLoading} />
-                );
+                Swal.fire({
+                    type: 'error',
+                    text: 'Selected line could not be removed.'
+                });
             }
             
             let transaction = this.state.transactions[0];

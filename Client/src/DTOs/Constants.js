@@ -81,7 +81,8 @@ export default class Constants
             LineDisc : 4,
             TotalDisc : 5,
             AddCustomer : 7,
-            RemoveLine : 8
+            RemoveLine : 8,
+            ReturnReceipt : 9
         }
         return MenuButtonID;
     }

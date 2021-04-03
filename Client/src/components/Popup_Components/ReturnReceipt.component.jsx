@@ -21,8 +21,8 @@ class ReturnReceipt extends Form
     };
 
     schema = {
-        TxnNmbr : Joi.number(),
-        TxnDate : Joi
+        TxnDate : Joi,
+        TxnNmbr : Joi.number()
     };
     
     
@@ -32,6 +32,7 @@ class ReturnReceipt extends Form
         
         let service = new TransactionService();
         let reqObj = {
+            TxnDate: this.state.formData.TxnDate,
             TxnNmbr: this.state.formData.TxnNmbr 
         };
 
@@ -73,16 +74,21 @@ class ReturnReceipt extends Form
         let render = [];
         render.push(
             <div key="modal-header" className="modal-header">
-                <h3 className="modal-title" style={{margin:"auto"}}>Return Receipt</h3>
+                <h4 className="modal-title" style={{margin:"auto"}}> Return Receipt </h4> 
+                
+                <button type="button" style={{fontSize:"25px" , marginLeft:"0px" }} 
+                    onClick={() => this.props.doClose()}  className="close" >
+                    &times;
+                </button>
             </div>
         );
 
         render.push(
             <div key="modal-body" className="modal-body">
-                <form>
-                    <Input name="TxnNmbr" type="text" value={formData.TxnNmbr} onChange={this.handleInputChange}  />
+                <form> 
                     <Input name="TxnDate" type="date" value={formData.TxnDate} onChange={this.handleInputChange}  />
-                </form>
+                    <Input name="TxnNmbr" type="text" value={formData.TxnNmbr} onChange={this.handleInputChange}  />
+                   </form>
             </div>
         );
         
@@ -105,7 +111,6 @@ class ReturnReceipt extends Form
         }
 
         return ( 
-        
             <div style={{paddingTop: "100px"}}>
                 <div className="modal-dialog " role="document">
                     <div className="modal-content">

@@ -46,14 +46,21 @@ class Payment extends Form
 
         payService.performPayment(reqObj).then(res =>
         {
-            if(res.txns[0].amountOwed === 0)
+            if(res.data.flowSuccess === true)
             {
-                this.props.endTxn();
+                if(res.txns[0].amountOwed === 0)
+                {
+                    this.props.endTxn();
+                }
+                else
+                {
+                    this.props.doClose();
+                }
                 this.setState({ isLoading:false });
             }
             else
             {
-                this.props.doClose();
+                this.setState({formError : res.data.errorMsg , isLoading:false})
             }
         });
     }

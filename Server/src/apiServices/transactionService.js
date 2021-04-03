@@ -148,6 +148,7 @@ router.post('/endTxn', async function(req,res)
             return;
         }
 
+        transaction.addCustomerPoints();
         transaction.AddLine(new FooterLine());
         let txnDB = new TxnRecordDBHelper(transaction);
         TxnRecordDBHelper.pushMultiple([txnDB]);
@@ -209,6 +210,29 @@ router.post('/getReceipt', async function(req,res)
     return;
 });
 
+function checkReturnDate(returnTxn, TxnDate)
+{
+    try
+    {
+        let dbYear = returnTxn.Date.getFullYear();
+        let dbMonth = returnTxn.Date.getMonth();
+        let dbDate = returnTxn.Date.getDate();
+
+        let txnDateList = TxnDate.split('-');
+        if(parseInt(txnDateList[0]) == dbYear
+            && parseInt(txnDateList[1]) == dbMonth+1
+            && parseInt(txnDateList[2]) == dbDate )
+        {
+            return true;    
+        }
+    }
+    catch(e)
+    {
+        process.posData.data.errorMsg = e.message;
+    }
+
+    return false;
+}
 
 router.post('/returnReceipt', async function(req,res)
 {
@@ -228,7 +252,16 @@ router.post('/returnReceipt', async function(req,res)
             res.status(404).send(process.posData);
             return;
         }
-
+        if(!checkReturnDate(returnTxn, req.body.TxnDate))
+        {
+            process.posData.data.flowSuccess = false;
+            process.posData.data.errorMsg = "Txn was not found!";
+            res.status(404).send(process.posData);
+            return;
+        }
+        
+        
+        
         if(process.posData.txns.length == 0)
             process.posData.txns.push({});
         if(process.posData.txns.length == 1)

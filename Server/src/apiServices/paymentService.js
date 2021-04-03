@@ -64,12 +64,18 @@ router.post('/performPayment', async function(req,res)
             return;
         }
 
-        let payLine = new PaymentLine(payment , req.body.amountPaid);
-        transaction.AddLine(payLine);
+        let payRes = transaction.performPayment(payment , parseFloat(req.body.amountPaid));
+        if(payRes.success)
+        {
+            process.posData.data.flowSuccess = true;
+            process.posData.data.errorMsg = "";
+        }
+        else
+        {
+            process.posData.data.flowSuccess = false;
+            process.posData.data.errorMsg = payRes.errMsg;
+        }
         process.posData.txns[0] = transaction;
-
-        process.posData.data.errorMsg = "";
-        process.posData.data.flowSuccess = true;
         res.send(process.posData);
     }
     catch(ex)

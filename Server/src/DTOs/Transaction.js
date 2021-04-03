@@ -3,9 +3,11 @@ const fs = require('fs');
 
 const HeaderLine = require('./Txn_Lines/HeaderLine').HeaderLine;
 const CustomerLine = require('./Txn_Lines/CustomerLine').CustomerLine;
+const PaymentDBHelper = require('../dbCollections/PaymentDB').PaymentDBHelper;
 const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper;
 const ItemLine = require('./Txn_Lines/ItemLine').ItemLine;
 const TotalLine = require('./Txn_Lines/TotalLine').TotalLine;
+const PaymentLine = require('./Txn_Lines/PaymentLine').PaymentLine;
 const Constants = require('../Constants').Constants;
 
 class Transaction
@@ -254,10 +256,10 @@ class Transaction
 
             if(orgTxn.customerID && orgTxn.customerID != "")
             {
-                var customers = await CustomerDBHelper.getCustomerByID(orgTxn.customerID);
-                if(customers.length > 0)
+                var customer = await CustomerDBHelper.getCustomerByID(orgTxn.customerID);
+                if(customer)
                 {
-                    let custLine = new CustomerLine(customers[0]);
+                    let custLine = new CustomerLine(customer);
                     this.AddLine(custLine);
                 }
             }
@@ -270,6 +272,66 @@ class Transaction
             console.error(err)
         }
         return success;
+    }
+    
+    performPayment(payDB, amountPaid)
+    {
+        let payRes = {success:false, errMsg:""};
+        try
+        {
+            if(payDB.paymentTypeID == Constants.PaymentType.Points)
+            {
+                let custLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
+                if(custLine && custLine != null)
+                {
+                    payRes.success = this.payCustomerPoints(amountPaid);
+                    if(!payRes.success)
+                    {
+                        payRes.errMsg = "Insufficient balance!";
+                    }
+                    else
+                    {
+                        let payLine = new PaymentLine(payDB, amountPaid);
+                        this.AddLine(payLine);
+                    }
+                }
+                else
+                {
+                    payRes.errMsg = "Please add a customer!";
+                }
+            }
+            else
+            {
+                payRes.success = true;
+                payRes.errMsg = "";
+                let payLine = new PaymentLine(payDB , amountPaid);
+                this.AddLine(payLine);
+            }
+        }
+        catch(e)
+        {
+            payRes.errMsg = e.message;
+        }
+        return payRes;
+    }
+
+    addCustomerPoints()
+    {
+        let custLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
+        if(custLine && custLine != null)
+        {
+            custLine.addPoints(this.amountPaid);
+        }
+    }
+
+    payCustomerPoints(amountPaid)
+    {
+        let custLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
+        if(custLine && custLine != null)
+        {
+            return custLine.payPoints(amountPaid);
+        }
+        return false;
     }
 }
 

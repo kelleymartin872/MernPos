@@ -74,7 +74,8 @@ export default class UserService
     {
         /* Request structure
         reqObj = {
-             "TxnNmbr": "11"
+            "TxnDate": "2021-03-04",
+            "TxnNmbr": "11"
         };
         */
 

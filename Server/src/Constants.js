@@ -56,6 +56,29 @@ class Constants
         }
         return CouponStatus;
     }
+    
+
+    static get PaymentType()
+    {
+        const PaymentType = {
+            INR: 100,
+
+            USD: 201,
+            EUR: 202,
+
+            VISA: 301,
+            MasterCard: 302,
+            AMEX: 303,
+
+            UPI: 401,
+            GPay: 402,
+            PayTM: 403,
+
+            Points: 501,
+            Voucher: 601
+        }
+        return PaymentType;
+    }
 }
 
 module.exports.Constants = Constants;

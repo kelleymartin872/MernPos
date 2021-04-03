@@ -41,7 +41,7 @@ class CustomerDBHelper
     }
     
     // READ 
-    static async getCustomers(body)            
+    static async getCustomers(body)
     {
         let dbCustomers = await CustomerDBModel.find();
         return dbCustomers.filter(x =>  x.custName.toString().toLowerCase().includes(body.custName.toString().toLowerCase()) 
@@ -49,19 +49,27 @@ class CustomerDBHelper
         
     }
      
-    static async getCustomerByPhoneNumber(number)            
+    static async getCustomerByPhoneNumber(number)
     {
         let dbCustomers = await CustomerDBModel.find();
         return dbCustomers.find(x => x.phoneNumber.toString().toLowerCase() === number.toString().toLowerCase());
     }
     
-    static async getCustomerByID(custID)            
+    static async getCustomerByID(custID)
     {
         let dbCustomers = await CustomerDBModel.find();
         return dbCustomers.find(x => x.custID.toString().toLowerCase() === custID.toString().toLowerCase());
     }
+    
+    static async updateCustomerPoints(custID, points)
+    {
+        let dbCustomers = await CustomerDBModel.find();
+        let dbCust = dbCustomers.find(x => x.custID.toString().toLowerCase() === custID.toString().toLowerCase());
+        dbCust.points = parseFloat(points);
+        await dbCust.save();
+    }
 
-    static validate(cust) 
+    static validate(cust)
     {
         if(!/^\d+$/.test(cust.phoneNumber))
         {

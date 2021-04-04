@@ -6,6 +6,7 @@ const TxnRecordDBHelper = require('../dbCollections/TxnRecordDB').TxnRecordDBHel
 const Constants = require('../Constants').Constants;
 const Transaction = require('../Utils/Transaction').Transaction;
 const FooterLine = require('../DTOs/Txn_Lines/FooterLine').FooterLine;
+const ReceiptGenerator = require('../Utils/ReceiptGenerator').ReceiptGenerator;
 
 router.use(express.json());
 
@@ -153,7 +154,10 @@ router.post('/endTxn', async function(req,res)
         let txnDB = new TxnRecordDBHelper(transaction);
         TxnRecordDBHelper.pushMultiple([txnDB]);
         data.posState = Constants.PosState.signedOn;
-        
+                
+        let receiptMaker = new ReceiptGenerator(transaction.txnList);
+        receiptMaker.createPDF();
+
         process.posData.data = data;
         process.posData.txns[0] = transaction;
 

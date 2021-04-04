@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <mate charest="utf-8" />
+    <title>MERNPOS Transaction!</title>
+  </head>
+
+  <body>
+    <h2 style="text-align:center;font-weight:bold;" > MERNPOS Transaction</h2>
+    <div style="margin:10px">
+        {{#each txnList}}
+
+            {{#if this.isHeaderLine }}
+                <div>
+                    <div style="text-align:center; font-weight:bold;" > Transaction number : {{this.txnNumber}} </div>
+                    <hr />
+                </div>
+            {{/if}}
+
+            {{#if this.isCustomerLine }}
+                <div>
+                    <div > 
+                        <span style="font-weight:bold" > Customer : </span> {{this.custName}} 
+                    </div>
+                    <hr />
+                </div>
+            {{/if}}
+            
+
+            {{#if this.isItemLine }}
+                <div style="width:100%">
+                    <div>
+                        <div style="float:left; width:35%" > {{this.itemName}} </div>
+                        <div style="float:left; width:10%; text-align:right"> {{this.itemQty}} </div>
+                        <div style="float:left; width:5% ; text-align:right"> &times; </div>
+                        <div style="float:left; width:20%; text-align:right"> {{this.itemPrice}} </div>
+                        <div style="float:left; width:30%; text-align:right"> {{this.totalPrice}} </div>
+                    </div>
+                    
+                    {{#if this.hasDiscount }}
+                        <div style="color:#0c0" >
+                            <div style="float:left; width:60%" > {{this.discount.discountDesc}} </div>
+                            <div style="float:left; width:40%; text-align:right"> {{this.discount.discountAmt}} </div>
+                        </div> 
+                        <br />
+                    {{/if}}
+                    <br />
+                    <br />
+                </div> 
+            {{/if}}
+
+            {{#if this.isTotalLine }}
+                <div>
+                    <br />
+                    <hr />
+                    <div > 
+                        <span style="float:left; width:50%; font-size:24px; font-weight:bold" > Total Price :</span> 
+                        <span style="float:left; width:50%; font-size:24px; text-align:right" > &#x20b9; {{this.totalPrice}} </span> 
+                    </div>
+                    <br />
+                    <br />
+                    <hr />
+                </div>
+            {{/if}}
+
+            {{#if this.isPaymentLine }}
+                <div>
+                    <br />
+                    <div > 
+                        <span style="float:left; width:50%; " > {{this.paymentName}} </span> 
+                        <span style="float:left; width:50%; text-align:right" > &#x20b9; {{this.amountPaid  }} </span> 
+                    </div>
+                </div>
+            {{/if}}
+
+
+            {{#if this.isFooterLine }}
+                <div>
+                    <br />
+                    <br />
+                    <hr />
+                    <div  >
+                        <div style="text-align:center;font-weight:bold;" > {{this.description}} </div>
+                    </div>
+                </div>
+            {{/if}}
+
+        {{/each}}
+
+    </div>
+  </body>
+</html>

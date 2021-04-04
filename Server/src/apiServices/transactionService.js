@@ -4,7 +4,7 @@ const router = express.Router();
 
 const TxnRecordDBHelper = require('../dbCollections/TxnRecordDB').TxnRecordDBHelper;
 const Constants = require('../Constants').Constants;
-const Transaction = require('../DTOs/Transaction').Transaction;
+const Transaction = require('../Utils/Transaction').Transaction;
 const FooterLine = require('../DTOs/Txn_Lines/FooterLine').FooterLine;
 
 router.use(express.json());

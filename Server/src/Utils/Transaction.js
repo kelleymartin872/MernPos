@@ -1,13 +1,13 @@
 
 const fs = require('fs');
 
-const HeaderLine = require('./Txn_Lines/HeaderLine').HeaderLine;
-const CustomerLine = require('./Txn_Lines/CustomerLine').CustomerLine;
+const HeaderLine = require('../DTOs/Txn_Lines/HeaderLine').HeaderLine;
+const CustomerLine = require('../DTOs/Txn_Lines/CustomerLine').CustomerLine;
 const PaymentDBHelper = require('../dbCollections/PaymentDB').PaymentDBHelper;
 const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper;
-const ItemLine = require('./Txn_Lines/ItemLine').ItemLine;
-const TotalLine = require('./Txn_Lines/TotalLine').TotalLine;
-const PaymentLine = require('./Txn_Lines/PaymentLine').PaymentLine;
+const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
+const TotalLine = require('../DTOs/Txn_Lines/TotalLine').TotalLine;
+const PaymentLine = require('../DTOs/Txn_Lines/PaymentLine').PaymentLine;
 const Constants = require('../Constants').Constants;
 
 class Transaction

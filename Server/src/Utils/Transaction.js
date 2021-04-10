@@ -6,6 +6,7 @@ const CustomerLine = require('../DTOs/Txn_Lines/CustomerLine').CustomerLine;
 const PaymentDBHelper = require('../dbCollections/PaymentDB').PaymentDBHelper;
 const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper;
 const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
+const DiscountLine = require('../DTOs/Txn_Lines/DiscountLine').DiscountLine;
 const TotalLine = require('../DTOs/Txn_Lines/TotalLine').TotalLine;
 const PaymentLine = require('../DTOs/Txn_Lines/PaymentLine').PaymentLine;
 const Constants = require('../Constants').Constants;
@@ -332,6 +333,12 @@ class Transaction
             return custLine.payPoints(amountPaid);
         }
         return false;
+    }
+    
+    addTotalDiscount(discountAmt)
+    {
+        let discountLine = new DiscountLine("Manual Txn Discount", discountAmt, 1);
+        this.AddLine(discountLine);
     }
 }
 

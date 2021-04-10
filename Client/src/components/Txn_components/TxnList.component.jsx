@@ -12,6 +12,18 @@ const TxnList = (props) =>
     const rightAlign={
         textAlign: "right"
     };
+    const notSelectedDiscStyle={
+        cursor: "pointer",
+        color: "#0c0",
+        backgroundColor: "#ffffff",
+        padding:"0px 10px"
+    };
+    const selectedDiscStyle={
+        cursor: "pointer",
+        color: "#0c0",
+        backgroundColor: "#ffdd78",
+        padding:"0px 10px"
+    };
     const selectedStyle={
         cursor: "pointer",
         backgroundColor: "#ffdd78",
@@ -90,6 +102,19 @@ const TxnList = (props) =>
                         <hr className="col-11" style={{margin:"5px",fontWeight:"bold"}} />
                     </div>
                     );
+                break;
+            }
+
+            case(Constants.TxnLineType.DiscountLine):
+            {
+                renderTxn.push ( 
+                    <div key={txnLine.lineNumber} style={(isSelected ? selectedDiscStyle: notSelectedDiscStyle)} 
+                        onClick={() => props.onSelectLine(txnLine.lineNumber)}  className="row">
+                        <div className="col-8"> {txnLine.discountDesc} </div>
+                        <div className="col-4" style={rightAlign}> {txnLine.discountAmt.toFixed(2)} </div>
+                        <hr className="col-10" style={{margin:"5px"}} />
+                    </div>
+                );
                 break;
             }
 

@@ -83,5 +83,18 @@ export default class UserService
         let apiService = new ApiService("POST", reqUrl , reqObj);
         return apiService.getResponse();
     }
+
+    totalDiscount(reqObj={})
+    {
+        /* Request structure
+        reqObj = {
+            "discountAmt": 20.5
+        };
+        */
+
+        const reqUrl = this.url + "totalDiscount";
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
+    }
     
 }

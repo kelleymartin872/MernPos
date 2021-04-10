@@ -53,4 +53,18 @@ export default class ItemService
         return apiService.getResponse();
     }
 
+    lineDiscount(reqObj={})
+    {
+        /* Request structure
+        reqObj = {
+            "lineNumber": "3",
+            "discountAmt": 20.5
+        };
+        */
+
+        const reqUrl = this.url + "lineDiscount";
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
+    }
+    
 }

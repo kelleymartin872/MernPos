@@ -38,11 +38,6 @@ class ItemLine extends TxnLine
         return;
     }
 
-    addDiscount()
-    {
-        this.discount -= 10;
-    }
-
     setAsReturnItem(discountDesc,discountAmt)
     {
         if(this.itemQty < 0) 
@@ -58,6 +53,11 @@ class ItemLine extends TxnLine
         }
 
         return;
+    }
+
+    addLineDiscount(discountAmt)
+    {
+        this.discount = new DiscountLine("Manual Line Discount",  discountAmt, this.itemQty);
     }
 }
 

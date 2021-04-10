@@ -7,6 +7,8 @@ import Payment from './Payment.component';
 import ChangeQty from './ChangeQty.component';
 import Constants from '../../DTOs/Constants'
 import RemoveLine from './RemoveLine.component copy';
+import LineDisc from './LineDisc.component';
+import TotalDisc from './TotalDisc.component';
 
 class ModalPopup extends Component {
     state = {  }
@@ -30,6 +32,36 @@ class ModalPopup extends Component {
         return null;
     }
 
+    getErrorDiv(text)
+    {
+        if(!text || text === "")
+            text = "Unknown error occured!"
+
+        return ( <div>
+                    <div className="modal-dialog " role="document">
+                        <div className="modal-content">
+                            <div key="modal-header" className="modal-header">
+                                <h3 className="modal-title" style={{margin:"auto"}}>  Error! </h3>
+                            </div>
+
+                            <div key="modal-body" className="modal-body">
+                                <div>
+                                    {text} <br/>
+                                </div>
+                            </div>
+
+                            <div key="modal-footer" className="modal-footer">
+                                <button
+                                    type="button" className="btn btn-danger" 
+                                    id="signIn_FormSubmit" style={{width: "99%",backgroundColor:"#f16b52"}} 
+                                    onClick={() => this.props.onModalClose()}  > 
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    </div> 
+                </div>);
+    }
 
     render() 
     { 
@@ -52,48 +84,8 @@ class ModalPopup extends Component {
             paddingTop: "5%"
         };
         
-        let itemLineError =   <div>
-                                <div className="modal-dialog " role="document">
-                                    <div className="modal-content">
-                                        <div key="modal-header" className="modal-header">
-                                            <h3 className="modal-title" style={{margin:"auto"}}>  Error! </h3>
-                                        </div>
 
-                                        <div key="modal-body" className="modal-body">
-                                            <div>
-                                                Please select an Item Line first. <br/>
-                                            </div>
-                                        </div>
-
-                                        <div key="modal-footer" className="modal-footer">
-                                            <button
-                                                type="button" className="btn btn-danger" 
-                                                id="signIn_FormSubmit" style={{width: "99%",backgroundColor:"#f16b52"}} 
-                                                onClick={() => this.props.onModalClose()}  > 
-                                                OK
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div> 
-                            </div>;
-
-        let returnModal =   <div>
-                                <div className="modal-dialog " role="document">
-                                    <div className="modal-content">
-                                        <div key="modal-header" className="modal-header">
-                                            <h3 className="modal-title" style={{margin:"auto"}}>  Function Not Found! </h3>
-                                        </div>
-                                        <div key="modal-footer" className="modal-footer">
-                                            <button
-                                                type="button" className="btn btn-danger" 
-                                                id="signIn_FormSubmit" style={{width: "99%",backgroundColor:"#f16b52"}} 
-                                                onClick={() => this.props.onModalClose()}  > 
-                                                OK
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div> 
-                            </div> ;
+        let returnModal =  this.getErrorDiv("Function Not Found!");
 
         if(this.props.modalId === Constants.MenuButtonID.AddItem)
             returnModal = <AddItem  doClose={() => this.props.onModalClose()} />
@@ -110,8 +102,26 @@ class ModalPopup extends Component {
             if(itemObj && itemObj!=null)
                 returnModal = <ChangeQty itemObj={itemObj} doClose={() => this.props.onModalClose()} />
             else
-                returnModal = itemLineError;
+            returnModal = this.getErrorDiv("Please select an Item Line first");
         }
+
+        if(this.props.modalId === Constants.MenuButtonID.LineDisc)
+        {
+            const itemObj = this.CheckSelectedLine(this.props.clientData.selectedLineNmbr , this.props.transaction);
+            if(itemObj && itemObj!=null)
+                returnModal = <LineDisc itemObj={itemObj} doClose={() => this.props.onModalClose()} />
+            else
+            returnModal = this.getErrorDiv("Please select an Item Line first");
+        }
+
+        if(this.props.modalId === Constants.MenuButtonID.TotalDisc)
+        {
+            if(this.props.transaction.txnList.some(x => x.lineTypeID === Constants.TxnLineType.ItemLine))
+                returnModal = <TotalDisc transaction = {this.props.transaction} doClose={() => this.props.onModalClose()} />
+            else
+                returnModal = this.getErrorDiv("Please select an Item Line first");
+        }
+
         if(this.props.modalId === Constants.MenuButtonID.RemoveLine)
         {
             const selectedLineNmbr = this.props.clientData.selectedLineNmbr;

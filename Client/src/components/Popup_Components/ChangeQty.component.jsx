@@ -12,7 +12,6 @@ class ChangeQty extends Form
 {
     state = { 
         isLoading:false,
-        payment: {},
         formData: {
             itemQty : ""
         },
@@ -62,9 +61,16 @@ class ChangeQty extends Form
             
             service.setItemQty(reqObj).then(res =>
             {
-                this.props.doClose();
+                if(res.data.flowSuccess === true)
+                {
+                    this.setState({ isLoading:false });
+                    this.props.doClose();
+                }
+                else
+                {
+                    this.setState({formError : res.data.errorMsg , isLoading:false})
+                }
             });
-            this.setState({ isLoading:false });
         }
         catch(e)
         {

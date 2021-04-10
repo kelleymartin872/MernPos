@@ -28,19 +28,30 @@
             
 
             {{#if this.isItemLine }}
+                {{#if this.isFirstItemLine }}
+                <div>
+                    <div>
+                        <div style="float:left; width:35%" > Item Name </div>
+                        <div style="float:left; width:15%; text-align:right"> Quantity </div>
+                        <div style="float:left; width:20%; text-align:right"> Price </div>
+                        <div style="float:left; width:30%; text-align:right"> Total </div>
+                    </div>
+                    <hr />
+                </div>
+                {{/if}}
                 <div style="width:100%">
                     <div>
                         <div style="float:left; width:35%" > {{this.itemName}} </div>
                         <div style="float:left; width:10%; text-align:right"> {{this.itemQty}} </div>
                         <div style="float:left; width:5% ; text-align:right"> &times; </div>
                         <div style="float:left; width:20%; text-align:right"> {{this.itemPrice}} </div>
-                        <div style="float:left; width:30%; text-align:right"> {{this.totalPrice}} </div>
+                        <div style="float:left; width:30%; text-align:right"> {{toFixed this.totalPrice 2}} </div>
                     </div>
                     
                     {{#if this.hasDiscount }}
                         <div style="color:#0c0" >
                             <div style="float:left; width:60%" > {{this.discount.discountDesc}} </div>
-                            <div style="float:left; width:40%; text-align:right"> {{this.discount.discountAmt}} </div>
+                            <div style="float:left; width:40%; text-align:right"> {{ toFixed this.discount.discountAmt 2 }} </div>
                         </div> 
                         <br />
                     {{/if}}
@@ -49,13 +60,23 @@
                 </div> 
             {{/if}}
 
+            {{#if this.isDiscountLine }}
+                <div>
+                    <div style="color:#0a0" >
+                        <div style="float:left; width:60%" > {{this.discountDesc}} </div>
+                        <div style="float:left; width:40%; text-align:right"> {{ toFixed this.discountAmt 2 }} </div>
+                    </div> 
+                    <br />
+                </div>
+            {{/if}}
+
             {{#if this.isTotalLine }}
                 <div>
                     <br />
                     <hr />
                     <div > 
                         <span style="float:left; width:50%; font-size:24px; font-weight:bold" > Total Price :</span> 
-                        <span style="float:left; width:50%; font-size:24px; text-align:right" > &#x20b9; {{this.totalPrice}} </span> 
+                        <span style="float:left; width:50%; font-size:24px; text-align:right" > &#x20b9; {{ toFixed this.totalPrice 2 }} </span> 
                     </div>
                     <br />
                     <br />
@@ -68,7 +89,7 @@
                     <br />
                     <div > 
                         <span style="float:left; width:50%; " > {{this.paymentName}} </span> 
-                        <span style="float:left; width:50%; text-align:right" > &#x20b9; {{this.amountPaid  }} </span> 
+                        <span style="float:left; width:50%; text-align:right" > &#x20b9; {{ toFixed this.amountPaidINR 2  }} </span> 
                     </div>
                 </div>
             {{/if}}

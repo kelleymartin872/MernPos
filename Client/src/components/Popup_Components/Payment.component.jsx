@@ -56,7 +56,6 @@ class Payment extends Form
                 {
                     this.props.doClose();
                 }
-                this.setState({ isLoading:false });
             }
             else
             {

@@ -1,7 +1,9 @@
-var pdf = require("pdf-creator-node");
+
 var fs = require("fs");
 var path = require("path");
 const Constants  = require("../Constants").Constants;
+var Handlebars = require("handlebars");
+var pdf = require("html-pdf");
 
 class ReceiptGenerator 
 {
@@ -24,6 +26,7 @@ class ReceiptGenerator
             path: "./TxnReceipts/"+this.fileName ,
             type: "" // "stream" || "buffer" || "" ("" defaults to pdf)
           };
+        this.setHelpers();
     }
     
     setFilename()
@@ -37,14 +40,22 @@ class ReceiptGenerator
         this.data = {};
         this.data.txnList = this.txnList;
         let headerLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.HeaderLine);
-        headerLine.isHeaderLine = true;
+        if(headerLine)
+            headerLine.isHeaderLine = true;
 
         let customerLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
-        customerLine.isCustomerLine = true;
+        if(customerLine)
+            customerLine.isCustomerLine = true;
 
         let itemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine);
+        let firstItemFound = false;
         itemList.forEach(item => {
             item.isItemLine = true;
+            if(!firstItemFound)
+            {
+                item.isFirstItemLine = true;
+                firstItemFound = true;
+            }   
             if(item.discount && item.discount.discountAmt && item.discount.discountAmt !== 0 )
                 item.hasDiscount = true;
         });
@@ -60,7 +71,8 @@ class ReceiptGenerator
         });        
 
         let totalLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.TotalLine);
-        totalLine.isTotalLine = true;
+        if(totalLine)
+            totalLine.isTotalLine = true;
         
         let payList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.PaymentLine);
         payList.forEach(pay => {
@@ -68,21 +80,37 @@ class ReceiptGenerator
         });        
 
         let footerLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.FooterLine);
-        footerLine.isFooterLine = true;
+        if(footerLine)
+            footerLine.isFooterLine = true;
 
         return;
     }
 
+    setHelpers()
+    {
+        this.document.helper = [];
+        this.document.helper.push({name:"toFixed", function : (number,places) => {
+            return number.toFixed(places);
+        }});
+    }
+
     createPDF()
     {
-        return new Promise((resolve,reject) => {
-            pdf.create(this.document, this.options)
-                .then((res) => {
-                    resolve(res);
-                })
-                .catch((err) => {
-                    reject(err);
+        return new Promise((resolve, reject) => {
+            // use helpers
+            if(this.document.helper)
+            {
+                this.document.helper.forEach(element => {
+                    Handlebars.registerHelper(element.name, element.function);
                 });
+            }
+            
+            var html = Handlebars.compile(this.document.html)(this.document.data);
+            var pdfPromise = pdf.create(html, this.options);
+            pdfPromise.toFile(this.document.path, (err, res) => {
+                if (!err) resolve(res);
+                else reject(err);
+            });
         });
     }
 }

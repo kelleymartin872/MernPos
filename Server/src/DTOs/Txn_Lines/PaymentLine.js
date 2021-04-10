@@ -14,6 +14,7 @@ class PaymentLine extends TxnLine
         this.paymentName = paymentData.paymentName;
         this.amountPaid = amountPaid;
         this.payExchangeRate = paymentData.payExchangeRate;
+        this.amountPaidINR = this.amountPaid * this.payExchangeRate
     }
 }
 

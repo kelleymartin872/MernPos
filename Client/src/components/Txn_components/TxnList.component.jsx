@@ -14,13 +14,13 @@ const TxnList = (props) =>
     };
     const notSelectedDiscStyle={
         cursor: "pointer",
-        color: "#0c0",
+        color: "#0a0",
         backgroundColor: "#ffffff",
         padding:"0px 10px"
     };
     const selectedDiscStyle={
         cursor: "pointer",
-        color: "#0c0",
+        color: "#0a0",
         backgroundColor: "#ffdd78",
         padding:"0px 10px"
     };
@@ -146,7 +146,7 @@ const TxnList = (props) =>
                             
                         <div className="col-12"> 
                             <span> {txnLine.paymentName} </span> 
-                            <span style={{float:'right'}} > &#x20b9; {txnLine.amountPaid*txnLine.payExchangeRate} </span> 
+                            <span style={{float:'right'}} > &#x20b9; {txnLine.amountPaidINR} </span> 
                         </div>
                         <hr className="col-11" style={{margin:"5px"}} />
                     </div>

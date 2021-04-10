@@ -13,9 +13,10 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "express": "^4.17.1",
+    "handlebars": "^4.7.6",
+    "html-pdf": "^2.2.0",
     "joi": "^17.3.0",
     "mongoose": "^5.10.15",
-    "pdf-creator-node": "^2.2.2",
     "uuid": "^8.3.1"
   },
   "devDependencies": {

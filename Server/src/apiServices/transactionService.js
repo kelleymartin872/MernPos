@@ -73,7 +73,8 @@ router.post('/removeLine', async function(req,res)
 
         if( txnLine.lineTypeID === Constants.TxnLineType.ItemLine ||
             txnLine.lineTypeID === Constants.TxnLineType.CustomerLine ||
-            txnLine.lineTypeID === Constants.TxnLineType.CouponLine  )
+            txnLine.lineTypeID === Constants.TxnLineType.CouponLine ||
+            txnLine.lineTypeID === Constants.TxnLineType.DiscountLine  )
         {
             txn.RemoveLine(txnLine);
         }
@@ -156,7 +157,7 @@ router.post('/endTxn', async function(req,res)
         data.posState = Constants.PosState.signedOn;
                 
         let receiptMaker = new ReceiptGenerator(transaction.txnList);
-        receiptMaker.createPDF();
+        await receiptMaker.createPDF();
 
         process.posData.data = data;
         process.posData.txns[0] = transaction;

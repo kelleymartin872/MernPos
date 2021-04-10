@@ -119,7 +119,7 @@ class ModalPopup extends Component {
             if(this.props.transaction.txnList.some(x => x.lineTypeID === Constants.TxnLineType.ItemLine))
                 returnModal = <TotalDisc transaction = {this.props.transaction} doClose={() => this.props.onModalClose()} />
             else
-                returnModal = this.getErrorDiv("Please select an Item Line first");
+                returnModal = this.getErrorDiv("Please add items first");
         }
 
         if(this.props.modalId === Constants.MenuButtonID.RemoveLine)

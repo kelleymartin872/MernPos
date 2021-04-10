@@ -2,8 +2,7 @@
 A MERN STACK POS application
 
 ## NodeJS Backend    -\Server
-
-### RUN `node index.js`
+### RUN `npm start`
 Server will be hosted in development mode.\
 Open [http://localhost:4000](http://localhost:4000) to view it in the browser.
 

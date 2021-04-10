@@ -13,6 +13,7 @@
 
 # misc
 /Server/TxnFiles
+/Server/TxnReceipts
 .DS_Store
 .env.local
 .env.development.local

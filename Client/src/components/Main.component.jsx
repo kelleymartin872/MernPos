@@ -25,6 +25,7 @@ class MainComponent extends Component
     state = { 
         clientData : {  width:window.innerWidth, height:window.innerHeight, 
                         isMobile: window.innerWidth < this.mobileWidth , 
+                        isMobileMenuOpen : false,
                         selectedLineNmbr : -1 ,
                         isLoading:false , internalError: false,
                         modalPopupId : -1
@@ -152,16 +153,32 @@ class MainComponent extends Component
     signOff = async() => 
     {
         try
-        {
-            this.state.clientData.internalError = false;
-            this.state.clientData.isLoading = true;
-            this.refreshUI(this.state.clientData);
-
-            let service = new UserService();
-            await service.signOut();
+        {        
+            Swal.fire({
+                title: 'Sign Out?',
+                text: "Are you sure you want to Sign Out ?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes!'
+            }).then( async(res) => {
+                if(res.isConfirmed) 
+                {
+                    this.state.clientData.internalError = false;
+                    this.state.clientData.isLoading = true;
+                    this.refreshUI(this.state.clientData);
+        
+                    let service = new UserService();
+                    await service.signOut();
+                    
+                    this.state.clientData.isLoading = false;
+                    this.refreshUI(this.state.clientData);
+                }
+                else
+                    this.props.doClose();
+            });
             
-            this.state.clientData.isLoading = false;
-            this.refreshUI(this.state.clientData);
         }
         catch(ex)
         {
@@ -172,6 +189,12 @@ class MainComponent extends Component
             });
         }
     };
+    
+    toggleMenu = () =>
+    {
+        this.state.clientData.isMobileMenuOpen = ! this.state.clientData.isMobileMenuOpen;
+        this.refreshUI(this.state.clientData);
+    }
 
     showModal = (functionId) => 
     {
@@ -280,7 +303,7 @@ class MainComponent extends Component
             let transaction = this.state.transactions[0];
             return ( 
                 <div  style={mainStyle}  >
-                    <Header onSignOff = {this.signOff} /> 
+                    <Header onSignOff = {this.signOff} onMenuClick = {this.toggleMenu} /> 
 
                     <div style={{margin:"0px"}} className="row"  >
                         <div style={txnListStyle}   >
@@ -315,6 +338,14 @@ class MainComponent extends Component
                         transaction={transaction} 
                         onChangeState={() => this.refreshUI()} /> 
                     
+                    
+                    { this.state.clientData.isMobile && 
+                        <MainMenu clientData={this.state.clientData} 
+                                serverData={this.state.serverData} 
+                                transaction={transaction} 
+                                onModalShow={this.showModal} /> 
+                    }
+
                     { this.state.clientData.modalPopupId > 0 && 
                         <ModalPopup modalId={this.state.clientData.modalPopupId} 
                             onModalClose={this.closeModal} endTxn={this.endTxn}  

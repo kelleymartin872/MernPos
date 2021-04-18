@@ -31,7 +31,8 @@ const Header = (props) =>
         <div style={{margin:"0px"}}  className="row"  >
             <div style={{padding:"0px"}}  className="col-12" >
                 <div className="row" style={mainStyle}>
-                    <button  className="col-2 btn"  style={btnStyle}>
+                    <button  className="col-2 btn"  style={btnStyle}
+                        onClick={() => props.onMenuClick()} >
                         Menu
                     </button>
                     <div className="col-8" style={headingStyle} >

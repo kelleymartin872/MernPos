@@ -10,7 +10,7 @@ export default class MainMenu extends Component
 {
     state = { buttonDict: [] , isLoading: false}
 
-    mainStyle={ 
+    menuStyle={ 
         overflowY:"auto",
         width: "100%",
         margin:0,
@@ -27,7 +27,6 @@ export default class MainMenu extends Component
         backgroundColor:"#303841",
         color:"white"
     };
-
     lineDetailStyle={
         padding:"0px",
         overflowY:"auto",
@@ -91,10 +90,11 @@ export default class MainMenu extends Component
 
         let returnRender =  <Loading/>;
         
+
         if(!this.state.isLoading && buttons)
         {
             returnRender = 
-            <div style={this.mainStyle} >
+            <div style={this.menuStyle} >
                 { buttons.map( (button) => (
                     <button key={button.key} style={this.btnStyle} 
                             onClick={() => this.props.onModalShow(button.btnId) } >
@@ -104,8 +104,18 @@ export default class MainMenu extends Component
             </div>;
         }
 
+        let mainStyle = {
+            margin:"0px"
+        };
+        if(this.props.clientData.isMobile)
+        {
+            mainStyle.position = "fixed";
+            if(this.props.clientData.isMobileMenuOpen)  
+                mainStyle.bottom = "0vh";
+        }
+
         return ( 
-            <div style={{margin:"0px"}}  className="row"  >
+            <div style={mainStyle}  className="row"  >
                 <div  style={this.lineDetailStyle}  className="col-12" >
                     {returnRender}
                 </div>

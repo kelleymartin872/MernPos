@@ -8,7 +8,7 @@ import Constants from '../DTOs/Constants'
 import SignInForm from './Popup_Components/SignInForm.component';
 import Offline from './Popup_Components/Offline.component';
 import Error from './Popup_Components/Error.component';
-import ModalPopup from './Popup_Components/ModalPopup.component';
+import ModalPopup from './ModalPopup.component';
 import TxnList from './Txn_components/TxnList.component';
 import Header from './Header.component';
 import LineDetail from './LineDetail.component';

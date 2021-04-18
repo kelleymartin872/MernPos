@@ -213,22 +213,33 @@ class Transaction
         return false;
     }
 
-    saveToFile()
+    async saveToFile()
     {
-        const fileName = "txn_" + String(this.txnNumber);
-        const path = "./TxnFiles/" + fileName +".json";
+        const fileName = "txn_" + String(this.txnNumber) 
+        const dir = "./TxnFiles/" ;
+        const path = dir + fileName + ".json";;
         const data = {  };
         data[fileName] = this.txnList;
 
-        try 
-        {
-            fs.writeFile(path, JSON.stringify(data, null, 4), (err) => 
+        if (!fs.existsSync(dir))
+        { 
+            fs.mkdir(dir, async (mkErr) => 
             { 
-                if (err) throw err;  
-            }); 
+                if (mkErr)
+                    console.error(mkErr);
+
+                return fs.writeFile(path, JSON.stringify(data, null, 4), function (err) 
+                {
+                    if (err) throw err;
+                });
+            });
         }
-        catch (err) {
-            console.error(err);
+        else
+        { 
+            return fs.writeFile(path, JSON.stringify(data, null, 4), function (err) 
+            {
+                if (err) throw err;
+            });
         }
     }
 

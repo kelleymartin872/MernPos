@@ -6,6 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
   },
+  "nodemonConfig": {
+    "ignore": ["src/TxnFiles/*", "src/TxnReceipts/*"]
+  },
   "author": "",
   "license": "ISC",
   "keywords": [],

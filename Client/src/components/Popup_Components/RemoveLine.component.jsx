@@ -10,7 +10,7 @@ class RemoveLine extends Component
     state = { confirm : true , voidFail : false }
 
     
-    removeLine(selectedLineNmbr)
+    async removeLine(selectedLineNmbr)
     {   
         try
         {    
@@ -43,14 +43,16 @@ class RemoveLine extends Component
             service.removeLine(reqObj).then(res =>
             {
                 if(res.data.flowSuccess === true)
+                {
                     this.props.doClose();
+                    return true;
+                }
                 else
                 {
                     this.setState({voidFail : true });
                     return false;
                 }
             });
-            return true;
         }
         catch(e)
         {
@@ -63,7 +65,7 @@ class RemoveLine extends Component
 
     render() 
     { 
-        const selectedLineNmbr = this.props.selectedLineNmbr ;
+        const selectedLineNmbr = this.props.selectedLineNmbr;
 
         Swal.fire({
             title: 'Remove Line?',

@@ -158,6 +158,7 @@ router.post('/endTxn', async function(req,res)
                 
         let receiptMaker = new ReceiptGenerator(transaction.txnList);
         await receiptMaker.createPDF();
+        await transaction.saveToFile();
 
         process.posData.data = data;
         process.posData.txns[0] = transaction;
@@ -165,7 +166,6 @@ router.post('/endTxn', async function(req,res)
         process.posData.data.errorMsg = "";
         process.posData.data.flowSuccess = true;
 
-        transaction.saveToFile();
 
         res.send(process.posData);
     }
@@ -334,5 +334,35 @@ router.post('/totalDiscount', async function(req,res)
     return;
 });
 
+
+router.post('/abortTxn', async function(req,res)
+{
+    try
+    {
+        process.posData.data.flowSuccess = false;
+
+        let lastTxn = await TxnRecordDBHelper.getLastTxn();
+        let newTxnNmbr = 1
+        
+        if(lastTxn)
+            newTxnNmbr =  lastTxn.txnNumber + 1;
+        
+        process.posData.data.posState = Constants.PosState.signedOn;
+
+        let newTxn = new Transaction(newTxnNmbr);
+        process.posData.txns = [newTxn];
+        
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+        res.send(process.posData);
+    }
+    catch(ex)
+    {
+        process.posData.data.errorMsg = ex.message;
+        process.posData.data.flowSuccess = false;
+        res.status(500).send(process.posData);
+    }
+    return;
+});
 
 module.exports = router;

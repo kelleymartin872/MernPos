@@ -97,4 +97,13 @@ export default class UserService
         return apiService.getResponse();
     }
     
+    abortTxn(reqObj={})
+    {
+        /* Request structure 
+        reqObj = { };
+        */
+        const reqUrl = this.url + "abortTxn";
+        let apiService = new ApiService("POST", reqUrl , reqObj );
+        return apiService.getResponse();
+    }
 }

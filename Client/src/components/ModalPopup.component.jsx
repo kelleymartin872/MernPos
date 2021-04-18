@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import AddItem from '../Popup_Components/AddItem.component';
-import ReturnItem from '../Popup_Components/ReturnItem.component';
-import AddCustomer from '../Popup_Components/AddCustomer.component';
-import ReturnReceipt from '../Popup_Components/ReturnReceipt.component';
-import Payment from './Payment.component';
-import ChangeQty from './ChangeQty.component';
-import Constants from '../../DTOs/Constants'
-import RemoveLine from './RemoveLine.component copy';
-import LineDisc from './LineDisc.component';
-import TotalDisc from './TotalDisc.component';
+import AddItem from './Popup_Components/AddItem.component';
+import ReturnItem from './Popup_Components/ReturnItem.component';
+import AddCustomer from './Popup_Components/AddCustomer.component';
+import ReturnReceipt from './Popup_Components/ReturnReceipt.component';
+import Payment from './Popup_Components/Payment.component';
+import ChangeQty from './Popup_Components/ChangeQty.component';
+import Constants from '../DTOs/Constants'
+import RemoveLine from './Popup_Components/RemoveLine.component';
+import LineDisc from './Popup_Components/LineDisc.component';
+import TotalDisc from './Popup_Components/TotalDisc.component';
+import AbortTxn from './Popup_Components/AbortTxn.component';
 
 class ModalPopup extends Component {
     state = {  }
@@ -130,6 +131,16 @@ class ModalPopup extends Component {
                                     transaction = {this.props.transaction}/>
         }
         
+        if(this.props.modalId === Constants.MenuButtonID.ReturnTxn)
+            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} />
+            
+        
+        if(this.props.modalId === Constants.MenuButtonID.ReturnReceipt)
+            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} />
+
+        if(this.props.modalId === Constants.MenuButtonID.AbortTxn)
+            returnModal = <AbortTxn  doClose={() => this.props.onModalClose()} />
+
         if(this.props.modalId >= 100)
         {   
             returnModal = <Payment doClose={() => this.props.onModalClose()} 
@@ -139,8 +150,6 @@ class ModalPopup extends Component {
                     transaction = {this.props.transaction} /> 
         }
         
-        if(this.props.modalId === Constants.MenuButtonID.ReturnReceipt)
-            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} />
             
 
         return ( 

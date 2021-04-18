@@ -80,10 +80,10 @@ export default class Constants
             ChangeQty : 3,
             LineDisc : 4,
             TotalDisc : 5,
-            AddCustomer : 7,
-            RemoveLine : 8,
-            ReturnTxn : 9,
-            AbortTxn : 10
+            AddCustomer : 6,
+            RemoveLine : 7,
+            ReturnReceipt : 8,
+            AbortTxn : 9
         }
         return MenuButtonID;
     }

@@ -91,12 +91,12 @@ export default class MainMenu extends Component
 
         let returnRender =  <Loading/>;
         
-        if( !this.state.isLoading && buttons)
+        if(!this.state.isLoading && buttons)
         {
             returnRender = 
             <div style={this.mainStyle} >
                 { buttons.map( (button) => (
-                    <button key={button.btnId} style={this.btnStyle} 
+                    <button key={button.key} style={this.btnStyle} 
                             onClick={() => this.props.onModalShow(button.btnId) } >
                         {button.btnName}
                     </button>

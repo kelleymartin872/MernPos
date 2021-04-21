@@ -87,21 +87,23 @@ class ModalPopup extends Component {
         
 
         let returnModal =  this.getErrorDiv("Function Not Found!");
+        let isMobile = false;
+        isMobile = this.props.clientData.isMobile;
 
         if(this.props.modalId === Constants.MenuButtonID.AddItem)
-            returnModal = <AddItem  doClose={() => this.props.onModalClose()} />
+            returnModal = <AddItem  doClose={() => this.props.onModalClose()} isMobile={isMobile} />
         
         if(this.props.modalId === Constants.MenuButtonID.ReturnItem)
-            returnModal = <ReturnItem  doClose={() => this.props.onModalClose()} />
+            returnModal = <ReturnItem  doClose={() => this.props.onModalClose()} isMobile={isMobile} />
         
         if(this.props.modalId === Constants.MenuButtonID.AddCustomer)
-            returnModal = <AddCustomer  doClose={() => this.props.onModalClose()} />
+            returnModal = <AddCustomer  doClose={() => this.props.onModalClose()} isMobile={isMobile} />
         
         if(this.props.modalId === Constants.MenuButtonID.ChangeQty)
         {
             const itemObj = this.CheckSelectedLine(this.props.clientData.selectedLineNmbr , this.props.transaction);
             if(itemObj && itemObj!=null)
-                returnModal = <ChangeQty itemObj={itemObj} doClose={() => this.props.onModalClose()} />
+                returnModal = <ChangeQty itemObj={itemObj} doClose={() => this.props.onModalClose()} isMobile={isMobile} />
             else
             returnModal = this.getErrorDiv("Please select an Item Line first");
         }
@@ -110,7 +112,7 @@ class ModalPopup extends Component {
         {
             const itemObj = this.CheckSelectedLine(this.props.clientData.selectedLineNmbr , this.props.transaction);
             if(itemObj && itemObj!=null)
-                returnModal = <LineDisc itemObj={itemObj} doClose={() => this.props.onModalClose()} />
+                returnModal = <LineDisc itemObj={itemObj} doClose={() => this.props.onModalClose()} isMobile={isMobile} />
             else
             returnModal = this.getErrorDiv("Please select an Item Line first");
         }
@@ -118,7 +120,7 @@ class ModalPopup extends Component {
         if(this.props.modalId === Constants.MenuButtonID.TotalDisc)
         {
             if(this.props.transaction.txnList.some(x => x.lineTypeID === Constants.TxnLineType.ItemLine))
-                returnModal = <TotalDisc transaction = {this.props.transaction} doClose={() => this.props.onModalClose()} />
+                returnModal = <TotalDisc transaction = {this.props.transaction} doClose={() => this.props.onModalClose()} isMobile={isMobile} />
             else
                 returnModal = this.getErrorDiv("Please add items first");
         }
@@ -128,15 +130,15 @@ class ModalPopup extends Component {
             const selectedLineNmbr = this.props.clientData.selectedLineNmbr;
             returnModal = <RemoveLine doClose={() => this.props.onModalClose()}
                                     selectedLineNmbr={selectedLineNmbr}
-                                    transaction = {this.props.transaction}/>
+                                    transaction = {this.props.transaction} />
         }
         
         if(this.props.modalId === Constants.MenuButtonID.ReturnTxn)
-            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} />
+            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} isMobile={isMobile} />
             
         
         if(this.props.modalId === Constants.MenuButtonID.ReturnReceipt)
-            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} />
+            returnModal = <ReturnReceipt  doClose={() => this.props.onModalClose()} isMobile={isMobile} />
 
         if(this.props.modalId === Constants.MenuButtonID.AbortTxn)
             returnModal = <AbortTxn  doClose={() => this.props.onModalClose()} />
@@ -147,7 +149,7 @@ class ModalPopup extends Component {
                     endTxn={() => this.props.endTxn()} 
                     paymentTypeID = {this.props.modalId}
                     serverData = {this.props.serverData} 
-                    transaction = {this.props.transaction} /> 
+                    transaction = {this.props.transaction} isMobile={isMobile} /> 
         }
         
             

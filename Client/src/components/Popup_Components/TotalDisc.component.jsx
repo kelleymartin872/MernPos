@@ -113,7 +113,7 @@ class TotalDisc extends Form
         let render = [];
         render.push(   
             <div key="modal-header" className="modal-header">
-                <h3 className="modal-title" style={{margin:"auto"}}>  Line Discount </h3> 
+                <h3 className="modal-title" style={{margin:"auto"}}>  Total Discount </h3> 
             </div>
         );
         
@@ -124,12 +124,16 @@ class TotalDisc extends Form
         
         let tabBtnRender = [];
         
+   
         tabBtns.forEach(tabBtn => {
             if(tabBtn.id === this.state.activeTab)
             {
                 tabBtnRender.push(
                     <li key={tabBtn.id} className="nav-item">
-                        <button key={tabBtn.id} className="nav-link active" type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  {tabBtn.text} </button>
+                        <button key={tabBtn.id} className="nav-link active"  style={{fontSize:"16px"}}
+                                type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  
+                            {tabBtn.text} 
+                        </button>
                     </li>
                 );
             }
@@ -137,7 +141,10 @@ class TotalDisc extends Form
             {
                 tabBtnRender.push(
                     <li key={tabBtn.id} className="nav-item">
-                        <button key={tabBtn.id} className="nav-link" type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  {tabBtn.text} </button>
+                        <button key={tabBtn.id} className="nav-link" style={{fontSize:"16px"}}
+                                type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  
+                            {tabBtn.text} 
+                        </button>
                     </li>
                 );
             }

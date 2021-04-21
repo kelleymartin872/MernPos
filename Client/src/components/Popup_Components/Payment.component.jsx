@@ -3,7 +3,6 @@ import React from 'react';
 import Form from './Form.component';
 import Input from './Input.component';
 import Joi from 'joi-browser';
-import TransactionService from '../../apiServices/TransactionService';
 import Loading from './Loading.component';
 import PaymentService from '../../apiServices/PaymentService';
 
@@ -13,24 +12,24 @@ class Payment extends Form
         isLoading:false,
         payment: {},
         formData: {
-            AmountOwed : ""
+            Amount : 0
         },
         formError : ""
     };
 
     schema = {
-        AmountOwed : Joi
+        Amount : Joi
     };
 
     constructor(props)
     {
         super(props);
         this.state.payment = this.props.serverData.payments.find(x => x.paymentTypeID === this.props.paymentTypeID);
-        this.state.formData.AmountOwed = this.props.transaction.amountOwed / this.state.payment.payExchangeRate;
-        this.state.formData.AmountOwed = parseFloat(this.state.formData.AmountOwed).toFixed(2)
+        this.state.formData.Amount = this.props.transaction.amountOwed / this.state.payment.payExchangeRate;
+        this.state.formData.Amount = parseFloat(this.state.formData.Amount).toFixed(2)
 
-        if(this.state.formData.AmountOwed === 0.00)
-            this.state.formData.AmountOwed = 0.01;
+        if(this.state.formData.Amount === 0.00)
+            this.state.formData.Amount = 0.01;
     }
 
 
@@ -41,14 +40,14 @@ class Payment extends Form
         let payService = new PaymentService();
         let reqObj = {
             paymentTypeID: this.props.paymentTypeID,
-            amountPaid: this.state.formData.AmountOwed
+            amountPaid: this.state.formData.Amount
         };
 
         payService.performPayment(reqObj).then(res =>
         {
             if(res.data.flowSuccess === true)
             {
-                if(res.txns[0].amountOwed === 0)
+                if(res.txns[0].Amount === 0)
                 {
                     this.props.endTxn();
                 }
@@ -79,7 +78,7 @@ class Payment extends Form
         render.push(
             <div key="modal-body" className="modal-body">
                 <form>
-                    <Input name="AmountOwed" type="text" value={formData.AmountOwed} onChange={this.handleInputChange}  />
+                    <Input name="Amount" type="number" value={formData.Amount} onChange={this.handleInputChange}  />
                 </form>
             </div>
         );

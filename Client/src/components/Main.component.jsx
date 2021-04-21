@@ -175,8 +175,6 @@ class MainComponent extends Component
                     this.state.clientData.isLoading = false;
                     this.refreshUI(this.state.clientData);
                 }
-                else
-                    this.props.doClose();
             });
             
         }
@@ -273,6 +271,7 @@ class MainComponent extends Component
                 txnListStyle.marginBottom = "10vh";
             }
 
+
             if(this.state.serverData.isOffline) 
             {
                 return (
@@ -296,7 +295,7 @@ class MainComponent extends Component
             {
                 Swal.fire({
                     type: 'error',
-                    text: 'Selected line could not be removed.'
+                    text: 'Internal server error occured.'
                 });
             }
             

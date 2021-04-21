@@ -48,8 +48,7 @@ const TxnList = (props) =>
             case(Constants.TxnLineType.HeaderLine):
             {
                 renderTxn.push(    
-                    <div key={txnLine.lineNumber} style={(isSelected ? selectedStyle: notSelectedStyle)} 
-                            onClick={() => props.onSelectLine(txnLine.lineNumber)}  className="row">
+                    <div key={txnLine.lineNumber} style={notSelectedStyle}   className="row">
                         <div className="col-12" style={{textAlign:'center',fontWeight:'bold'}} > Transaction : {txnLine.txnNumber} </div>
                         <hr className="col-10" style={{margin:"5px"}} />
                     </div>

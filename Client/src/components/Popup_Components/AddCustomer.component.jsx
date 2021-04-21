@@ -66,6 +66,116 @@ class AddCustomer extends Form
     render() { 
         let formData = this.state.formData;
 
+        let modalBody = <div key="modal-body" className="modal-body"  >
+            <div className="row" style={{padding:"10px"}}>
+                <label htmlFor="custName" className="col-2"> 
+                        Name 
+                </label>  
+                <input autoFocus type="text" className="col-3"
+                    onChange={(e) => this.handleInputChange(e)} 
+                    name="custName"  value={formData.custName} />
+
+                <label htmlFor="phoneNumber" className="col-2"> 
+                        Phone No. 
+                </label>  
+                <input autoFocus type="text" className="col-3"
+                    onChange={(e) => this.handleInputChange(e)} 
+                    name="phoneNumber" value={formData.phoneNumber}  />
+                
+                <button className="btn"
+                    type="button" 
+                    style={{backgroundColor:"#f16b52" , marginLeft:"10px", color:"White" ,width:"15%"}} 
+                    onClick={() => this.getCusts()} > 
+                    Search
+                </button>
+            </div>
+
+            <div style={{  padding:"10px"}} >
+                <div className="row" style={{fontWeight:"600"}} >
+                    <div className="col-4" style={{textAlign:"left"}} >  Customer Name  </div>  
+                    <div className="col-3" style={{textAlign:"left"}} >  Phone No.  </div>  
+                    <div className="col-3" style={{textAlign:"right"}} >  Points  </div>  
+                    <hr className="col-11" style={{margin:"5px"}} />
+                </div>
+
+                <div style={{height:"320px" , overflowY:"auto", overflowX:"hidden"}}>
+                { this.state.customers.map( (cust) =>
+                        <div className="row" key={cust.phoneNumber} style={{cursor:"pointer"}} >
+                            <div className="col-4" style={{textAlign:"left"}} >  {cust.custName}  </div>  
+                            <div className="col-3" style={{textAlign:"left"}} > {cust.phoneNumber}  </div>  
+                            <div className="col-3" style={{textAlign:"right"}} > { cust.points.toFixed(2) } </div>  
+                            <button 
+                                type="button" className="btn"
+                                style={{backgroundColor:"#f16b52" , width:"15%" , color:"White"}} 
+                                onClick={() => this.addCust(cust.phoneNumber)} > 
+                                Add
+                            </button>
+                            <hr className="col-11" style={{margin:"5px"}} />
+                        </div>
+                    )}
+                </div>
+
+            </div>
+
+        </div>;
+
+        if(this.props.isMobile)
+        {
+            modalBody = <div key="modal-body" className="modal-body"  >
+            <div className="row" style={{padding:"10px"}}>
+                <label htmlFor="custName" className="col-5"> 
+                        Name 
+                </label>  
+                <input autoFocus type="text" className="col-6"
+                    onChange={(e) => this.handleInputChange(e)} 
+                    name="custName"  value={formData.custName} />
+
+                <label htmlFor="phoneNumber" className="col-5"> 
+                        Phone No. 
+                </label>  
+                <input autoFocus type="text" className="col-6"
+                    onChange={(e) => this.handleInputChange(e)} 
+                    name="phoneNumber" value={formData.phoneNumber}  />
+                
+                <button className="btn col-11"
+                    type="button" 
+                    style={{backgroundColor:"#f16b52" , margin:"10px", color:"White" ,width:"15%"}} 
+                    onClick={() => this.getCusts()} > 
+                    Search
+                </button>
+            </div>
+
+            <div style={{  padding:"10px"}} >
+                <div className="row" style={{fontWeight:"600"}} >
+                    <div className="col-5" style={{textAlign:"left"}} > Name  </div>  
+                    <div className="col-4" style={{textAlign:"left"}} >  Phone  </div>  
+                    <div className="col-3" style={{textAlign:"right"}} >  Points  </div>  
+                    <hr className="col-11" style={{margin:"5px"}} />
+                </div>
+
+                <div style={{height:"320px" , overflowY:"auto", overflowX:"hidden"}}>
+                { this.state.customers.map( (cust) =>
+                        <div className="row" key={cust.phoneNumber} style={{cursor:"pointer"}} >
+                            <div className="col-5" style={{textAlign:"left"}} >  {cust.custName}  </div>  
+                            <div className="col-4" style={{textAlign:"left"}} > {cust.phoneNumber}  </div>  
+                            <div className="col-3" style={{textAlign:"right"}} > { cust.points.toFixed(2) } </div>  
+                            <button 
+                                type="button" className="btn col-11"
+                                style={{backgroundColor:"#f16b52" , color:"White"}} 
+                                onClick={() => this.addCust(cust.phoneNumber)} > 
+                                Add
+                            </button>
+                            <hr className="col-11" style={{margin:"5px"}} />
+                        </div>
+                    )}
+                </div>
+
+            </div>
+
+        </div>;
+        }
+
+
         return ( 
         
             <div style={{ marginLeft:"5%", width:"90%"}} >
@@ -81,58 +191,7 @@ class AddCustomer extends Form
                             </button>
                         </div>
                         
-                        <div key="modal-body" className="modal-body"  >
-                            <div className="row" style={{padding:"10px"}}>
-                                <label htmlFor="custName" className="col-2"> 
-                                        Name 
-                                </label>  
-                                <input autoFocus type="text"  className="col-3"
-                                    onChange={(e) => this.handleInputChange(e)} 
-                                    name="custName"  value={formData.custName} />
-
-                                <label htmlFor="phoneNumber" className="col-2"> 
-                                        Phone No. 
-                                </label>  
-                                <input autoFocus type="text" className="col-3" 
-                                    onChange={(e) => this.handleInputChange(e)} 
-                                    name="phoneNumber" value={formData.phoneNumber}  />
-                                
-                                <button 
-                                    type="button" className="btn"
-                                    style={{backgroundColor:"#f16b52" , marginLeft:"10px" , width:"15%"}} 
-                                    onClick={() => this.getCusts()} > 
-                                    Search
-                                </button>
-                            </div>
-
-                            <div style={{  padding:"10px"}} >
-                                <div className="row" style={{fontWeight:"600"}} >
-                                    <div className="col-4" style={{textAlign:"left"}} >  Customer Name  </div>  
-                                    <div className="col-3" style={{textAlign:"left"}} >  Phone No.  </div>  
-                                    <div className="col-3" style={{textAlign:"right"}} >  Points  </div>  
-                                    <hr className="col-11" style={{margin:"5px"}} />
-                                </div>
-
-                                <div style={{height:"320px" , overflowY:"auto", overflowX:"hidden"}}>
-                                { this.state.customers.map( (cust) =>
-                                        <div className="row" key={cust.phoneNumber} style={{cursor:"pointer"}} >
-                                            <div className="col-4" style={{textAlign:"left"}} >  {cust.custName}  </div>  
-                                            <div className="col-3" style={{textAlign:"left"}} > {cust.phoneNumber}  </div>  
-                                            <div className="col-3" style={{textAlign:"right"}} > { cust.points.toFixed(2) } </div>  
-                                            <button 
-                                                type="button" className="btn"
-                                                style={{backgroundColor:"#f16b52" , width:"15%"}} 
-                                                onClick={() => this.addCust(cust.phoneNumber)} > 
-                                                Add
-                                            </button>
-                                            <hr className="col-11" style={{margin:"5px"}} />
-                                        </div>
-                                    )}
-                                </div>
-
-                            </div>
-
-                        </div>
+                        {modalBody}
                         
                         { this.state.formError !== "" &&
                             <div key="modal-error" className="list-group-item list-group-item-danger" > { this.state.formError } </div> 

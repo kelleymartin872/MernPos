@@ -130,7 +130,10 @@ class LineDisc extends Form
             {
                 tabBtnRender.push(
                     <li key={tabBtn.id} className="nav-item">
-                        <button key={tabBtn.id} className="nav-link active" type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  {tabBtn.text} </button>
+                        <button key={tabBtn.id} className="nav-link active"  style={{fontSize:"16px"}}
+                                type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  
+                            {tabBtn.text} 
+                        </button>
                     </li>
                 );
             }
@@ -138,7 +141,10 @@ class LineDisc extends Form
             {
                 tabBtnRender.push(
                     <li key={tabBtn.id} className="nav-item">
-                        <button key={tabBtn.id} className="nav-link" type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  {tabBtn.text} </button>
+                        <button key={tabBtn.id} className="nav-link" style={{fontSize:"16px"}}
+                                type="button" onClick={() => this.toggleDiscTab(tabBtn)} >  
+                            {tabBtn.text} 
+                        </button>
                     </li>
                 );
             }
@@ -158,7 +164,7 @@ class LineDisc extends Form
 
         render.push(
             <div key="modal-body" className="modal-body">
-                <ul className="nav nav-tabs" id="myTab">
+                <ul className="nav nav-tabs" id="myTab" >
                     {tabBtnRender}
                 </ul>
                 <hr/>

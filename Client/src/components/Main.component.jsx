@@ -301,7 +301,7 @@ class MainComponent extends Component
                 return (
 
                     <div style={modalStyle}  >
-                        <Offline onRefresh = {this.signOff} isLoading={this.state.clientData.isLoading} />
+                        <Offline onRefresh = {this.reconnect} isLoading={this.state.clientData.isLoading} />
                     </div> 
                 );
             }

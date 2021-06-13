@@ -47,7 +47,7 @@ class Payment extends Form
         {
             if(res.data.flowSuccess === true)
             {
-                if(res.txns[0].Amount === 0)
+                if(res.txns[0].amountOwed === 0)
                 {
                     this.props.endTxn();
                 }

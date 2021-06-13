@@ -114,7 +114,7 @@ class ModalPopup extends Component {
             if(itemObj && itemObj!=null)
                 returnModal = <LineDisc itemObj={itemObj} doClose={() => this.props.onModalClose()} isMobile={isMobile} />
             else
-            returnModal = this.getErrorDiv("Please select an Item Line first");
+                returnModal = this.getErrorDiv("Please select an Item Line first");
         }
 
         if(this.props.modalId === Constants.MenuButtonID.TotalDisc)
@@ -128,9 +128,12 @@ class ModalPopup extends Component {
         if(this.props.modalId === Constants.MenuButtonID.RemoveLine)
         {
             const selectedLineNmbr = this.props.clientData.selectedLineNmbr;
-            returnModal = <RemoveLine doClose={() => this.props.onModalClose()}
-                                    selectedLineNmbr={selectedLineNmbr}
-                                    transaction = {this.props.transaction} />
+            if(selectedLineNmbr && selectedLineNmbr > -1)
+                returnModal = <RemoveLine doClose={() => this.props.onModalClose()}
+                                        selectedLineNmbr={selectedLineNmbr}
+                                        transaction = {this.props.transaction} />
+            else
+                returnModal = this.getErrorDiv("Please select a Line first");
         }
         
         if(this.props.modalId === Constants.MenuButtonID.ReturnTxn)

@@ -5,7 +5,7 @@ import Input from './Input.component';
 import Joi from 'joi-browser';
 import TransactionService from '../../apiServices/TransactionService';
 import Loading from './Loading.component';
-import PaymentService from '../../apiServices/ItemService';
+import PaymentService from '../../apiServices/PaymentService';
 import ItemService from '../../apiServices/ItemService';
 
 class ChangeQty extends Form 

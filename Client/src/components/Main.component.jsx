@@ -150,6 +150,30 @@ class MainComponent extends Component
         }
     };
 
+    reconnect = async() => 
+    {
+        try
+        {
+            this.state.clientData.internalError = false;
+            this.state.clientData.isLoading = true;
+            this.refreshUI(this.state.clientData);
+
+            let service = new UserService();
+            await service.signOut();
+            
+            this.state.clientData.isLoading = false;
+            this.refreshUI(this.state.clientData);
+        }
+        catch(ex)
+        {
+            console.error(ex);
+            this.state.clientData.internalError = true;
+            this.setState({ 
+                clientData : this.state.clientData
+            });
+        }
+    };
+
     signOff = async() => 
     {
         try
@@ -363,7 +387,7 @@ class MainComponent extends Component
         {
             console.error(ex);
             return ( 
-                <Error onRefresh = {this.signOff} />
+                <Error onRefresh = {this.reconnect} />
             );
         }
     }

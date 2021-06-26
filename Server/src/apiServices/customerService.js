@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper;
 const CustomerLine = require('../DTOs/Txn_Lines/CustomerLine').CustomerLine;
+const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
 const Constants = require('../Constants').Constants;
 
 router.use(express.json());
@@ -117,5 +118,47 @@ router.post('/addNewCustomer/', async function(req,res)
     }
     return;
 });
+
+
+router.post('/addPoints/', async function(req,res)
+{
+    try
+    {
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = false;
+        
+        let transaction = process.posData.txns[0];
+        if(!transaction)
+        {
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            res.status(500).send(process.posData);
+            return;
+        }
+
+        let qty = 1;
+        let custPointItem = {
+            itemId : 100000,
+            itemName: "Customer Points",
+            itemPrice : parseFloat(req.body.points)
+        }
+        let itemLine = new ItemLine(custPointItem, qty);
+        itemLine.custID = req.body.custID;
+        itemLine.isCustPointItem = true;
+        transaction.AddLine(itemLine);
+
+        process.posData.txns[0] = transaction;
+        process.posData.data.errorMsg = "";
+        process.posData.data.flowSuccess = true;
+        res.send(process.posData);
+    }
+    catch(ex)
+    {
+        process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        res.status(500).send(process.posData);
+    }
+    return;
+});
+
 
 module.exports = router;

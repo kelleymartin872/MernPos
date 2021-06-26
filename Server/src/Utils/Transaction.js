@@ -253,7 +253,7 @@ class Transaction
     async saveToFile()
     {
         const fileName = "txn_" + String(this.txnNumber) 
-        const dir = "./TxnFiles/" ;
+        const dir = "./data/TxnFiles/" ;
         const path = dir + fileName + ".json";;
         const data = {  };
         data[fileName] = this.txnList;
@@ -369,8 +369,25 @@ class Transaction
         let custLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
         if(custLine && custLine != null)
         {
-            custLine.addPoints(this.amountPaid);
+            let addedPoints = 0;
+            let calcPointAmout = this.amountPaid;
+            let pointsItemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine
+                                                        && x.isCustPointItem
+                                                        && x.custID == custLine.custID);
+            if(pointsItemList && pointsItemList != null && pointsItemList.length > 0)
+            {
+                pointsItemList.forEach(pointItem => {
+                    addedPoints += pointItem.totalPrice
+                    calcPointAmout -= addedPoints
+                });
+            }
+    
+            if(calcPointAmout>0)
+                addedPoints += parseFloat(calcPointAmout/50);
+            
+            custLine.addPoints(addedPoints);
         }
+        return;
     }
 
     payCustomerPoints(amountPaid)

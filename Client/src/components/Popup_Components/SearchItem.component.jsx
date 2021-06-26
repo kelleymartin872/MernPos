@@ -26,7 +26,7 @@ const SearchItem = (props) =>
                 
                 <button 
                     type="button" className="btn"
-                    style={{backgroundColor:"#f16b52" , marginLeft:"10px" , width:"15%"}} 
+                    style={{backgroundColor:"#f16b52" , marginLeft:"10px" , width:"15%", color:"white"}} 
                     onClick={() => props.getItems()} > 
                     Search
                 </button>
@@ -48,7 +48,7 @@ const SearchItem = (props) =>
                             <div className="col-3" style={{textAlign:"right"}} > { item.itemPrice.toFixed(2) } </div>  
                             <button 
                                 type="button" className="btn"
-                                style={{backgroundColor:"#f16b52" , width:"15%"}} 
+                                style={{backgroundColor:"#f16b52" , width:"15%", color:"white"}} 
                                 onClick={() => props.addItem(item.itemId)} > 
                                 Add
                             </button>

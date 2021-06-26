@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Loading from './Loading.component';
+import errorImg from '../../images/errorImg.png'; 
 
 const Error = (props) => 
 {

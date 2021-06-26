@@ -51,4 +51,17 @@ export default class CustomerService
         return apiService.getResponse();
     }
 
+    addPoints(reqObj={})
+    {
+        /* Request structure
+        reqObj = {
+            "custID": "123456",
+            "points": "100"
+        };
+        */
+
+        const reqUrl = this.url + "addPoints";
+        let apiService = new ApiService("POST", reqUrl , reqObj);
+        return apiService.getResponse();
+    }
 }

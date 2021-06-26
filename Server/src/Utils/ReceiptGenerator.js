@@ -23,7 +23,7 @@ class ReceiptGenerator
         this.document = {
             html: this.html,
             data: this.data ,
-            path: "./TxnReceipts/"+this.fileName ,
+            path: "./data/TxnReceipts/"+this.fileName ,
             type: "" // "stream" || "buffer" || "" ("" defaults to pdf)
           };
         this.setHelpers();

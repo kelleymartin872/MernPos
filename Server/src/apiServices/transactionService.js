@@ -156,9 +156,9 @@ router.post('/endTxn', async function(req,res)
         TxnRecordDBHelper.pushMultiple([txnDB]);
         data.posState = Constants.PosState.signedOn;
                 
+        await transaction.saveToFile();
         let receiptMaker = new ReceiptGenerator(transaction.txnList);
         await receiptMaker.createPDF();
-        await transaction.saveToFile();
 
         process.posData.data = data;
         process.posData.txns[0] = transaction;
@@ -171,6 +171,7 @@ router.post('/endTxn', async function(req,res)
     }
     catch(ex)
     {
+        console.error(ex.message);
         process.posData.data.errorMsg = ex.message;
         process.posData.data.flowSuccess = false;
         res.status(500).send(process.posData);

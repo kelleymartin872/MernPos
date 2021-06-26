@@ -83,7 +83,8 @@ export default class Constants
             AddCustomer : 6,
             RemoveLine : 7,
             ReturnReceipt : 8,
-            AbortTxn : 9
+            AbortTxn : 9,
+            AddPoints : 10
         }
         return MenuButtonID;
     }

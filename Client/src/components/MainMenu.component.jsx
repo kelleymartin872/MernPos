@@ -66,6 +66,7 @@ export default class MainMenu extends Component
             new MenuButton(Constants.MenuButtonID.RemoveLine,"Remove Line", "remove-line"),
             new MenuButton(Constants.MenuButtonID.ReturnReceipt,"Return Receipt", "return-receipt"),
             new MenuButton(Constants.MenuButtonID.AbortTxn,"Abort Txn", "abort-txn"),
+            new MenuButton(Constants.MenuButtonID.AddPoints,"Add Points", "add-points"),
         ]; 
 
         let buttonDict = [[],[],[],[],[],[]];

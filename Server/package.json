@@ -8,8 +8,7 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "src/TxnFiles/*",
-      "src/TxnReceipts/*"
+      "data/*"
     ]
   },
   "author": "",

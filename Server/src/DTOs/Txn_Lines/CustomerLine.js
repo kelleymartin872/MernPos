@@ -17,10 +17,9 @@ class CustomerLine extends TxnLine
         this.points = custData.points;
     }
 
-    async addPoints(paidAmt)
+    async addPoints(addedPoints)
     {
-        let points = parseFloat(paidAmt/50);
-        await CustomerDB.updateCustomerPoints(this.custID,points);
+        await CustomerDB.updateCustomerPoints(this.custID, addedPoints);
         return;
     }
     

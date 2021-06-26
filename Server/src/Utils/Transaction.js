@@ -207,10 +207,47 @@ class Transaction
         {
             this.posState = targetState;
             process.posData.data.posState = targetState;
+
+            if(this.posState === Constants.PosState.payState)
+                this.mergeItems();
+        
             this.refreshTxn();
             return true;
         }
         return false;
+    }
+
+    mergeItems()
+    {
+        let itemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine);
+
+        if(itemList.length < 2) 
+            return;
+
+        let i = 0;
+        while(i < itemList.length - 1)
+        {
+            let iItem = itemList[i];
+
+            let j = i + 1;
+            while(j < itemList.length)
+            {
+                let jItem = itemList[j];
+                if( iItem.itemId === jItem.itemId &&
+                    iItem.itemPrice === jItem.itemPrice &&
+                    Math.sign(iItem.itemQty) === Math.sign(jItem.itemQty)) 
+                {
+                    iItem.itemQty += jItem.itemQty;
+                    itemList.splice(itemList.indexOf(jItem), 1);
+                    this.RemoveLine(jItem);
+                }
+                else
+                {
+                    j += 1;
+                }
+            }   
+            i += 1 ;
+        }
     }
 
     async saveToFile()

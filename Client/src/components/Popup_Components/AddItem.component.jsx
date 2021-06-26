@@ -73,6 +73,7 @@ class AddItem extends Form
                         ItemData={this.state.ItemData} 
                         formError={this.state.formError} 
                         isMobile={this.props.isMobile} 
+                        handleInputChange={this.handleInputChange}
                         doClose={() => this.props.doClose()}
                         getItems={() => this.getItems()}
                         addItem={(itemId) => this.addItem(itemId)}

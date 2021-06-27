@@ -143,7 +143,7 @@ router.post('/addPoints/', async function(req,res)
         }
         let itemLine = new ItemLine(custPointItem, qty);
         itemLine.custID = req.body.custID;
-        itemLine.isCustPointItem = true;
+        this.itemType = Constants.ItemType.customerPoints;
         transaction.AddLine(itemLine);
 
         process.posData.txns[0] = transaction;

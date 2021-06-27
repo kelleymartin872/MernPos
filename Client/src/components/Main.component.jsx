@@ -343,7 +343,7 @@ class MainComponent extends Component
                         </div>
 
                         <div style={RightSideStyle} >
-                            <LineDetail onSelectLine={this.makeSelection} 
+                            <LineDetail
                                 clientData={this.state.clientData} 
                                 serverData={this.state.serverData} 
                                 transaction={transaction}  /> 

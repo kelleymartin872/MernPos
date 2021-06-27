@@ -4,10 +4,11 @@ var path = require("path");
 const Constants  = require("../Constants").Constants;
 var Handlebars = require("handlebars");
 var pdf = require("html-pdf");
+var QRCode  = require("qrcode");
 
 class ReceiptGenerator 
 {
-    constructor(txnList)
+    constructor(txnList,coupon)
     {
         this.html = fs.readFileSync(path.join(__dirname, "./receiptPDF.html"), "utf8");
         this.options = {
@@ -15,6 +16,7 @@ class ReceiptGenerator
             orientation: "portrait",
             border: "10mm",
           };
+        this.coupon = coupon;
         this.txnList = txnList;
         
         this.setFilename();
@@ -26,6 +28,7 @@ class ReceiptGenerator
             path: "./data/TxnReceipts/"+this.fileName ,
             type: "" // "stream" || "buffer" || "" ("" defaults to pdf)
           };
+        
         this.setHelpers();
     }
     
@@ -35,7 +38,7 @@ class ReceiptGenerator
         this.fileName = "txnReceipt_" + String(taHeader.txnNumber) + ".pdf";
     }
 
-    setData()
+    async setData()
     {
         this.data = {};
         this.data.txnList = this.txnList;
@@ -81,7 +84,9 @@ class ReceiptGenerator
 
         let footerLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.FooterLine);
         if(footerLine)
+        {
             footerLine.isFooterLine = true;
+        }
 
         return;
     }
@@ -92,6 +97,38 @@ class ReceiptGenerator
         this.document.helper.push({name:"toFixed", function : (number,places) => {
             return number.toFixed(places);
         }});
+        
+        this.document.helper.push({name:"toDateStr", function : (str) => {
+            let dateStr = str.substring(6, 8) + ":" + str.substring(4, 6) + ":" + str.substring(0, 4) ;
+
+            if(str.length > 8)
+                dateStr += " / " + str.substring(8, 10) + ":" + str.substring(10, 12);
+
+            return dateStr;
+        }});
+
+    }
+
+    createCouponData()
+    {
+        return new Promise((resolve, reject) => {
+            
+            if(this.coupon && this.coupon.couponNmbr && this.coupon.couponNmbr!="")
+            {
+                QRCode.toDataURL(this.coupon.couponNmbr.toString()).then(qrdata => {
+                    this.document.data.isCoupon = true;
+                    this.document.data.coupon = this.coupon;
+                    this.document.data.coupon.QRdata = qrdata;
+
+                    resolve(true);
+                });
+            }
+            else 
+            {
+                this.document.data.isCoupon = false;
+                resolve(false);
+            }
+        });
     }
 
     createPDF()
@@ -104,12 +141,14 @@ class ReceiptGenerator
                     Handlebars.registerHelper(element.name, element.function);
                 });
             }
-            
-            var html = Handlebars.compile(this.document.html)(this.document.data);
-            var pdfPromise = pdf.create(html, this.options);
-            pdfPromise.toFile(this.document.path, (err, res) => {
-                if (!err) resolve(res);
-                else reject(err);
+
+            this.createCouponData().then(() => {
+                var html = Handlebars.compile(this.document.html)(this.document.data);
+
+                pdf.create(html, this.options).toFile(this.document.path, (err, res) => {
+                    if (!err) resolve(res);
+                    else reject(err);
+                });
             });
         });
     }

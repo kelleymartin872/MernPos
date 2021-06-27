@@ -79,6 +79,24 @@ class Constants
         }
         return PaymentType;
     }
+    
+    static get ItemType()
+    {
+        const ItemType = {
+            normal: 0,
+            customerPoints: 1
+        };
+        return ItemType;
+    }
+    
+    static get DiscType()
+    {
+        const DiscType = {
+            normal: 0,
+            coupon: 1
+        };
+        return DiscType;
+    }
 }
 
 module.exports.Constants = Constants;

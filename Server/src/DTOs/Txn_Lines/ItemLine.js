@@ -21,9 +21,10 @@ class ItemLine extends TxnLine
         this.itemQty = qty;
         this.totalPrice  = this.itemQty * this.itemPrice;
         
+        this.itemType = Constants.ItemType.normal;
         if(qty > 0 && itemData.discountDesc && itemData.discountDesc != "" && itemData.discountAmt != 0)
         {
-            this.discount = new DiscountLine(itemData.discountDesc,  itemData.discountAmt, qty);
+            this.discount = new DiscountLine(itemData.discountDesc,  itemData.discountAmt, itemData.discountType, qty);
         }
     }
 

@@ -1,9 +1,8 @@
 
 import React from 'react';
 
-const Header = (props) => 
-{
-    
+const Header = (props) => {   
+
     const mainStyle={ 
         width: "100%",
         margin:0,
@@ -47,7 +46,6 @@ const Header = (props) =>
         </div>
     );
 }
-
 
 
 export default Header;

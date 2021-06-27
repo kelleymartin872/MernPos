@@ -7,6 +7,7 @@ const itemDBSchema = new mongoose.Schema({
     itemPrice: { type: Number, required : true },
     discountDesc: String,
     discountAmt: Number,
+    discountType: Number,
     lastUpdateDate: { type: Date, default: Date.now }
 });
 
@@ -14,7 +15,7 @@ const ItemDBModel = mongoose.model('Item' , itemDBSchema);
 
 class ItemDBHelper
 {
-    constructor(itemId,itemName,itemPrice, discountDesc="", discountAmt = 0)
+    constructor(itemId,itemName,itemPrice, discountDesc="", discountAmt = 0, discountType = 0)
     {
         this.itemId= itemId;
         this.itemName= itemName;
@@ -22,6 +23,7 @@ class ItemDBHelper
 
         this.discountDesc= discountDesc;
         this.discountAmt= discountAmt;
+        this.discountType= discountType;
     }
 
     async insertToDB()

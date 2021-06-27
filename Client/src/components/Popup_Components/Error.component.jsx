@@ -24,9 +24,14 @@ const Error = (props) =>
             <div className="modal-dialog " role="document">
                 <div className="modal-content">
                     <div key="modal-header" className="modal-header">
-                        <h3 className="modal-title" style={{margin:"auto"}}> Internal Server Error! </h3>
+                        <img src={errorImg} alt="ERROR!" 
+                            style={{margin:"auto", width:"100px"}} />
                     </div>
                     <div key="modal-body" className="modal-body">
+                        <h3 className="modal-title" style={{margin:"auto", textAlign:"center"}}> 
+                            Internal Server Error! 
+                        </h3>
+                        <hr/>
                         <div>
                             Please contact administrator. <br/>
                             Please check the console for error details

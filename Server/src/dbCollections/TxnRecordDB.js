@@ -7,6 +7,7 @@ const txnItemRecordDBSchema = new mongoose.Schema({
     itemId: {type: Number, required : true},
     itemName: String,
     itemQty: {type: Number, required : true},
+    itemType: {type: Number, required : true},
     totalPrice: {type: Number, required : true},
     discountAmt: {type: Number, required : true}
 });
@@ -46,6 +47,7 @@ class TxnItemRecordDBHelper
         this.itemId = itemData.itemId;
         this.itemName = itemData.itemName;
         this.itemQty = itemData.itemQty;
+        this.itemType = itemData.itemType;
         this.totalPrice  = itemData.totalPrice;
 
         this.discountAmt = 0;

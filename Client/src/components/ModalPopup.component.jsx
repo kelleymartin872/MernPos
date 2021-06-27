@@ -45,16 +45,16 @@ class ModalPopup extends Component {
                         <div className="modal-content">
                             <div key="modal-header" className="modal-header">
                                 <img src={errorImg} alt="ERROR!" 
-                                        style={{margin:"auto", width:"100px"}} />
-                                
+                                    style={{margin:"auto", width:"100px"}} />
                             </div>
                             <div key="modal-body" className="modal-body">
                                 <h3 style={{textAlign:"center", margin:"auto"}}>
-                                          Error! 
+                                    Error! 
                                 </h3>
                                 <hr/>
                                 <div>
-                                    {text} <br/>
+                                    {text} 
+                                    <br/>
                                 </div>
                             </div>
 

@@ -152,12 +152,14 @@ router.post('/endTxn', async function(req,res)
 
         transaction.addCustomerPoints();
         transaction.AddLine(new FooterLine());
+        let coupon = transaction.createCoupon();
+
         let txnDB = new TxnRecordDBHelper(transaction);
         TxnRecordDBHelper.pushMultiple([txnDB]);
         data.posState = Constants.PosState.signedOn;
-                
+        
         await transaction.saveToFile();
-        let receiptMaker = new ReceiptGenerator(transaction.txnList);
+        let receiptMaker = new ReceiptGenerator(transaction.txnList, coupon);
         await receiptMaker.createPDF();
 
         process.posData.data = data;

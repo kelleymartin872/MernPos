@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const HeaderLine = require('../DTOs/Txn_Lines/HeaderLine').HeaderLine;
 const CustomerLine = require('../DTOs/Txn_Lines/CustomerLine').CustomerLine;
+const CouponLine = require('../DTOs/Txn_Lines/CouponLine').CouponLine;
 const PaymentDBHelper = require('../dbCollections/PaymentDB').PaymentDBHelper;
 const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper;
 const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
@@ -107,7 +108,7 @@ class Transaction
         
         itemList.forEach(item => {
             totalLine.totalPrice += item.totalPrice;
-            if(item.discount && item.discount.discountAmt)
+            if(item.discount && item.discount.discountAmt && item.discount.discountType != Constants.DiscType.coupon)
                 totalLine.discountAmt += item.discount.discountAmt;
         });
         
@@ -117,7 +118,8 @@ class Transaction
         });
 
         discList.forEach(disc => {
-            totalLine.discountAmt += disc.discountAmt;
+            if(disc.discountType != Constants.DiscType.coupon)
+                totalLine.discountAmt += disc.discountAmt;
         });
 
         totalLine.totalPrice = parseFloat(totalLine.totalPrice.toFixed(2));
@@ -372,8 +374,7 @@ class Transaction
             let addedPoints = 0;
             let calcPointAmout = this.amountPaid;
             let pointsItemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine
-                                                        && x.isCustPointItem
-                                                        && x.custID == custLine.custID);
+                                                        && x.itemType === Constants.ItemType.customerPoints);
             if(pointsItemList && pointsItemList != null && pointsItemList.length > 0)
             {
                 pointsItemList.forEach(pointItem => {
@@ -402,8 +403,41 @@ class Transaction
     
     addTotalDiscount(discountAmt)
     {
-        let discountLine = new DiscountLine("Manual Txn Discount", discountAmt, 1);
+        let discountLine = new DiscountLine("Manual Txn Discount", discountAmt);
         this.AddLine(discountLine);
+    }
+    
+    createCoupon()
+    {
+        let couponAmt = 0;
+        let couponDiscList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.DiscountLine
+                                                    && x.discountType === Constants.DiscType.coupon);
+
+
+        if(couponDiscList && couponDiscList != null && couponDiscList.length > 0)
+        {
+            couponDiscList.forEach(couponDisc => {
+                couponAmt += couponDisc.discountAmt
+            });
+        }
+        
+        let couponItemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine
+            && x.discount && x.discount.discountType === Constants.DiscType.coupon);
+
+        if(couponItemList && couponItemList != null && couponItemList.length > 0)
+        {
+            couponItemList.forEach(couponItem => {
+                couponAmt += couponItem.discount.discountAmt
+            });
+        }
+
+        if(couponAmt < 0) couponAmt = -1 * couponAmt;
+
+        let footerLine = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.FooterLine);
+        if(couponAmt > 0)
+            return CouponLine.createCoupon(this.txnNumber,couponAmt);
+
+        return null;
     }
 }
 

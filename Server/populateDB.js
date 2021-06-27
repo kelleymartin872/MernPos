@@ -1,6 +1,8 @@
 
 const mongoose = require('mongoose');   // Connect to Mongo Database
 
+const Constants = require('./src/Constants').Constants;
+
 // db models
 
 const ItemDBHelper = require('./src/dbCollections/ItemDB').ItemDBHelper;
@@ -20,12 +22,12 @@ mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useU
             var items = [ 
                 new ItemDBHelper(111000 , 'Apple' , 55 , "AppleOff",  -5 ),
                 new ItemDBHelper(111001 , 'Banana', 35  ),
-                new ItemDBHelper(111002 , 'Mango' , 150 ,"MangoDiscounts" , -30 ),
+                new ItemDBHelper(111002 , 'Mango' , 150 ,"SALE" , -30 ),
                 new ItemDBHelper(111003 , 'Rice' , 45  ),
                 new ItemDBHelper(111004 , 'Carrot' , 20 ),
                 new ItemDBHelper(111005 , 'Chicken' , 400 , "100thAnniv" , -25 ),
                 new ItemDBHelper(111006 , 'Wine', 350  ),
-                new ItemDBHelper(111007 , 'Beer crate' , 650 , "Sale", -40 ),
+                new ItemDBHelper(111007 , 'Beer crate' , 650 , "Coupon", -40 , Constants.DiscType.coupon),
                 new ItemDBHelper(111008 , 'Onion' , 130  ),
                 new ItemDBHelper(111009 , 'Tomato' , 110 , "Markdown", -10 )
             ];
@@ -76,17 +78,6 @@ mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useU
             ];
 
             PaymentDBHelper.pushMultiple(payments);
-
-            //#endregion
-
-            //#region "CouponDB" 
-
-            var coupons = [
-                new CouponDBHelper(99910001, -35 ),
-                new CouponDBHelper(99910002, -100 )
-            ];
-
-            CouponDBHelper.pushMultiple(coupons);
 
             //#endregion
 

@@ -25,8 +25,7 @@ const SearchItem = (props) =>
                     name="ItemName" value={formData.ItemName}  />
                 
                 <button 
-                    type="button" className="btn"
-                    style={{backgroundColor:"#f16b52" , marginLeft:"10px" , width:"15%", color:"white"}} 
+                    type="button" className="btn searchBtn"
                     onClick={() => props.getItems()} > 
                     Search
                 </button>
@@ -79,9 +78,7 @@ const SearchItem = (props) =>
                     onChange={(e) => props.handleInputChange(e)} 
                     name="ItemName" value={formData.ItemName}  />
                 
-                <button 
-                    type="button" className="btn col-11"
-                    style={{backgroundColor:"#f16b52" , color:"white", margin:"10px" , width:"15%"}} 
+                <button type="button" className="btn col-11 searchBtn"
                     onClick={() => props.getItems()} > 
                     Search
                 </button>

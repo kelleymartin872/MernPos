@@ -1,16 +1,16 @@
 
 const fs = require('fs');
 
-const HeaderLine = require('../DTOs/Txn_Lines/HeaderLine').HeaderLine;
-const CustomerLine = require('../DTOs/Txn_Lines/CustomerLine').CustomerLine;
-const CouponLine = require('../DTOs/Txn_Lines/CouponLine').CouponLine;
-const PaymentDBHelper = require('../dbCollections/PaymentDB').PaymentDBHelper;
-const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper;
-const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
-const DiscountLine = require('../DTOs/Txn_Lines/DiscountLine').DiscountLine;
-const TotalLine = require('../DTOs/Txn_Lines/TotalLine').TotalLine;
-const PaymentLine = require('../DTOs/Txn_Lines/PaymentLine').PaymentLine;
-const Constants = require('../Constants').Constants;
+const HeaderLine = require('./DTOs/Txn_Lines/HeaderLine').HeaderLine;
+const CustomerLine = require('./DTOs/Txn_Lines/CustomerLine').CustomerLine;
+const CouponLine = require('./DTOs/Txn_Lines/CouponLine').CouponLine;
+const PaymentDBHelper = require('./dbCollections/PaymentDB').PaymentDBHelper;
+const CustomerDBHelper = require('./dbCollections/CustomerDB').CustomerDBHelper;
+const ItemLine = require('./DTOs/Txn_Lines/ItemLine').ItemLine;
+const DiscountLine = require('./DTOs/Txn_Lines/DiscountLine').DiscountLine;
+const TotalLine = require('./DTOs/Txn_Lines/TotalLine').TotalLine;
+const PaymentLine = require('./DTOs/Txn_Lines/PaymentLine').PaymentLine;
+const Constants = require('./Constants').Constants;
 
 class Transaction
 {
@@ -36,6 +36,7 @@ class Transaction
         this.refreshLineNmbrs();
     }
 
+    //#region "Refresh Txn functions" 
     reOrderTxnList()
     {
         var tempTxn = [];
@@ -108,20 +109,19 @@ class Transaction
         
         itemList.forEach(item => {
             totalLine.totalPrice += item.totalPrice;
-            if(item.discount && item.discount.discountAmt && item.discount.discountType != Constants.DiscType.coupon)
+            if(item.discount && item.discount.discountAmt && item.discount.discountType != Constants.DiscType.redeemCoupon  
+                && item.discount.discountType != Constants.DiscType.createCoupon)
                 totalLine.discountAmt += item.discount.discountAmt;
         });
         
-        couponList.forEach(coupon => {
-            if(coupon.couponStatus === Constants.CouponStatus.reserved)
-                totalLine.discountAmt += coupon.discount.discountAmt;
-        });
-
         discList.forEach(disc => {
-            if(disc.discountType != Constants.DiscType.coupon)
+            if(disc.discountType != Constants.DiscType.redeemCoupon 
+                && disc.discountType != Constants.DiscType.createCoupon)
                 totalLine.discountAmt += disc.discountAmt;
         });
 
+        totalLine.discountAmt -= this.addCouponRedeemDiscs(totalLine.totalPrice);
+        
         totalLine.totalPrice = parseFloat(totalLine.totalPrice.toFixed(2));
         totalLine.discountAmt = parseFloat(totalLine.discountAmt.toFixed(2));
 
@@ -161,6 +161,36 @@ class Transaction
         });
     }
 
+    addCouponRedeemDiscs(totalAmt) 
+    {
+        let disc = 0;
+
+        let redeemDiscList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.DiscountLine
+                                    && x.discountType === Constants.DiscType.redeemCoupon);
+        
+        redeemDiscList.forEach(disc => {
+            this.RemoveLine(disc);
+        });
+
+        let couponList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.CouponLine);
+        couponList.forEach(coupon => {
+            coupon.isUsed = false;
+            
+            if(totalAmt >= 3 * coupon.discountAmt)
+            {
+                coupon.isUsed = true;
+                let discLine = new DiscountLine("Coupon discount", -1 * coupon.discountAmt, Constants.DiscType.redeemCoupon);
+                this.txnList.push(discLine);
+                
+                totalAmt -= coupon.discountAmt;
+                disc += coupon.discountAmt;
+            }   
+        });
+
+        return disc;
+    }
+    //#endregion
+
     getObjFromLineNmbr(lineNumber)
     {
         let obj = {};
@@ -174,6 +204,7 @@ class Transaction
         return obj;
     }
 
+    
     AddLine(txnLine, index=-1)
     {
         if(index < 0 || this.txnList.length < index)
@@ -249,36 +280,6 @@ class Transaction
                 }
             }   
             i += 1 ;
-        }
-    }
-
-    async saveToFile()
-    {
-        const fileName = "txn_" + String(this.txnNumber) 
-        const dir = "./data/TxnFiles/" ;
-        const path = dir + fileName + ".json";;
-        const data = {  };
-        data[fileName] = this.txnList;
-
-        if (!fs.existsSync(dir))
-        { 
-            fs.mkdir(dir, async (mkErr) => 
-            { 
-                if (mkErr)
-                    console.error(mkErr);
-
-                return fs.writeFile(path, JSON.stringify(data, null, 4), function (err) 
-                {
-                    if (err) throw err;
-                });
-            });
-        }
-        else
-        { 
-            return fs.writeFile(path, JSON.stringify(data, null, 4), function (err) 
-            {
-                if (err) throw err;
-            });
         }
     }
 
@@ -366,6 +367,24 @@ class Transaction
         return payRes;
     }
 
+    payCustomerPoints(amountPaid)
+    {
+        let custLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
+        if(custLine && custLine != null)
+        {
+            return custLine.payPoints(amountPaid);
+        }
+        return false;
+    }
+    
+    addTotalDiscount(discountAmt)
+    {
+        let discountLine = new DiscountLine("Manual Txn Discount", discountAmt, Constants.DiscType.manual);
+        this.AddLine(discountLine);
+    }
+   
+    //#region "End Txn functions" 
+
     addCustomerPoints()
     {
         let custLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
@@ -391,27 +410,11 @@ class Transaction
         return;
     }
 
-    payCustomerPoints(amountPaid)
-    {
-        let custLine = this.txnList.find(x => x.lineTypeID === Constants.TxnLineType.CustomerLine);
-        if(custLine && custLine != null)
-        {
-            return custLine.payPoints(amountPaid);
-        }
-        return false;
-    }
-    
-    addTotalDiscount(discountAmt)
-    {
-        let discountLine = new DiscountLine("Manual Txn Discount", discountAmt);
-        this.AddLine(discountLine);
-    }
-    
     createCoupon()
     {
         let couponAmt = 0;
         let couponDiscList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.DiscountLine
-                                                    && x.discountType === Constants.DiscType.coupon);
+                                                    && x.discountType === Constants.DiscType.createCoupon);
 
 
         if(couponDiscList && couponDiscList != null && couponDiscList.length > 0)
@@ -422,7 +425,7 @@ class Transaction
         }
         
         let couponItemList = this.txnList.filter(x => x.lineTypeID === Constants.TxnLineType.ItemLine
-            && x.discount && x.discount.discountType === Constants.DiscType.coupon);
+            && x.discount && x.discount.discountType === Constants.DiscType.createCoupon);
 
         if(couponItemList && couponItemList != null && couponItemList.length > 0)
         {
@@ -439,6 +442,38 @@ class Transaction
 
         return null;
     }
+
+    async saveToFile()
+    {
+        const fileName = "txn_" + String(this.txnNumber) 
+        const dir = "./data/TxnFiles/" ;
+        const path = dir + fileName + ".json";
+        const data = {  };
+        data[fileName] = this.txnList;
+
+        if (!fs.existsSync(dir))
+        { 
+            fs.mkdir(dir, async (mkErr) => 
+            { 
+                if (mkErr)
+                    console.error(mkErr);
+
+                return fs.writeFile(path, JSON.stringify(data, null, 4), function (err) 
+                {
+                    if (err) throw err;
+                });
+            });
+        }
+        else
+        { 
+            return fs.writeFile(path, JSON.stringify(data, null, 4), function (err) 
+            {
+                if (err) throw err;
+            });
+        }
+    }
+
+    //#endregion
 }
 
 

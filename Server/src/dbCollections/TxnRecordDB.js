@@ -66,7 +66,7 @@ class TxnCouponRecordDBHelper
     {
         this.couponNmbr = couponData.couponNmbr;
         this.couponStatus = couponData.couponStatus;
-        this.discountAmt = couponData.discount.discountAmt;
+        this.discountAmt = couponData.discountAmt;
     }
 }
 

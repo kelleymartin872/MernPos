@@ -11,6 +11,7 @@ import LineDisc from './Popup_Components/LineDisc.component';
 import TotalDisc from './Popup_Components/TotalDisc.component';
 import AbortTxn from './Popup_Components/AbortTxn.component';
 import AddPoints from './Popup_Components/AddPoints.component';
+import AddCoupon from './Popup_Components/AddCoupon.component';
 import errorImg from '../images/errorImg.png';
 
 class ModalPopup extends Component {
@@ -164,7 +165,13 @@ class ModalPopup extends Component {
             else
                 returnModal = this.getErrorDiv("Please add a customer first");
         }
-      
+        
+        if(this.props.modalId === Constants.MenuButtonID.AddCoupon)
+        {
+            returnModal = <AddCoupon doClose={() => this.props.onModalClose()} />;
+        }
+
+        
         if(this.props.modalId >= 100)
         {   
             returnModal = <Payment doClose={() => this.props.onModalClose()} 

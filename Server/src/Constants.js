@@ -52,7 +52,7 @@ class Constants
         const CouponStatus = {
             created: 0,
             reserved: 1,
-            used: 2
+            redeemed: 2
         }
         return CouponStatus;
     }
@@ -92,8 +92,10 @@ class Constants
     static get DiscType()
     {
         const DiscType = {
-            normal: 0,
-            coupon: 1
+            auto: 0,
+            createCoupon: 1,
+            redeemCoupon: 2,
+            manual: 3
         };
         return DiscType;
     }

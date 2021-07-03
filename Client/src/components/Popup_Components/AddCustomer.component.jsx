@@ -82,10 +82,8 @@ class AddCustomer extends Form
                     onChange={(e) => this.handleInputChange(e)} 
                     name="phoneNumber" value={formData.phoneNumber}  />
                 
-                <button className="btn"
-                    type="button" 
-                    style={{backgroundColor:"#f16b52" , marginLeft:"10px", color:"White" ,width:"15%"}} 
-                    onClick={() => this.getCusts()} > 
+                <button className="btn searchBtn"
+                    type="button" onClick={() => this.getCusts()} > 
                     Search
                 </button>
             </div>
@@ -105,8 +103,7 @@ class AddCustomer extends Form
                             <div className="col-3" style={{textAlign:"left"}} > {cust.phoneNumber}  </div>  
                             <div className="col-3" style={{textAlign:"right"}} > { cust.points.toFixed(2) } </div>  
                             <button 
-                                type="button" className="btn"
-                                style={{backgroundColor:"#f16b52" , width:"15%" , color:"White"}} 
+                                type="button" className="btn searchBtn"
                                 onClick={() => this.addCust(cust.phoneNumber)} > 
                                 Add
                             </button>
@@ -137,9 +134,7 @@ class AddCustomer extends Form
                     onChange={(e) => this.handleInputChange(e)} 
                     name="phoneNumber" value={formData.phoneNumber}  />
                 
-                <button className="btn col-11"
-                    type="button" 
-                    style={{backgroundColor:"#f16b52" , margin:"10px", color:"White" ,width:"15%"}} 
+                <button type="button" className="btn col-11 searchBtn"
                     onClick={() => this.getCusts()} > 
                     Search
                 </button>

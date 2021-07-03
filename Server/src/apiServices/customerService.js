@@ -5,11 +5,13 @@ const CustomerDBHelper = require('../dbCollections/CustomerDB').CustomerDBHelper
 const CustomerLine = require('../DTOs/Txn_Lines/CustomerLine').CustomerLine;
 const ItemLine = require('../DTOs/Txn_Lines/ItemLine').ItemLine;
 const Constants = require('../Constants').Constants;
+const Utilities = require('../Utils/Utilities').Utilities;
 
 router.use(express.json());
 
 router.post('/getCustomers/', async function(req,res)
 {
+    const routerName = "getCustomers";
     try
     {
         process.posData.data.customers = [];
@@ -20,6 +22,7 @@ router.post('/getCustomers/', async function(req,res)
         if(!customers || customers.length < 1)
         {
             process.posData.data.errorMsg = "Customer with given Data was not found!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
@@ -33,6 +36,7 @@ router.post('/getCustomers/', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -41,6 +45,7 @@ router.post('/getCustomers/', async function(req,res)
 
 router.post('/addCustomerTxn/', async function(req,res)
 {
+    const routerName = "addCustomerTxn";
     try
     {
         process.posData.data.errorMsg = "";
@@ -52,12 +57,14 @@ router.post('/addCustomerTxn/', async function(req,res)
         if(!customers || customers.length < 1)
         {
             process.posData.data.errorMsg = "Customer with given Data was not found!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
         if(!txn)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -74,6 +81,7 @@ router.post('/addCustomerTxn/', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -82,6 +90,7 @@ router.post('/addCustomerTxn/', async function(req,res)
 
 router.post('/addNewCustomer/', async function(req,res)
 {
+    const routerName = "addNewCustomer";
     try
     {
         process.posData.data.errorMsg = "";
@@ -92,6 +101,7 @@ router.post('/addNewCustomer/', async function(req,res)
         if(customer)
         {
             process.posData.data.errorMsg = "Customer with given phone number already exists.";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(400).send(process.posData);
             return;
         }
@@ -99,7 +109,9 @@ router.post('/addNewCustomer/', async function(req,res)
         var validation = CustomerDBHelper.validate(req.body); 
         if(validation.error)
         {
-            res.status(400).send(err + validation.error.details[0].message);
+            process.posData.data.errorMsg = validation.error.details[0].message;
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
+            res.status(400).send(process.posData);
             return;
         }
 
@@ -114,6 +126,7 @@ router.post('/addNewCustomer/', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -122,6 +135,7 @@ router.post('/addNewCustomer/', async function(req,res)
 
 router.post('/addPoints/', async function(req,res)
 {
+    const routerName = "addPoints";
     try
     {
         process.posData.data.errorMsg = "";
@@ -131,6 +145,7 @@ router.post('/addPoints/', async function(req,res)
         if(!transaction)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -155,6 +170,7 @@ router.post('/addPoints/', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;

@@ -4,12 +4,14 @@ const router = express.Router();
 const PaymentDBHelper = require('../dbCollections/PaymentDB').PaymentDBHelper;
 const PaymentLine = require('../DTOs/Txn_Lines/PaymentLine').PaymentLine;
 const Constants = require('../Constants').Constants;
+const Utilities = require('../Utils/Utilities').Utilities;
 
 
 router.use(express.json());
 
 router.get('/getAllPayments/', async function(req,res)
 {
+    const routerName = "getAllPayments";
     try
     {
         process.posData.data.flowSuccess = false;
@@ -18,6 +20,7 @@ router.get('/getAllPayments/', async function(req,res)
         if(!payments || payments.length < 1)
         {
             process.posData.data.errorMsg = "No Payment medias defined in DB!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
@@ -31,6 +34,7 @@ router.get('/getAllPayments/', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -39,6 +43,7 @@ router.get('/getAllPayments/', async function(req,res)
 
 router.post('/performPayment', async function(req,res)
 {
+    const routerName = "performPayment";
     try
     {
         process.posData.data.flowSuccess = false;
@@ -47,12 +52,14 @@ router.post('/performPayment', async function(req,res)
         if(!payment)
         {
             process.posData.data.errorMsg = "Payment with given ID was not found!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
         if(process.posData.data.posState < Constants.PosState.payState)
         {
             process.posData.data.errorMsg = "Please change State!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -60,6 +67,7 @@ router.post('/performPayment', async function(req,res)
         if(!transaction)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -74,6 +82,7 @@ router.post('/performPayment', async function(req,res)
         {
             process.posData.data.flowSuccess = false;
             process.posData.data.errorMsg = payRes.errMsg;
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         }
         process.posData.txns[0] = transaction;
         res.send(process.posData);
@@ -82,6 +91,7 @@ router.post('/performPayment', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;

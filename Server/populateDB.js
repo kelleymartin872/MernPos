@@ -27,7 +27,7 @@ mongoose.connect('mongodb://localhost/MernPosDB', { useNewUrlParser: true , useU
                 new ItemDBHelper(111004 , 'Carrot' , 20 ),
                 new ItemDBHelper(111005 , 'Chicken' , 400 , "100thAnniv" , -25 ),
                 new ItemDBHelper(111006 , 'Wine', 350  ),
-                new ItemDBHelper(111007 , 'Beer crate' , 650 , "Coupon", -40 , Constants.DiscType.coupon),
+                new ItemDBHelper(111007 , 'Beer crate' , 650 , "Coupon", -40 , Constants.DiscType.createCoupon),
                 new ItemDBHelper(111008 , 'Onion' , 130  ),
                 new ItemDBHelper(111009 , 'Tomato' , 110 , "Markdown", -10 )
             ];

@@ -39,7 +39,10 @@ class MainComponent extends Component
         try
         {
             let clientData = this.state.clientData;
-            clientData.selectedLineNmbr = lineNumber;
+            if(clientData.selectedLineNmbr == lineNumber)
+            clientData.selectedLineNmbr = -1;
+            else
+                clientData.selectedLineNmbr = lineNumber;
 
             this.setState({ 
                 clientData : clientData

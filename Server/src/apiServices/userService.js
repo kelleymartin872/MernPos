@@ -7,12 +7,14 @@ const Constants = require('../Constants').Constants;
 const UserDBHelper = require('../dbCollections/UserDB').UserDBHelper;
 const UserDBModel = require('../dbCollections/UserDB').UserDBModel;
 const Data = require('../DTOs/Data').Data;
+const Utilities = require('../Utils/Utilities').Utilities;
 
 router.use(express.json());
 
 
 router.post('/signUp', async function(req,res)
 { 
+    const routerName = "signUp";
     try
     {
         let data = process.posData.data;
@@ -23,13 +25,17 @@ router.post('/signUp', async function(req,res)
         var user = await UserDBHelper.getUsersByEmail(req.body.email);
         if(user)
         {    
-            res.status(400).send("User with given email already exists!");
+            process.posData.data.errorMsg = "User with given email already exists!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
+            res.status(400).send(process.posData);
             return;
         }
         var validation = UserDBHelper.validate(req.body); 
         if(validation.error)
         {
-            res.status(400).send(validation.error.details[0].message);
+            process.posData.data.errorMsg = validation.error.details[0].message;
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
+            res.status(400).send(process.posData);
             return;
         }
         let newUser = UserDBHelper(req.body.email, req.body.password ,req.body.name);
@@ -47,6 +53,7 @@ router.post('/signUp', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -55,6 +62,7 @@ router.post('/signUp', async function(req,res)
 
 router.post('/signIn', async function(req,res)
 {
+    const routerName = "signIn";
     try
     {
         let data = process.posData.data;
@@ -68,7 +76,8 @@ router.post('/signIn', async function(req,res)
         const user = await UserDBHelper.getUsersByEmail(req.body.email);
         if(!user)
         {    
-            data.errorMsg = msg;
+            process.posData.data.errorMsg = msg;
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(400).send(process.posData);
             return;
         }
@@ -78,7 +87,8 @@ router.post('/signIn', async function(req,res)
         const loginSuccess = await bcrypt.compare(req.body.password , user.password);
         if(!loginSuccess)
         {    
-            data.errorMsg = msg;
+            process.posData.data.errorMsg = msg;
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(400).send(process.posData);
             return;
         }
@@ -95,6 +105,7 @@ router.post('/signIn', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -102,6 +113,7 @@ router.post('/signIn', async function(req,res)
 
 router.post('/signOut', async function(req,res)
 {
+    const routerName = "signOut";
     try
     {
         process.posData = {
@@ -122,6 +134,7 @@ router.post('/signOut', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;

@@ -53,9 +53,52 @@ export default class Constants
         const CouponStatus = {
             created: 0,
             reserved: 1,
-            used: 2
+            redeemed: 2
         }
         return CouponStatus;
+    }
+    
+
+    static get PaymentType()
+    {
+        const PaymentType = {
+            INR: 100,
+
+            USD: 201,
+            EUR: 202,
+
+            VISA: 301,
+            MasterCard: 302,
+            AMEX: 303,
+
+            UPI: 401,
+            GPay: 402,
+            PayTM: 403,
+
+            Points: 501,
+            Voucher: 601
+        }
+        return PaymentType;
+    }
+    
+    static get ItemType()
+    {
+        const ItemType = {
+            normal: 0,
+            customerPoints: 1
+        };
+        return ItemType;
+    }
+    
+    static get DiscType()
+    {
+        const DiscType = {
+            auto: 0,
+            createCoupon: 1,
+            redeemCoupon: 2,
+            manual: 3
+        };
+        return DiscType;
     }
 
     static get APIUrl()
@@ -84,7 +127,8 @@ export default class Constants
             RemoveLine : 7,
             ReturnReceipt : 8,
             AbortTxn : 9,
-            AddPoints : 10
+            AddPoints : 10,
+            AddCoupon : 11
         }
         return MenuButtonID;
     }

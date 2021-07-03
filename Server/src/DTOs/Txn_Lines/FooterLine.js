@@ -1,7 +1,7 @@
 
 const Constants = require('../../Constants').Constants;
 const TxnLine = require('./TxnLine').TxnLine;
-const DateToString = require('../../Utils/utilities').DateToString;
+const Utilities = require('../../Utils/Utilities').Utilities;
 
 
 class FooterLine extends TxnLine
@@ -16,7 +16,7 @@ class FooterLine extends TxnLine
         this.txnNumber = txnNumber;
         this.userEmail = userEmail;
         
-        this.date = DateToString(new Date());
+        this.date = Utilities.DateToString(new Date());
     }
 }
 

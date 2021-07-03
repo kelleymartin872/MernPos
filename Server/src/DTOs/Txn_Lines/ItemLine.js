@@ -58,7 +58,7 @@ class ItemLine extends TxnLine
 
     addLineDiscount(discountAmt)
     {
-        this.discount = new DiscountLine("Manual Line Discount",  discountAmt, this.itemQty);
+        this.discount = new DiscountLine("Manual Line Discount",  discountAmt,  Constants.DiscType.manual,  this.itemQty);
     }
 }
 

@@ -118,6 +118,7 @@ class ReceiptGenerator
                 QRCode.toDataURL(this.coupon.couponNmbr.toString()).then(qrdata => {
                     this.document.data.isCoupon = true;
                     this.document.data.coupon = this.coupon;
+                    this.document.data.coupon.triggerAmt = this.coupon.discountAmt * 3;
                     this.document.data.coupon.QRdata = qrdata;
 
                     resolve(true);

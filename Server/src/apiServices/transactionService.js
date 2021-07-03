@@ -4,15 +4,17 @@ const router = express.Router();
 
 const TxnRecordDBHelper = require('../dbCollections/TxnRecordDB').TxnRecordDBHelper;
 const Constants = require('../Constants').Constants;
-const Transaction = require('../Utils/Transaction').Transaction;
+const Transaction = require('../Transaction').Transaction;
 const FooterLine = require('../DTOs/Txn_Lines/FooterLine').FooterLine;
 const ReceiptGenerator = require('../Utils/ReceiptGenerator').ReceiptGenerator;
+const Utilities = require('../Utils/Utilities').Utilities;
 
 router.use(express.json());
 
 
 router.post('/newTxn/', async function(req,res)
 {
+    const routerName = "newTxn";
     try
     {
         process.posData.data.flowSuccess = false;
@@ -20,6 +22,7 @@ router.post('/newTxn/', async function(req,res)
         if(process.posData.data.posState == Constants.PosState.signedOff)
         {
             process.posData.data.errorMsg = "Please signIn!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(401).send(process.posData);
             return;
         }
@@ -41,8 +44,9 @@ router.post('/newTxn/', async function(req,res)
     }
     catch(ex)
     {
-        process.posData.data.errorMsg = ex.message;
         process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -50,8 +54,9 @@ router.post('/newTxn/', async function(req,res)
 
 router.post('/removeLine', async function(req,res)
 {
-  try
-  {
+    const routerName = "removeLine";
+    try
+    {
         let data = process.posData.data;
         let txn = process.posData.txns[0];
         process.posData.data.flowSuccess = false;
@@ -59,6 +64,7 @@ router.post('/removeLine', async function(req,res)
         if(!txn)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -67,6 +73,7 @@ router.post('/removeLine', async function(req,res)
         if(!txnLine)
         {
             process.posData.data.errorMsg = "Line with given lineNumber was not found!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
@@ -87,6 +94,7 @@ router.post('/removeLine', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -95,6 +103,7 @@ router.post('/removeLine', async function(req,res)
 
 router.post('/changeState', async function(req,res)
 {
+    const routerName = "changeState";
     try
     {
         process.posData.data.flowSuccess = false;
@@ -103,12 +112,14 @@ router.post('/changeState', async function(req,res)
         if(!targetState || targetState<0 || targetState>3)
         {
             process.posData.data.errorMsg = "State Not Found";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
         if(process.posData.txns.length < 1)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -116,6 +127,7 @@ router.post('/changeState', async function(req,res)
         if(!transaction)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -128,8 +140,9 @@ router.post('/changeState', async function(req,res)
     }
     catch(ex)
     {
-        process.posData.data.errorMsg = ex.message;
         process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -138,6 +151,7 @@ router.post('/changeState', async function(req,res)
 
 router.post('/endTxn', async function(req,res)
 {
+    const routerName = "endTxn";
     try
     {
         let data = process.posData.data;
@@ -146,7 +160,9 @@ router.post('/endTxn', async function(req,res)
 
         if(!transaction)
         {
-            res.status(500).send("Transaction is not defined!");
+            process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
+            res.status(500).send(process.posData);
             return;
         }
 
@@ -173,9 +189,9 @@ router.post('/endTxn', async function(req,res)
     }
     catch(ex)
     {
-        console.error(ex.message);
-        process.posData.data.errorMsg = ex.message;
         process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, ex.stack);
         res.status(500).send(process.posData);
     }
     return;
@@ -183,6 +199,7 @@ router.post('/endTxn', async function(req,res)
 
 router.post('/getReceipt', async function(req,res)
 {
+    const routerName = "endTxn";
     try
     {
         process.posData.data.errorMsg = "";
@@ -194,6 +211,7 @@ router.post('/getReceipt', async function(req,res)
         {
             process.posData.data.flowSuccess = false;
             process.posData.data.errorMsg = "Txn was not found!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
@@ -213,6 +231,7 @@ router.post('/getReceipt', async function(req,res)
     {
         process.posData.data.errorMsg = ex.message;
         process.posData.data.flowSuccess = false;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -244,6 +263,7 @@ function checkReturnDate(returnTxn, TxnDate)
 
 router.post('/returnReceipt', async function(req,res)
 {
+    const routerName = "returnReceipt";
     try
     {
         process.posData.data.errorMsg = "";
@@ -257,6 +277,7 @@ router.post('/returnReceipt', async function(req,res)
         {
             process.posData.data.flowSuccess = false;
             process.posData.data.errorMsg = "Txn was not found!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
@@ -264,11 +285,10 @@ router.post('/returnReceipt', async function(req,res)
         {
             process.posData.data.flowSuccess = false;
             process.posData.data.errorMsg = "Txn was not found!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(404).send(process.posData);
             return;
         }
-        
-        
         
         if(process.posData.txns.length == 0)
             process.posData.txns.push({});
@@ -290,8 +310,9 @@ router.post('/returnReceipt', async function(req,res)
     }
     catch(ex)
     {
-        process.posData.data.errorMsg = ex.message;
         process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -299,6 +320,7 @@ router.post('/returnReceipt', async function(req,res)
 
 router.post('/totalDiscount', async function(req,res)
 {
+    const routerName = "returnReceipt";
     try
     {
         process.posData.data.errorMsg = "";
@@ -308,6 +330,7 @@ router.post('/totalDiscount', async function(req,res)
         if(!transaction)
         {
             process.posData.data.errorMsg = "Transaction is not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(500).send(process.posData);
             return;
         }
@@ -315,6 +338,7 @@ router.post('/totalDiscount', async function(req,res)
         if(!req.body.discountAmt)
         {
             process.posData.data.errorMsg = "Discount amount not defined!";
+            Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
             res.status(400).send(process.posData);
             return;
         }
@@ -332,6 +356,7 @@ router.post('/totalDiscount', async function(req,res)
     {
         process.posData.data.flowSuccess = false;
         process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;
@@ -340,6 +365,7 @@ router.post('/totalDiscount', async function(req,res)
 
 router.post('/abortTxn', async function(req,res)
 {
+    const routerName = "abortTxn";
     try
     {
         process.posData.data.flowSuccess = false;
@@ -361,8 +387,9 @@ router.post('/abortTxn', async function(req,res)
     }
     catch(ex)
     {
-        process.posData.data.errorMsg = ex.message;
         process.posData.data.flowSuccess = false;
+        process.posData.data.errorMsg = ex.message;
+        Utilities.logMsg(__filename, routerName, process.posData.data.errorMsg);
         res.status(500).send(process.posData);
     }
     return;

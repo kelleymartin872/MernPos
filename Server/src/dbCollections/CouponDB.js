@@ -43,6 +43,13 @@ class CouponDBHelper
         return dbCoupons.find(x => x.couponNmbr === couponNmbr);
     }
 
+    static async updateCouponStatus(couponNmbr, status)
+    {
+        let dbCoupons = await CouponDBModel.find();
+        let dbCoupon = dbCoupons.find(x => x.couponNmbr === couponNmbr);
+        dbCoupon.couponStatus = parseInt(status);
+        await dbCoupon.save();
+    }
 }
 
 module.exports.CouponDBHelper = CouponDBHelper;

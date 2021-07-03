@@ -117,6 +117,19 @@ const TxnList = (props) =>
                 break;
             }
 
+            case(Constants.TxnLineType.CouponLine):
+            {
+                renderTxn.push ( 
+                    <div key={txnLine.lineNumber} style={(isSelected ? selectedStyle: notSelectedStyle)} 
+                        onClick={() => props.onSelectLine(txnLine.lineNumber)}  className="row">
+                        <div className="col-4"> Coupon : </div>
+                        <div className="col-8" style={rightAlign}> {txnLine.couponNmbr} </div>
+                        <hr className="col-10" style={{margin:"5px"}} />
+                    </div>
+                );
+                break;
+            }
+
             case(Constants.TxnLineType.TotalLine):
             {
                 renderTxn.push(    

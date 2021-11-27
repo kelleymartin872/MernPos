@@ -5,7 +5,7 @@ import AddCustomer from './Popup_Components/AddCustomer.component';
 import ReturnReceipt from './Popup_Components/ReturnReceipt.component';
 import Payment from './Popup_Components/Payment.component';
 import ChangeQty from './Popup_Components/ChangeQty.component';
-import Constants from '../DTOs/Constants'
+import Constants from '../Utils/Constants'
 import RemoveLine from './Popup_Components/RemoveLine.component';
 import LineDisc from './Popup_Components/LineDisc.component';
 import TotalDisc from './Popup_Components/TotalDisc.component';

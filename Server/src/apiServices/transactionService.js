@@ -100,7 +100,6 @@ router.post('/removeLine', async function(req,res)
     return;
 });
 
-
 router.post('/changeState', async function(req,res)
 {
     const routerName = "changeState";
@@ -147,7 +146,6 @@ router.post('/changeState', async function(req,res)
     }
     return;
 });
-
 
 router.post('/endTxn', async function(req,res)
 {
@@ -361,7 +359,6 @@ router.post('/totalDiscount', async function(req,res)
     }
     return;
 });
-
 
 router.post('/abortTxn', async function(req,res)
 {

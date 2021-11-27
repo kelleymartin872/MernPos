@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { withResizeDetector } from 'react-resize-detector';
 import Swal from 'sweetalert2'
 
-import Constants from '../DTOs/Constants' 
+import Constants from '../Utils/Constants' 
 
 import SignInForm from './Popup_Components/SignInForm.component';
 import Offline from './Popup_Components/Offline.component';

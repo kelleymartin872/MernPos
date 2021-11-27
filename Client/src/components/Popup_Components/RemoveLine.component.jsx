@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import Constants from '../../DTOs/Constants'
+import Constants from '../../Utils/Constants'
 import TransactionService from '../../apiServices/TransactionService';
 import Swal from 'sweetalert2'
 

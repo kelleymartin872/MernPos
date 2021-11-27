@@ -1,5 +1,5 @@
 
-import Constants from '../DTOs/Constants';
+import Constants from '../Utils/Constants';
 import ApiService from './ApiService';
 
 export default class ItemService

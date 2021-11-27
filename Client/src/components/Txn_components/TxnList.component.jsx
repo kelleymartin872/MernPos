@@ -2,7 +2,7 @@
 import React from 'react';
 
 import ItemLineComponent from './ItemLine.component';
-import Constants from '../../DTOs/Constants';
+import Constants from '../../Utils/Constants';
 
 const TxnList = (props) => 
 {

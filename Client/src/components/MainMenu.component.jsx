@@ -1,8 +1,8 @@
 
 import React, { Component } from 'react';
 
-import MenuButton from '../DTOs/MenuButton'
-import Constants from '../DTOs/Constants'
+import MenuButton from '../Utils/MenuButton'
+import Constants from '../Utils/Constants'
 import PaymentService from '../apiServices/PaymentService'
 import Loading from './Popup_Components/Loading.component';
 

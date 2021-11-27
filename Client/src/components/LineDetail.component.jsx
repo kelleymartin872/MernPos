@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Constants from '../DTOs/Constants'
+import Constants from '../Utils/Constants'
 
 
 const LineDetail = (props) => 

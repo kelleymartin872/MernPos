@@ -7,7 +7,7 @@ import ItemService from '../../apiServices/ItemService';
 import Loading from './Loading.component';
 import Swal from 'sweetalert2'
 import Input from './Input.component';
-import Constants from '../../DTOs/Constants';
+import Constants from '../../Utils/Constants';
 
 class ReturnReceipt extends Form 
 {

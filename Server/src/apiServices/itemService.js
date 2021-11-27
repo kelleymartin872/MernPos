@@ -92,7 +92,6 @@ router.post('/addItemTxn', async function(req,res)
     return;
 });
 
-
 router.post('/setItemQty', async function(req,res)
 {
     const routerName = "setItemQty";
@@ -200,4 +199,5 @@ router.post('/lineDiscount', async function(req,res)
     }
     return;
 });
+
 module.exports = router;
